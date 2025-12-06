@@ -1,0 +1,83 @@
+/* 1. 전체 기본 설정: 폰트와 배경색 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  background-color: #f8f9fa; /* 아주 연한 회색 (눈이 편함) */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 2. 헤더 스타일 */
+header {
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* 살짝 그림자 */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Header.jsx의 style을 무시하고 이 클래스들이 적용되도록
+   Header.jsx의 인라인 스타일을 지우거나 className을 써야 하지만,
+   지금은 전체적인 느낌을 잡는 것이므로 아래 전역 스타일로 커버합니다. */
+   
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #ff6b6b; /* 마우스 올리면 핑크색 */
+}
+
+/* 3. 메인 컨텐츠 영역 */
+.container {
+  max-width: 1200px; /* 너무 퍼지지 않게 적당한 너비 제한 */
+  margin: 40px auto; /* 중앙 정렬 */
+  padding: 0 20px;
+  animation: fadeIn 0.5s ease-in-out; /* 부드럽게 나타나는 효과 */
+}
+
+/* 4. 타이틀과 텍스트 */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #212529;
+  letter-spacing: -1px;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #495057;
+  border-left: 5px solid #ff6b6b; /* 왼쪽에 포인트 컬러 줄 */
+  padding-left: 15px;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+/* 5. 카드 디자인 (내용들을 감싸는 박스) */
+.content-box {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-bottom: 30px;
+}
+
+/* 6. 강조 텍스트 */
+strong {
+  color: #ff6b6b; /* 핑크색 강조 */
+  font-weight: 700;
+}
+
+/* 애니메이션 정의 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
