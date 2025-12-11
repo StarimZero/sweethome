@@ -7,7 +7,7 @@ from database import init_db
 # 라우터들 (기능별 API) 불러오기
 from routers import dashboard, cooking, review
 from routers.system import common_code
-from routers import travel
+from routers import travel, liquor
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ app.include_router(cooking.router)
 app.include_router(review.router) 
 app.include_router(common_code.router)
 app.include_router(travel.router)
+app.include_router(liquor.router)
 
 @app.get("/")
 def read_root():

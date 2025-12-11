@@ -3,6 +3,7 @@ from .cooking import Recipe
 from .review import Review
 from .system.common_code import CommonCode 
 from models.travel import Travel, Place
+from .liquor import LiquorReview
 
 # Beanie 초기화할 때 쓸 리스트도 여기서 관리하면 편합니다.
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview]

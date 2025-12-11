@@ -18,6 +18,10 @@ import CodeDetailPage from './components/system/code/CodeDetailPage';
 import TravelPage from './components/travel/TravelPage'
 import TravelInsertPage from './components/travel/TravelInsertPage'
 import TravelDetailPage from './components/travel/TravelDetailPage'
+//주류 리뷰 3총사
+import LiquorPage from './components/liquor/LiquorPage'
+import LiquorInsertPage from './components/liquor/LiquorInsertPage'
+import LiquorDetailPage from './components/liquor/LiquorDetailPage'
 
 
 
@@ -44,6 +48,9 @@ function App() {
           <Route path="/travel" element={<TravelPage />} />
           <Route path="/travel/new" element={<TravelInsertPage />} />
           <Route path="/travel/:id" element={<TravelDetailPage />} />
+          <Route path="/liquor" element={<LiquorPage />} />
+          <Route path="/liquor/new" element={<LiquorInsertPage />} />
+          <Route path="/liquor/:id" element={<LiquorDetailPage />} />
         </Routes>
       </div>
     </div>

@@ -15,6 +15,7 @@ function Header() {
         <li><Link to="/">🏠 홈</Link></li>
         <li><Link to="/cooking">👨‍🍳 요리 도감</Link></li>
         <li><Link to="/review">⭐ 맛집 리뷰</Link></li>
+        <li><Link to="/liquor">🍾 주류 리뷰</Link></li>
         <li><Link to="/travel">✈️ 여행</Link></li>
         <li><Link to="/calendar" style={{color:'#ccc'}}>📅 캘린더</Link></li>
         <li><Link to="/system">⚙️ 시스템 관리</Link></li>
