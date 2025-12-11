@@ -1,112 +1,26 @@
-# **Holango 🥰 우리 부부의 여행 웹사이트**
+# 🏡 SweetHome (스위트홈)
 
-![Demo GIF](https://via.placeholder.com/800x400/26DCD6/FFFFFF?text=%F0%9F%9A%80+%EB%B2%A4%ED%86%A0%EA%B7데모 GIF 예정)*
+**SweetHome**은 우리 가족의 소소한 일상과 취미를 기록하고 관리하는 웹 애플리케이션입니다.  
+요리 레시피, 술(Liquor) 컬렉션, 여행 기록, 그리고 다양한 리뷰를 한곳에서 관리할 수 있습니다.
 
-> **우리 부부만의 특별한 여행 기록 💕**  
-> 트리플 앱처럼 멋진 UI + 벤토 그리드 완성!
+## ✨ 주요 기능 (Features)
 
-***
+*   **🍳 Cooking (요리)**: 우리 집만의 레시피를 등록하고, 난이도와 셰프(남편/아내) 정보를 관리합니다.
+*   **🍷 Liquor (술)**: 보유 중인 술 리스트와 시음 노트를 기록합니다.
+*   **✈️ Travel (여행)**: 다녀온 여행지 정보와 추억을 저장합니다.
+*   **📝 Review (리뷰)**: 맛집, 제품 등 다양한 생활 리뷰를 남깁니다.
+*   **⚙️ System (시스템)**: 공통 코드 관리 등 시스템 설정을 위한 관리자 기능을 제공합니다.
 
-## ✨ **주요 기능**
+## 🛠 기술 스택 (Tech Stack)
 
-| 기능 | 설명 |
-|------|------|
-| **🎨 벤토 그리드** | 다가오는 여행(`D-`) **2x2 대형카드**, 지난 여행(`D+`) **다양한 크기** |
-| **📱 일정 관리** | **Day 1, Day 2** 탭 전환 + 타임라인 보기 |
-| **🌈 색상 선택** | 썸네일 배경에 맞춰 **제목 색상** 직접 설정 |
-| **📊 D-Day** | 자동 계산 (`D-30`, `D-Day`, `D+100`) |
-| **🔄 CRUD** | 여행 등록/수정/삭제 완벽 지원 |
+### Frontend
+*   **Core**: React (18+)
+*   **Routing**: React-Router-Dom
+*   **Styling**: CSS Modules / Standard CSS
+*   **Build Tool**: Vite (Recommended)
 
-***
+### Backend
+*   **Framework**: FastAPI (Python)
+*   **Database**: MongoDB
+*   **ODM**: Beanie (Asynchronous ODM for MongoDB)
 
-## 🚀 **우리 집에서 실행하는 법 (3분)**
-
-```bash
-# 1. 클론
-git clone https://github.com/StarimZero/sweethome.git
-cd sweethome
-
-# 2. MongoDB 켜기 (Docker)
-docker run -d -p 27017:27017 --name 우리-mongo mongo:latest
-
-# 3. 백엔드
-cd backend
-python -m venv venv
-venv\Scripts\activate  # 윈도우
-pip install -r requirements.txt
-python app.py
-# http://localhost:8000 확인!
-
-# 4. 프론트엔드 (새 터미널)
-cd ../frontend
-npm install
-npm run dev
-# http://localhost:5173 접속!
-```
-
-```
-🌐 백엔드: http://localhost:8000
-🌐 프론트엔드: http://localhost:5173  
-📚 API 문서: http://localhost:8000/docs
-```
-
-***
-
-## 🛠️ **어떻게 만들었나요?**
-
-```
-Frontend: React 19 + Vite (빨라요!)
-Backend: FastAPI + MongoDB (안정적!)
-UI: 벤토 그리드 (2024 트렌드 🔥)
-```
-
-***
-
-## 📱 **화면 미리보기**
-
-| 여행 리스트 | 일정 상세 |
-|-------------|-----------|
-| ![리스트](https://via.placeholder.com/400x300/26DCD6/FFFFFF?text=%F0%9F%9A%80+D-30+%7C+D%2B100  | ![상세](https://via.placeholder.com/400x300/26DCD6/FFFFFF?text=Day+1+%F0%9F%93%8F  |
-
-***
-
-## 👫 **우리 부부만의 특별함**
-
-- **다가오는 여행**은 크게 보여서 잊지 않음 ✅
-- **지난 여행**은 앨범처럼 다양하게 배치 ✅  
-- **색상**으로 분위기 맞춤 ✅
-- **D-Day**로 언제 출발하는지 한눈에 ✅
-
-***
-
-## 📈 **앞으로 할 일**
-
-- [x] **벤토 그리드** ✅
-- [x] **여행 CRUD** ✅
-- [x] **색상 설정** ✅
-- [ ] **구글 지도** 추가 ⏳
-- [ ] **모바일 앱처럼** 만들기 ⏳
-- [ ] **부부간 공유** 기능 ⏳
-
-***
-
-## 🙌 **함께 만들기**
-
-```
-1. git clone https://github.com/StarimZero/sweethome.git
-2. 작업하고 PR!
-3. 부부 웹사이트 완성 💕
-```
-
-***
-
-<div align="center">
-  <img src="https://via.placeholder.com/600x100/26DCD6/FFFFFF?text=%F0%9F%9A%80+%EC%9A%B0%EB%A6%AC+%EB%B6%80%EB%B6%80%EC%9D%98+%EC%97%AC%ED%96%89%EA%B8%B0%EB%A1%9D" />
-  <br><sub>Made with ❤️ by 우리 부부</sub>
-</div>
-
-***
-
-**GitHub에서 `README.md` 편집 → 위 내용 붙여넣기 → 저장!** 🎉
-
-**우리 부부 웹사이트 완벽하게 문서화!** 💕
