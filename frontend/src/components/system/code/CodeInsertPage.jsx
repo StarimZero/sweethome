@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import apiClient from '../../../api'; 
 
 function CodeInsertPage() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function CodeInsertPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/code', form);
+      await apiClient.post('/code', form);
       alert("등록되었습니다!");
       navigate('/system/code');
     } catch (err) {

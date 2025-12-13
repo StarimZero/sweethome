@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import apiClient from '../../api'; 
 
 function ReviewDetailPage() {
   const { id } = useParams();
@@ -12,14 +13,14 @@ function ReviewDetailPage() {
   const [categories, setCategories] = useState([]); 
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/review/${id}`)
+    apiClient.get(`/review/${id}`)
       .then(res => {
         setReview(res.data);
         setEditData(res.data);
       })
       .catch(err => console.error(err));
 
-    axios.get('http://localhost:8000/api/code/group/FOOD')
+    apiClient.get('/code/group/FOOD')
       .then(res => setCategories(res.data))
       .catch(err => console.error(err));
   }, [id]);
@@ -44,7 +45,7 @@ function ReviewDetailPage() {
           ...editData,
           image_urls: (editData.image_urls || []).filter(url => url.trim() !== "")
       };
-      await axios.put(`http://localhost:8000/api/review/${id}`, cleanData);
+      await apiClient.put(`/review/${id}`, cleanData);
       setReview(cleanData);
       setIsEditing(false);
       alert("수정되었습니다.");
@@ -52,7 +53,7 @@ function ReviewDetailPage() {
 
   const handleDelete = async () => {
     if (window.confirm("정말 삭제하시겠습니까? 🗑️")) {
-      await axios.delete(`http://localhost:8000/api/review/${id}`);
+      await apiClient.delete(`/review/${id}`);
       alert("삭제되었습니다.");
       navigate('/review');
     }

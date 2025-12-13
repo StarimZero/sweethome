@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import apiClient from '../../../api'; 
 
 function CodeDetailPage() {
   const { id } = useParams();
@@ -9,7 +10,7 @@ function CodeDetailPage() {
 
   useEffect(() => {
     // 상세 조회 API 호출
-    axios.get(`http://localhost:8000/api/code/${id}`)
+    apiClient.get(`/code/${id}`)
       .then(res => setForm(res.data))
       .catch(err => console.error(err));
   }, [id]);
@@ -20,7 +21,7 @@ function CodeDetailPage() {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:8000/api/code/${id}`, form);
+      await apiClient.put(`/code/${id}`, form);
       alert("수정되었습니다.");
       navigate('/system/code');
     } catch (err) {
@@ -30,7 +31,7 @@ function CodeDetailPage() {
 
   const handleDelete = async () => {
     if(window.confirm("정말 삭제하시겠습니까?")) {
-      await axios.delete(`http://localhost:8000/api/code/${id}`);
+      await apiClient.delete(`/code/${id}`);
       navigate('/system/code');
     }
   };

@@ -13,7 +13,7 @@ function CookingDetailPage() {
 
   // 1. 상세 데이터 가져오기
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/cooking/${id}`)
+    axios.apiClient(`/cooking/${id}`)
       .then(res => {
         setRecipe(res.data);
         setEditData(res.data);
@@ -24,7 +24,7 @@ function CookingDetailPage() {
   // 2. 삭제 처리
   const handleDelete = async () => {
     if(window.confirm("정말 삭제하시겠습니까?")) {
-      await axios.delete(`http://localhost:8000/api/cooking/${id}`);
+      await apiClient.delete(`/cooking/${id}`);
       alert("삭제되었습니다.");
       navigate('/cooking'); // 목록으로 복귀
     }
@@ -32,7 +32,7 @@ function CookingDetailPage() {
 
   // 3. 수정 저장 처리
   const handleUpdate = async () => {
-    await axios.put(`http://localhost:8000/api/cooking/${id}`, editData);
+    await apiClient.put(`/cooking/${id}`, editData);
     setRecipe(editData); // 화면 갱신
     setIsEditing(false); // 수정 모드 종료
     alert("수정되었습니다!");

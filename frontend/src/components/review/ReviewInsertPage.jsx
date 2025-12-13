@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../api'; 
 
 function ReviewInsertPage() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ function ReviewInsertPage() {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/code/group/FOOD') 
+    apiClient.get('/code/group/FOOD') 
       .then(res => setCategories(res.data))
       .catch(err => console.error("코드 로딩 실패", err));
   }, []);
@@ -44,7 +45,7 @@ function ReviewInsertPage() {
     };
 
     try {
-      await axios.post('http://localhost:8000/api/review', cleanData);
+      await apiClient.post('/review', cleanData);
       alert("리뷰 등록 완료!");
       navigate('/review');
     } catch (err) {

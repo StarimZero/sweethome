@@ -82,7 +82,7 @@ function TravelDetailPage() {
 
   const handleSave = async () => {
     try {
-       await apiClient.put(`/travel/${id}`, editedTravel)
+      await apiClient.put(`/travel/${id}`, editedTravel)
       setTravel(editedTravel)
       setIsEditing(false)
       alert('수정되었습니다.')
@@ -95,7 +95,7 @@ function TravelDetailPage() {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-         await apiClient.delete(`/travel/${id}`)
+        await apiClient.delete(`/travel/${id}`)
         navigate('/travel')
       } catch (error) {
         console.error(error)

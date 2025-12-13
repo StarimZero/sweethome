@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../api'; 
 
 function CookingPage() {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ function CookingPage() {
   const [activeTab, setActiveTab] = useState('husband');
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/cooking').then(res => setRecipes(res.data));
+    apiClient.get('/cooking').then(res => setRecipes(res.data));
   }, []);
 
   const filteredRecipes = recipes.filter(item => item.chef === activeTab);

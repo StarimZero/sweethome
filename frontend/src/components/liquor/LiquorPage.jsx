@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api'; 
 
 function LiquorPage() {
   const [liquors, setLiquors] = useState([])
@@ -34,7 +35,7 @@ function LiquorPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/code/group/SUL')
+      const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
     } catch (err) { console.error(err) }
   }
@@ -50,7 +51,7 @@ function LiquorPage() {
         }
       })
 
-      const res = await axios.get('http://localhost:8000/api/liquor', { params })
+      const res = await apiClient.get('/liquor', { params })
       setLiquors(res.data)
     } catch (err) {
       console.error(err)

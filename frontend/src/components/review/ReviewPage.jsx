@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import apiClient from '../../api'; 
 
 function ReviewPage() {
   const navigate = useNavigate();
@@ -34,11 +35,11 @@ function ReviewPage() {
   }, [filters, currentPage]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/review')
+    apiClient.get('/review')
       .then(res => setAllReviews(res.data))
       .catch(err => console.error(err));
 
-    axios.get('http://localhost:8000/api/code/group/FOOD')
+    apiClient.get('/code/group/FOOD')
       .then(res => {
         setCategoryList(res.data); 
         const map = {};

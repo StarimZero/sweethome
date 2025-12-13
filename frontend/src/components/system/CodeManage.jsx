@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import apiClient from '../../api'; 
 
 function CodeManage() {
   const [codes, setCodes] = useState([]);
@@ -10,7 +11,7 @@ function CodeManage() {
   // 1. 목록 불러오기
   const fetchCodes = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/code');
+      const res = await apiClient.get('/code');
       setCodes(res.data);
     } catch (err) {
       console.error(err);
@@ -29,10 +30,10 @@ function CodeManage() {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:8000/api/code/${editId}`, form);
+        await apiClient.put(`/code/${editId}`, form);
         alert("수정되었습니다.");
       } else {
-        await axios.post('http://localhost:8000/api/code', form);
+        await apiClient.post('i/code', form);
         alert("등록되었습니다.");
       }
       fetchCodes();
@@ -45,7 +46,7 @@ function CodeManage() {
   // 4. 삭제 처리
   const handleDelete = async (id) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
-      await axios.delete(`http://localhost:8000/api/code/${id}`);
+      await apiClient.delete(`/code/${id}`);
       fetchCodes();
     }
   };

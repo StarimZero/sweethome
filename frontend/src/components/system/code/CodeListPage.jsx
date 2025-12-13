@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../../api'; 
 
 function CodeListPage() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ function CodeListPage() {
 
   const fetchCodes = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/code');
+      const res = await apiClient.get('/code');
       setCodes(res.data);
     } catch (err) {
       console.error(err);

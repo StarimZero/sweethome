@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from '../../api'; 
 
 function CookingInsertPage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ function CookingInsertPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/cooking', formData);
+      await apiClient.post('/cooking', formData);
       alert("등록 완료!");
       navigate('/cooking');
     } catch (err) {

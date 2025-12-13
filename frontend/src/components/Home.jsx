@@ -1,12 +1,13 @@
 // src/components/Home.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import apiClient from '../api'; 
 
 function Home() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-  axios.get('http://localhost:8000/api/couple/home')
+  apiClient.get('/couple/home')
     .then(res => {
       console.log(res.data); // 여기에 추가
       setData(res.data);

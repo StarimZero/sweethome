@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api'; 
 
 function LiquorInsertPage() {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ function LiquorInsertPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/code/group/SUL')
+      const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
       if (res.data.length > 0) {
         setFormData(prev => ({ ...prev, category: res.data[0].code_id }))
@@ -77,7 +78,7 @@ function LiquorInsertPage() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/liquor', cleanData)
+      await apiClient.post('/liquor', cleanData)
       alert('등록되었습니다!')
       navigate('/liquor')
     } catch (err) {

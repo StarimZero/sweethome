@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api'; 
 
 function LiquorDetailPage() {
   const { id } = useParams()
@@ -22,14 +23,14 @@ function LiquorDetailPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/code/group/SUL')
+      const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
     } catch (err) { console.error(err) }
   }
 
   const fetchLiquor = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/liquor/${id}`)
+      const res = await apiClient.get(`/liquor/${id}`)
       let data = res.data
       
       // 데이터 정규화 (구버전 호환)
@@ -88,7 +89,7 @@ function LiquorDetailPage() {
       pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '')
     }
     try {
-      await axios.put(`http://localhost:8000/api/liquor/${id}`, cleanData)
+      await apiClient.put(`/liquor/${id}`, cleanData)
       alert('수정되었습니다')
       setLiquor(cleanData)
       setEditData(cleanData)
@@ -100,7 +101,7 @@ function LiquorDetailPage() {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/liquor/${id}`)
+        await apiClient.delete(`/liquor/${id}`)
         navigate('/liquor')
       } catch (err) { console.error(err) }
     }
