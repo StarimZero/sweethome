@@ -1,24 +1,92 @@
-# Logs
-logs
+# --------------------------------------------------------------------
+# [1] Python / FastAPI (Backend)
+# --------------------------------------------------------------------
+# 컴파일 및 캐시 파일
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 가상환경 (Virtual Environments)
+# 내 컴퓨터의 파이썬 환경 폴더는 올리면 안 됩니다.
+venv/
+.venv/
+env/
+ENV/
+
+# 환경 변수 및 비밀 키 (*** 절대 공유 금지 ***)
+# DB 접속 정보, API 키 등이 들어있는 파일입니다.
+.env
+.env.*
+! .env.example
+
+# 배포/빌드 관련
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 테스트 및 커버리지
+.coverage
+htmlcov/
+.pytest_cache/
+
+# 로그
 *.log
+
+# --------------------------------------------------------------------
+# [2] React / Node.js (Frontend)
+# --------------------------------------------------------------------
+# 의존성 라이브러리 (용량이 엄청 큽니다. 올리면 안 됩니다.)
+node_modules/
+
+# 빌드 결과물 (서버에서 다시 빌드하므로 굳이 안 올려도 됩니다)
+# 단, Render 무료 플랜 메모리 이슈로 '로컬 빌드 후 업로드' 전략을 쓴다면 주석 해제(# 제거)하세요.
+# dist/
+# build/
+
+# 로그 및 디버그
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Vite 캐시
+.vite/
 
-# Editor directories and files
-.vscode/*
+# --------------------------------------------------------------------
+# [3] IDE 및 OS 설정 (개인 설정 파일)
+# --------------------------------------------------------------------
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
-.idea
+
+# Mac OS / Windows
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# JetBrains (PyCharm)
+.idea/
+
+# --------------------------------------------------------------------
+# [4] 데이터베이스 (로컬 DB 파일)
+# --------------------------------------------------------------------
+*.sqlite3
+*.db
+dump/
+
+# --------------------------------------------------------------------
+# [5] 기타
+# --------------------------------------------------------------------
+# 실수로 올라갈 수 있는 압축파일이나 임시파일
+*.zip
+*.tar.gz
+*.bak
+*.tmp
+*.txt
+
+# 단, 배포에 꼭 필요한 requirements.txt는 예외적으로 허용 (!)
+!requirements.txt
