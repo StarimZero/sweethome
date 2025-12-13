@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api'; 
 
 function TravelPage() {
   const [travels, setTravels] = useState([])
@@ -12,7 +13,7 @@ function TravelPage() {
 
   const fetchTravels = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/travel/')
+      const response = await apiClient.get('/travel/');
       // 날짜순 정렬 (최신순)
       const sortedData = response.data.sort((a, b) => 
         new Date(b.start_date) - new Date(a.start_date)

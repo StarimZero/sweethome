@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api'; 
 
 function TravelInsertPage() {
   const navigate = useNavigate()
@@ -74,7 +75,7 @@ function TravelInsertPage() {
     }
 
     try {
-      await axios.post('http://localhost:8000/api/travel/', travelData)
+      await apiClient.post('/travel/', travelData)
       alert('여행이 성공적으로 등록되었습니다! ✈️')
       navigate('/travel')
     } catch (error) {

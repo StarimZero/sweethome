@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import apiClient from '../../api' 
 
 function TravelDetailPage() {
   const { id } = useParams()
@@ -22,7 +23,7 @@ function TravelDetailPage() {
 
   const fetchDetail = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/travel/${id}`)
+      const res = await apiClient.get(`/travel/${id}`)
       setTravel(res.data)
       setEditedTravel(res.data)
       setLoading(false)
@@ -81,7 +82,7 @@ function TravelDetailPage() {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:8000/api/travel/${id}`, editedTravel)
+       await apiClient.put(`/travel/${id}`, editedTravel)
       setTravel(editedTravel)
       setIsEditing(false)
       alert('수정되었습니다.')
@@ -94,7 +95,7 @@ function TravelDetailPage() {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/travel/${id}`)
+         await apiClient.delete(`/travel/${id}`)
         navigate('/travel')
       } catch (error) {
         console.error(error)

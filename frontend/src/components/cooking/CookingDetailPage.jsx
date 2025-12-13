@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import apiClient from '../../api'
 
 function CookingDetailPage() {
   const { id } = useParams(); // URL에서 id 가져오기
