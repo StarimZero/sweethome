@@ -9,12 +9,12 @@ router = APIRouter(
 )
 
 # 1. 목록 조회
-@router.get("/", response_model=List[Review])
+@router.get("", response_model=List[Review])
 async def get_all_reviews():
     return await Review.find_all().to_list()
 
 # 2. 등록
-@router.post("/", response_model=Review)
+@router.post("", response_model=Review)
 async def add_review(review: Review):
     await review.insert()
     return review

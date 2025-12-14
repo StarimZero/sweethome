@@ -9,7 +9,7 @@ router = APIRouter(
 )
 
 # 1. 전체 코드 목록 조회 (관리자용)
-@router.get("/", response_model=List[CommonCode])
+@router.get("", response_model=List[CommonCode])
 async def get_all_codes():
     return await CommonCode.find_all().sort(+CommonCode.group_code, +CommonCode.sort_order).to_list()
 
@@ -22,7 +22,7 @@ async def get_codes_by_group(group_code: str):
     ).sort(+CommonCode.sort_order).to_list()
 
 # 3. 코드 등록
-@router.post("/", response_model=CommonCode)
+@router.post("", response_model=CommonCode)
 async def add_code(code: CommonCode):
     await code.insert()
     return code

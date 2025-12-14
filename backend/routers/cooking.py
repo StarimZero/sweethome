@@ -9,12 +9,12 @@ router = APIRouter(
 )
 
 # 1. 목록 조회
-@router.get("/", response_model=List[Recipe])
+@router.get("", response_model=List[Recipe])
 async def get_all_recipes():
     return await Recipe.find_all().to_list()
 
 # 2. 등록
-@router.post("/", response_model=Recipe)
+@router.post("", response_model=Recipe)
 async def add_recipe(recipe: Recipe):
     await recipe.insert()
     return recipe
