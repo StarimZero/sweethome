@@ -1,12 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from beanie import PydanticObjectId
-# [수정] models 패키지에서 Recipe 모델 가져오기 (경로 주의!)
-# models 폴더 안의 __init__.py를 통해 가져오거나, models.cooking에서 직접 가져와야 합니다.
-try:
-    from models import Recipe 
-except ImportError:
-    from models.cooking import Recipe
+from models.cooking import Recipe
 
 router = APIRouter(
     prefix="/api/cooking",

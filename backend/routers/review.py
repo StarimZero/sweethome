@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from beanie import PydanticObjectId
-from models import Review # 모델 import
+from models.review import Review # 모델 import
 
 router = APIRouter(
     prefix="/api/review",
