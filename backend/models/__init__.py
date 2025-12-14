@@ -4,5 +4,6 @@ from .review import Review
 from .system.common_code import CommonCode 
 from .travel import Travel, Place
 from .liquor import LiquorReview
+from models.user import User 
 
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User]

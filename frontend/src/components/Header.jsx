@@ -1,30 +1,46 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function Header() {
-    const headerStyle = { display: 'flex', justifyContent: 'space-between', padding: '10px 20px', borderBottom: '1px solid #ddd', backgroundColor: '#fff', alignItems: 'center' };
-    const menuStyle = { display: 'flex', gap: '20px', listStyle: 'none', margin: 0, padding: 0 };
+
+const Header = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // 로그아웃 후 홈으로 이동
+  };
 
   return (
-    <header style={headerStyle}>
-      <div style={{ fontWeight: 'bold', fontSize: '20px' }}>
-        <Link to="/" style={{textDecoration:'none', color:'black'}}>💑 우리집 Dashboard</Link>
+    <header className="header-container">
+      <div className="logo">
+        <Link to="/">🏡 SweetHome</Link>
       </div>
+      
+      <nav className="nav-menu">
+        {user ? (
+          // [로그인 상태] 보여줄 메뉴
+          <>
+            <Link to="/cooking" className="nav-item">🍳 Cooking</Link>
+            <Link to="/liquor" className="nav-item">🍷 Liquor</Link>
+            <Link to="/travel" className="nav-item">✈️ Travel</Link>
+            <Link to="/review" className="nav-item">📝 Review</Link>
+            
+            {/* 시스템 메뉴는 관리자만 보게 할 수도 있지만 일단 로그인 유저 전체에게 공개 */}
+            <Link to="/system" className="nav-item">⚙️ System</Link>
 
-      <ul style={menuStyle}>
-        <li><Link to="/">🏠 홈</Link></li>
-        <li><Link to="/cooking">👨‍🍳 요리 도감</Link></li>
-        <li><Link to="/review">⭐ 맛집 리뷰</Link></li>
-        <li><Link to="/liquor">🍾 주류 리뷰</Link></li>
-        <li><Link to="/travel">✈️ 여행</Link></li>
-        <li><Link to="/calendar" style={{color:'#ccc'}}>📅 캘린더</Link></li>
-        <li><Link to="/system">⚙️ 시스템 관리</Link></li>
-        
-      </ul>
-
-      <div>로그인: 홍길동님</div>
+            <div className="user-info">
+              <span className="welcome-msg">Hi, <b>{user.username}</b>님</span>
+              <button onClick={handleLogout} className="logout-btn">로그아웃</button>
+            </div>
+          </>
+        ) : (
+          // [비로그인 상태] 보여줄 메뉴
+          <Link to="/login" className="login-btn">로그인</Link>
+        )}
+      </nav>
     </header>
   );
-}
+};
 
 export default Header;
