@@ -6,16 +6,26 @@ from fastapi.responses import FileResponse
 import uvicorn
 from contextlib import asynccontextmanager
 from database import init_db
+from dotenv import load_dotenv  # [추가 1] 환경변수 로드 라이브러리
 
 # 라우터들
 from routers import dashboard, cooking, review
 from routers.system import common_code
 from routers import travel, liquor
-from models.user import User  # 모델 추가
-from routers import auth  # 라우터 추가
+from models.user import User 
+from routers import auth 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # [추가 2] 서버 시작 시 .env 파일 로드
+    load_dotenv()
+    
+    # [추가 3] Gemini API 키 확인 로그 (디버깅용)
+    if not os.getenv("GEMINI_API_KEY"):
+        print("⚠️  [경고] GEMINI_API_KEY가 설정되지 않았습니다. AI 소믈리에 기능이 작동하지 않을 수 있습니다.")
+    else:
+        print("✅ [성공] GEMINI_API_KEY 로드 완료! AI 소믈리에 대기 중.")
+
     # 1. DB 초기화
     await init_db()
     print("✅ MongoDB Connected via Beanie!")
