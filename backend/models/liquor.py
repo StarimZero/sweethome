@@ -16,6 +16,7 @@ class AINote(BaseModel):
 class LiquorReview(Document):
     name: str                           # 주류명
     category: str                       # 종류 (코드값 or 텍스트)
+    wine_type: Optional[str] = None     # [추가] 와인 종류 (RED, WHITE, SPARKLING 등 - WINE_C 코드값)
     purchase_place: Optional[str] = ""  # 구매처
     price: Optional[int] = 0            # 가격
     visit_date: Optional[str] = ""      # 구매/시음 날짜

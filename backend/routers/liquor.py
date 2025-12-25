@@ -102,6 +102,7 @@ async def analyze_liquor_background(liquor_id: str, liquor_name: str):
 async def get_liquors(
     name: Optional[str] = None,
     category: Optional[str] = None,
+     wine_type: Optional[str] = None,  # [추가] 와인 종류 필터
     purchase_place: Optional[str] = None,
     pairing_food: Optional[str] = None,
     comment: Optional[str] = None,
@@ -118,6 +119,7 @@ async def get_liquors(
     
     if name: query["name"] = {"$regex": name, "$options": "i"}
     if category: query["category"] = category
+    if wine_type: query["wine_type"] = wine_type  # [추가]
     if purchase_place: query["purchase_place"] = {"$regex": purchase_place, "$options": "i"}
     if pairing_food: query["pairing_foods"] = {"$regex": pairing_food, "$options": "i"}
 

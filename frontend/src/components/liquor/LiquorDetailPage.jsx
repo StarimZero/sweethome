@@ -9,6 +9,7 @@ function LiquorDetailPage() {
   // 상태 관리
   const [liquor, setLiquor] = useState(null)
   const [categories, setCategories] = useState([])
+  const [wineTypes, setWineTypes] = useState([]) // [추가] 와인 상세 코드
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // 수정 모드 상태
@@ -18,9 +19,10 @@ function LiquorDetailPage() {
   // 데이터 불러오기
   useEffect(() => {
     fetchCategories()
+    fetchWineTypes() // [추가]
     fetchLiquor()
     
-    // 5초마다 데이터 갱신
+    // 5초마다 데이터 갱신 (AI 분석 대기중일 때)
     const interval = setInterval(() => {
         setLiquor(prev => {
             if (prev && prev.ai_note && prev.ai_note.status === 'PENDING') {
@@ -40,14 +42,27 @@ function LiquorDetailPage() {
     } catch (err) { console.error(err) }
   }
 
+  // [추가] 와인 상세 코드 로드
+  const fetchWineTypes = async () => {
+    try {
+      const res = await apiClient.get('/code/group/WINE_C')
+      setWineTypes(res.data)
+    } catch (err) { console.error(err) }
+  }
+
   const fetchLiquor = async (silent = false) => {
     try {
       const res = await apiClient.get(`/liquor/${id}`)
       let data = res.data
+      
+      // 데이터 정제
       if (!data.image_urls) data.image_urls = []
       if (data.image_urls.length === 0 && data.image_url) data.image_urls = [data.image_url]
       if (!data.pairing_foods) data.pairing_foods = []
       if (data.pairing_foods.length === 0 && data.pairing_food) data.pairing_foods = [data.pairing_food]
+      
+      // [추가] wine_type이 없으면 빈 문자열로 초기화 (수정 폼 핸들링 용이)
+      if (!data.wine_type) data.wine_type = ''
 
       setLiquor(data)
       if (!silent) setEditData(data)
@@ -76,7 +91,14 @@ function LiquorDetailPage() {
   }
 
   const handleSave = async () => {
-    const cleanData = { ...editData, image_urls: editData.image_urls.filter(s => s.trim() !== ''), pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '') }
+    const cleanData = { 
+      ...editData, 
+      // 와인이 아니면 wine_type 제거 혹은 null
+      wine_type: editData.category === 'WINE' ? editData.wine_type : null,
+      image_urls: editData.image_urls.filter(s => s.trim() !== ''), 
+      pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '') 
+    }
+    
     try {
       await apiClient.put(`/liquor/${id}`, cleanData)
       alert('수정되었습니다')
@@ -92,8 +114,15 @@ function LiquorDetailPage() {
   const prevImage = () => { if (liquor.image_urls.length > 1) setCurrentImageIndex((prev) => (prev - 1 + liquor.image_urls.length) % liquor.image_urls.length) }
 
   if (!liquor) return <div>Loading...</div>
+
+  // [표시용] 코드값 -> 이름 변환
   const categoryName = categories.find(c => c.code_id === liquor.category)?.code_name || liquor.category
+  const wineTypeName = wineTypes.find(c => c.code_id === liquor.wine_type)?.code_name || liquor.wine_type
+  
   const aiNote = liquor.ai_note || { status: 'PENDING' };
+  
+  // [수정 모드용] 현재 카테고리가 와인인지 확인
+  const isEditingWine = editData.category === 'WINE';
 
   return (
     <div className="content-box">
@@ -124,12 +153,13 @@ function LiquorDetailPage() {
         .rating-score { font-size: 28px; font-weight: 800; color: #26DCD6; }
         .input-row { display: flex; gap: 8px; margin-bottom: 6px; }
         .food-tag { display: inline-block; background: #fff0f0; color: #d6336c; padding: 6px 12px; border-radius: 20px; margin-right: 8px; margin-bottom: 8px; font-weight: 600; }
+        
+        .wine-badge { background: #6c5ce7; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; vertical-align: middle; }
 
         .ai-section { margin-top: 40px; border-top: 3px dashed #eee; padding-top: 40px; animation: fadeIn 0.8s; }
         .ai-card { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-radius: 16px; padding: 30px; margin-top: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #fff; }
         .ai-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #2d3436; }
         
-        /* [수정] 2열 고정 그리드 */
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
         @media (max-width: 768px) { .ai-grid { grid-template-columns: 1fr; } }
         
@@ -175,16 +205,41 @@ function LiquorDetailPage() {
             <span className="label">주류명</span>
             {isEditing ? <div className="value"><input name="name" value={editData.name} onChange={handleChange} style={{fontSize:'20px', fontWeight:'bold'}} /></div> : <h1 style={{margin:0, fontSize:'28px', color:'#2d3436'}}>{liquor.name}</h1>}
           </div>
+          
           <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
             <div className="info-row">
               <span className="label">종류</span>
-              {isEditing ? ( <div className="value"><select name="category" value={editData.category} onChange={handleChange}>{categories.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}</select></div> ) : <div className="value" style={{fontSize:'18px'}}>{categoryName}</div>}
+              {isEditing ? ( 
+                <div className="value" style={{display:'flex', gap:'5px'}}>
+                    <select name="category" value={editData.category} onChange={handleChange} style={{flex:1}}>
+                        {categories.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
+                    </select>
+                    
+                    {/* [수정모드] 와인일 경우 상세 선택 박스 표시 */}
+                    {isEditingWine && (
+                        <select name="wine_type" value={editData.wine_type} onChange={handleChange} style={{flex:1}}>
+                            <option value="">-- 타입 --</option>
+                            {wineTypes.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
+                        </select>
+                    )}
+                </div> 
+              ) : ( 
+                  <div className="value" style={{fontSize:'18px'}}>
+                      {categoryName}
+                      {/* [조회모드] 와인 상세 정보가 있으면 뱃지로 표시 */}
+                      {liquor.category === 'WINE' && wineTypeName && (
+                          <span className="wine-badge">{wineTypeName}</span>
+                      )}
+                  </div>
+              )}
             </div>
+            
             <div className="info-row">
               <span className="label">가격</span>
               {isEditing ? <div className="value"><input type="number" name="price" value={editData.price} onChange={handleChange} /></div> : <div className="value" style={{fontSize:'18px', fontWeight:'bold', color:'#0984e3'}}>{liquor.price ? `${liquor.price.toLocaleString()}원` : '-'}</div>}
             </div>
           </div>
+          
           <div className="info-row">
             <span className="label">구매처</span>
             {isEditing ? <div className="value"><input name="purchase_place" value={editData.purchase_place} onChange={handleChange} /></div> : <div className="value">{liquor.purchase_place || '-'}</div>}
@@ -202,6 +257,7 @@ function LiquorDetailPage() {
               </div>
             ) : ( <div className="value"> {liquor.pairing_foods.length > 0 ? liquor.pairing_foods.map((f, i) => <span key={i} className="food-tag">🍽️ {f}</span>) : <span style={{color:'#ccc'}}>정보 없음</span>} </div> )}
           </div>
+          
           <div className="rating-box">
             <div>
               <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'8px'}}> <span style={{fontWeight:'bold'}}>👨 남편</span> {isEditing ? <input type="number" name="rating_husband" value={editData.rating_husband} onChange={handleChange} step="0.5" style={{width:'80px'}} /> : <span className="rating-score">{liquor.rating_husband}</span>} </div>
@@ -212,6 +268,7 @@ function LiquorDetailPage() {
               {isEditing ? <textarea name="comment_wife" value={editData.comment_wife} onChange={handleChange} rows={3} style={{width:'100%'}} /> : <p style={{color:'#555', lineHeight:'1.6', margin:0}}>{liquor.comment_wife || <span style={{color:'#ccc'}}>코멘트 없음</span>}</p>}
             </div>
           </div>
+          
           {isEditing && (
             <div className="info-row" style={{marginTop:'20px'}}> <span className="label">이미지 URL 관리</span> {editData.image_urls.map((url, i) => ( <div key={i} className="input-row"> <input value={url} onChange={e => handleImageChange(i, e.target.value)} placeholder="URL" /> <button className="btn btn-danger" onClick={() => removeImageField(i)}>X</button> </div> ))} <button className="btn" onClick={addImageField}>+ 이미지 추가</button> </div>
           )}

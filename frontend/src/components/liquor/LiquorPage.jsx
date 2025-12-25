@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import apiClient from '../../api'; 
 
 function LiquorPage() {
   const [liquors, setLiquors] = useState([])
   const [categories, setCategories] = useState([])
+  const [wineTypes, setWineTypes] = useState([])
   const navigate = useNavigate()
   
   // ★ 상세 필터 State
   const [filters, setFilters] = useState({
     name: '',
     category: '',
+    wine_type: '', // 기존에 선언되어 있음
     purchase_place: '',
     pairing_food: '',
     comment: '',
@@ -30,6 +31,7 @@ function LiquorPage() {
 
   useEffect(() => {
     fetchCategories()
+    fetchWineTypes()
     fetchLiquors()
   }, [])
 
@@ -37,6 +39,14 @@ function LiquorPage() {
     try {
       const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
+    } catch (err) { console.error(err) }
+  }
+
+  // [기존 코드에 있던 함수 활용] 와인 상세 코드 가져오기
+  const fetchWineTypes = async () => {
+    try {
+      const res = await apiClient.get('/code/group/WINE_C')
+      setWineTypes(res.data)
     } catch (err) { console.error(err) }
   }
 
@@ -68,7 +78,7 @@ function LiquorPage() {
   
   const handleReset = () => {
     const empty = {
-      name: '', category: '', purchase_place: '', pairing_food: '', comment: '',
+      name: '', category: '', wine_type: '', purchase_place: '', pairing_food: '', comment: '',
       min_price: '', max_price: '', start_date: '', end_date: '',
       min_rating_husband: '', max_rating_husband: '', min_rating_wife: '', max_rating_wife: ''
     }
@@ -140,10 +150,22 @@ function LiquorPage() {
                 {categories.map(c => <option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
               </select>
             </div>
+            
+            {/* [추가된 부분] 와인 상세 종류 */}
+            <div className="filter-item">
+              <span className="filter-label">와인 상세</span>
+              <select name="wine_type" value={filters.wine_type} onChange={handleChange} className="filter-input">
+                <option value="">전체</option>
+                {wineTypes.map(c => <option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
+              </select>
+            </div>
+
             <div className="filter-item">
               <span className="filter-label">구매처</span>
               <input name="purchase_place" value={filters.purchase_place} onChange={handleChange} className="filter-input" placeholder="구매처" />
             </div>
+            
+            {/* 순서가 밀림에 따라 배치 */}
             <div className="filter-item">
               <span className="filter-label">함께한 음식</span>
               <input name="pairing_food" value={filters.pairing_food} onChange={handleChange} className="filter-input" placeholder="치즈, 삼겹살..." />

@@ -6,9 +6,11 @@ import apiClient from '../../api';
 function LiquorInsertPage() {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
+  const [wineTypes, setWineTypes] = useState([])
   const [formData, setFormData] = useState({
     name: '',
     category: '',
+    wine_type: '', // [추가]
     purchase_place: '',
     pairing_foods: [''],   // ★ 음식 여러 개
     image_urls: [''],      // ★ 이미지 여러 개
@@ -22,6 +24,7 @@ function LiquorInsertPage() {
 
   useEffect(() => {
     fetchCategories()
+    fetchWineTypes() // [추가]
   }, [])
 
   const fetchCategories = async () => {
@@ -29,10 +32,21 @@ function LiquorInsertPage() {
       const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
       if (res.data.length > 0) {
+        // 초기 카테고리가 없으면 첫번째 값으로 세팅
         setFormData(prev => ({ ...prev, category: res.data[0].code_id }))
       }
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  // [추가] 와인 세부 종류 코드 가져오기
+  const fetchWineTypes = async () => {
+    try {
+      const res = await apiClient.get('/code/group/WINE_C')
+      setWineTypes(res.data)
+    } catch (err) {
+      console.error("WINE_C 코드 로드 실패", err)
     }
   }
 
@@ -68,6 +82,8 @@ function LiquorInsertPage() {
   const handleSubmit = async () => {
     const cleanData = {
       ...formData,
+      // 카테고리가 와인이 아니면 wine_type은 null 처리
+      wine_type: formData.category === 'WINE' ? formData.wine_type : null, 
       image_urls: formData.image_urls.filter(s => s.trim() !== ''),
       pairing_foods: formData.pairing_foods.filter(s => s.trim() !== '')
     }
@@ -86,6 +102,9 @@ function LiquorInsertPage() {
       alert('등록 실패')
     }
   }
+
+  // [중요] 렌더링 시 와인 여부 판단을 위한 변수
+  const isWine = formData.category === 'WINE';
 
   return (
     <div className="content-box">
@@ -120,13 +139,27 @@ function LiquorInsertPage() {
           <label>주류명 *</label>
           <input name="name" value={formData.name} onChange={handleChange} placeholder="예: 샤또 마고 2015" />
         </div>
+        
         <div className="form-group">
           <label>종류 *</label>
-          <select name="category" value={formData.category} onChange={handleChange}>
-            {categories.map(cat => (
-              <option key={cat.code_id} value={cat.code_id}>{cat.code_name}</option>
-            ))}
-          </select>
+          {/* 두 셀렉트 박스를 나란히 놓기 위해 flex 컨테이너 적용 */}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <select name="category" value={formData.category} onChange={handleChange} style={{ flex: 1 }}>
+              {categories.map(cat => (
+                <option key={cat.code_id} value={cat.code_id}>{cat.code_name}</option>
+              ))}
+            </select>
+            
+            {/* [추가] 와인일 경우 세부 종류 선택 */}
+            {isWine && (
+              <select name="wine_type" value={formData.wine_type} onChange={handleChange} style={{ flex: 1 }}>
+                <option value="">-- 와인 종류 --</option>
+                {wineTypes.map(type => (
+                  <option key={type.code_id} value={type.code_id}>{type.code_name}</option>
+                ))}
+              </select>
+            )}
+          </div>
         </div>
       </div>
 
