@@ -6,23 +6,20 @@ function LiquorDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   
-  // 상태 관리
   const [liquor, setLiquor] = useState(null)
   const [categories, setCategories] = useState([])
-  const [wineTypes, setWineTypes] = useState([]) // [추가] 와인 상세 코드
+  const [wineTypes, setWineTypes] = useState([]) // WINE_C 코드 목록
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  // 수정 모드 상태
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState({})
 
-  // 데이터 불러오기
   useEffect(() => {
     fetchCategories()
-    fetchWineTypes() // [추가]
+    fetchWineTypes()
     fetchLiquor()
     
-    // 5초마다 데이터 갱신 (AI 분석 대기중일 때)
+    // AI 분석 상태 폴링 (5초)
     const interval = setInterval(() => {
         setLiquor(prev => {
             if (prev && prev.ai_note && prev.ai_note.status === 'PENDING') {
@@ -31,74 +28,51 @@ function LiquorDetailPage() {
             return prev
         })
     }, 5000)
-    
     return () => clearInterval(interval)
   }, [id])
 
-  const fetchCategories = async () => {
-    try {
-      const res = await apiClient.get('/code/group/SUL')
-      setCategories(res.data)
-    } catch (err) { console.error(err) }
-  }
-
-  // [추가] 와인 상세 코드 로드
-  const fetchWineTypes = async () => {
-    try {
-      const res = await apiClient.get('/code/group/WINE_C')
-      setWineTypes(res.data)
-    } catch (err) { console.error(err) }
-  }
+  const fetchCategories = async () => { try { const res = await apiClient.get('/code/group/SUL'); setCategories(res.data) } catch (err) { console.error(err) } }
+  const fetchWineTypes = async () => { try { const res = await apiClient.get('/code/group/WINE_C'); setWineTypes(res.data) } catch (err) { console.error(err) } }
 
   const fetchLiquor = async (silent = false) => {
     try {
       const res = await apiClient.get(`/liquor/${id}`)
       let data = res.data
       
-      // 데이터 정제
+      // 데이터 안전 처리
       if (!data.image_urls) data.image_urls = []
       if (data.image_urls.length === 0 && data.image_url) data.image_urls = [data.image_url]
       if (!data.pairing_foods) data.pairing_foods = []
       if (data.pairing_foods.length === 0 && data.pairing_food) data.pairing_foods = [data.pairing_food]
-      
-      // [추가] wine_type이 없으면 빈 문자열로 초기화 (수정 폼 핸들링 용이)
-      if (!data.wine_type) data.wine_type = ''
+      if (!data.wine_type) data.wine_type = '' // 없으면 빈값
 
       setLiquor(data)
       if (!silent) setEditData(data)
     } catch (err) { console.error(err) }
   }
 
-  // --- 버튼 및 입력 핸들러 ---
+  // --- 핸들러 ---
   const handleEdit = () => setIsEditing(true)
   const handleCancel = () => { setEditData(liquor); setIsEditing(false); }
   const handleChange = (e) => { setEditData({ ...editData, [e.target.name]: e.target.value }) }
-
-  const handleImageChange = (index, value) => {
-    const newImages = [...editData.image_urls]; newImages[index] = value; setEditData({ ...editData, image_urls: newImages })
-  }
+  const handleImageChange = (index, value) => { const newImages = [...editData.image_urls]; newImages[index] = value; setEditData({ ...editData, image_urls: newImages }) }
   const addImageField = () => setEditData({ ...editData, image_urls: [...editData.image_urls, ''] })
-  const removeImageField = (index) => {
-    const newImages = editData.image_urls.filter((_, i) => i !== index); setEditData({ ...editData, image_urls: newImages })
-  }
-
-  const handleFoodChange = (index, value) => {
-    const newFoods = [...editData.pairing_foods]; newFoods[index] = value; setEditData({ ...editData, pairing_foods: newFoods })
-  }
+  const removeImageField = (index) => { const newImages = editData.image_urls.filter((_, i) => i !== index); setEditData({ ...editData, image_urls: newImages }) }
+  const handleFoodChange = (index, value) => { const newFoods = [...editData.pairing_foods]; newFoods[index] = value; setEditData({ ...editData, pairing_foods: newFoods }) }
   const addFoodField = () => setEditData({ ...editData, pairing_foods: [...editData.pairing_foods, ''] })
-  const removeFoodField = (index) => {
-    const newFoods = editData.pairing_foods.filter((_, i) => i !== index); setEditData({ ...editData, pairing_foods: newFoods })
-  }
+  const removeFoodField = (index) => { const newFoods = editData.pairing_foods.filter((_, i) => i !== index); setEditData({ ...editData, pairing_foods: newFoods }) }
+
+  // [수정] SUL_W 체크
+  const isEditingWine = editData.category === 'SUL_W';
 
   const handleSave = async () => {
     const cleanData = { 
       ...editData, 
-      // 와인이 아니면 wine_type 제거 혹은 null
-      wine_type: editData.category === 'WINE' ? editData.wine_type : null,
+      // SUL_W가 아니면 null, 맞으면 선택값 저장
+      wine_type: isEditingWine ? editData.wine_type : null, 
       image_urls: editData.image_urls.filter(s => s.trim() !== ''), 
       pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '') 
     }
-    
     try {
       await apiClient.put(`/liquor/${id}`, cleanData)
       alert('수정되었습니다')
@@ -115,27 +89,23 @@ function LiquorDetailPage() {
 
   if (!liquor) return <div>Loading...</div>
 
-  // [표시용] 코드값 -> 이름 변환
+  // [표시용] 코드 -> 텍스트 변환
   const categoryName = categories.find(c => c.code_id === liquor.category)?.code_name || liquor.category
   const wineTypeName = wineTypes.find(c => c.code_id === liquor.wine_type)?.code_name || liquor.wine_type
   
   const aiNote = liquor.ai_note || { status: 'PENDING' };
   
-  // [수정 모드용] 현재 카테고리가 와인인지 확인
-  const isEditingWine = editData.category === 'WINE';
-
   return (
     <div className="content-box">
       <style>{`
+        /* 스타일 (기존 유지) */
         .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; background:white; font-weight: 600; margin-left: 8px; }
         .btn-primary { background: #26DCD6; color: white; border: none; }
         .btn-danger { background: #ff4d4f; color: white; border: none; }
-        
         .layout { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 50px; }
         .left-col { flex: 1; min-width: 320px; max-width: 500px; }
         .right-col { flex: 1.5; min-width: 320px; }
-        
         .slider-container { position: relative; width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .main-image { width: 100%; height: 100%; object-fit: contain; }
         .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: background 0.2s; user-select: none; }
@@ -144,7 +114,6 @@ function LiquorDetailPage() {
         .thumbnail-list { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 5px; }
         .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid transparent; opacity: 0.5; transition: all 0.2s; }
         .thumb.active { border-color: #26DCD6; opacity: 1; transform: scale(1.05); }
-        
         .info-row { margin-bottom: 16px; }
         .label { display: block; font-size: 13px; color: #888; font-weight: 600; margin-bottom: 6px; }
         .value { font-size: 16px; color: #333; }
@@ -154,19 +123,16 @@ function LiquorDetailPage() {
         .input-row { display: flex; gap: 8px; margin-bottom: 6px; }
         .food-tag { display: inline-block; background: #fff0f0; color: #d6336c; padding: 6px 12px; border-radius: 20px; margin-right: 8px; margin-bottom: 8px; font-weight: 600; }
         
-        .wine-badge { background: #6c5ce7; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; vertical-align: middle; }
+        .wine-badge { background: #6c5ce7; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; vertical-align: middle; font-weight: bold; }
 
         .ai-section { margin-top: 40px; border-top: 3px dashed #eee; padding-top: 40px; animation: fadeIn 0.8s; }
         .ai-card { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-radius: 16px; padding: 30px; margin-top: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #fff; }
         .ai-title { font-size: 22px; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #2d3436; }
-        
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; }
         @media (max-width: 768px) { .ai-grid { grid-template-columns: 1fr; } }
-        
         .ai-item { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #eee; transition: transform 0.2s; height: 100%; }
         .ai-item:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
         .ai-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: #6c5ce7; animation: spin 1s ease-in-out infinite; }
@@ -210,24 +176,25 @@ function LiquorDetailPage() {
             <div className="info-row">
               <span className="label">종류</span>
               {isEditing ? ( 
-                <div className="value" style={{display:'flex', gap:'5px'}}>
-                    <select name="category" value={editData.category} onChange={handleChange} style={{flex:1}}>
-                        {categories.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
-                    </select>
-                    
-                    {/* [수정모드] 와인일 경우 상세 선택 박스 표시 */}
-                    {isEditingWine && (
-                        <select name="wine_type" value={editData.wine_type} onChange={handleChange} style={{flex:1}}>
-                            <option value="">-- 타입 --</option>
-                            {wineTypes.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
-                        </select>
-                    )}
-                </div> 
+                  <div className="value" style={{display:'flex', gap:'5px'}}>
+                      {/* 1. 대분류 선택 */}
+                      <select name="category" value={editData.category} onChange={handleChange} style={{flex:1}}>
+                          {categories.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
+                      </select>
+                      
+                      {/* 2. SUL_W 일 때만 WINE_C 선택 */}
+                      {isEditingWine && (
+                          <select name="wine_type" value={editData.wine_type} onChange={handleChange} style={{flex:1, border:'2px solid #26DCD6', background:'#f0fffe'}}>
+                              <option value="">-- 와인 종류 선택 --</option>
+                              {wineTypes.map(c=><option key={c.code_id} value={c.code_id}>{c.code_name}</option>)}
+                          </select>
+                      )}
+                  </div> 
               ) : ( 
                   <div className="value" style={{fontSize:'18px'}}>
                       {categoryName}
-                      {/* [조회모드] 와인 상세 정보가 있으면 뱃지로 표시 */}
-                      {liquor.category === 'WINE' && wineTypeName && (
+                      {/* [조회모드] SUL_W 일 경우 뱃지 표시 */}
+                      {liquor.category === 'SUL_W' && wineTypeName && (
                           <span className="wine-badge">{wineTypeName}</span>
                       )}
                   </div>

@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import apiClient from '../../api'; 
 
 function LiquorInsertPage() {
   const navigate = useNavigate()
-  const [categories, setCategories] = useState([])
-  const [wineTypes, setWineTypes] = useState([])
+  
+  // 상태 관리
+  const [categories, setCategories] = useState([]) 
+  const [wineTypes, setWineTypes] = useState([])   
+  
   const [formData, setFormData] = useState({
     name: '',
-    category: '',
-    wine_type: '', // [추가]
+    category: '',     
+    wine_type: '',    
     purchase_place: '',
-    pairing_foods: [''],   // ★ 음식 여러 개
-    image_urls: [''],      // ★ 이미지 여러 개
+    pairing_foods: [''],
+    image_urls: [''],
     rating_husband: 0,
     rating_wife: 0,
     comment_husband: '',
@@ -24,30 +26,27 @@ function LiquorInsertPage() {
 
   useEffect(() => {
     fetchCategories()
-    fetchWineTypes() // [추가]
+    fetchWineTypes() 
   }, [])
 
+  // 1. 대분류 코드 (SUL) 가져오기
   const fetchCategories = async () => {
     try {
       const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
-      if (res.data.length > 0) {
-        // 초기 카테고리가 없으면 첫번째 값으로 세팅
+      // 초기값이 없으면 첫 번째 항목 선택
+      if (res.data.length > 0 && !formData.category) {
         setFormData(prev => ({ ...prev, category: res.data[0].code_id }))
       }
-    } catch (err) {
-      console.error(err)
-    }
+    } catch (err) { console.error(err) }
   }
 
-  // [추가] 와인 세부 종류 코드 가져오기
+  // 2. 와인 상세 코드 (WINE_C) 가져오기
   const fetchWineTypes = async () => {
     try {
       const res = await apiClient.get('/code/group/WINE_C')
       setWineTypes(res.data)
-    } catch (err) {
-      console.error("WINE_C 코드 로드 실패", err)
-    }
+    } catch (err) { console.error(err) }
   }
 
   const handleChange = (e) => {
@@ -55,35 +54,31 @@ function LiquorInsertPage() {
     setFormData({ ...formData, [name]: value })
   }
 
-  // --- 이미지 핸들러 ---
+  // --- 이미지/음식 핸들러 ---
   const handleImageChange = (index, value) => {
-    const newImages = [...formData.image_urls]
-    newImages[index] = value
-    setFormData({ ...formData, image_urls: newImages })
+    const newImages = [...formData.image_urls]; newImages[index] = value; setFormData({ ...formData, image_urls: newImages })
   }
   const addImageField = () => setFormData({ ...formData, image_urls: [...formData.image_urls, ''] })
   const removeImageField = (index) => {
-    const newImages = formData.image_urls.filter((_, i) => i !== index)
-    setFormData({ ...formData, image_urls: newImages })
+    const newImages = formData.image_urls.filter((_, i) => i !== index); setFormData({ ...formData, image_urls: newImages })
   }
 
-  // --- 음식 핸들러 ---
   const handleFoodChange = (index, value) => {
-    const newFoods = [...formData.pairing_foods]
-    newFoods[index] = value
-    setFormData({ ...formData, pairing_foods: newFoods })
+    const newFoods = [...formData.pairing_foods]; newFoods[index] = value; setFormData({ ...formData, pairing_foods: newFoods })
   }
   const addFoodField = () => setFormData({ ...formData, pairing_foods: [...formData.pairing_foods, ''] })
   const removeFoodField = (index) => {
-    const newFoods = formData.pairing_foods.filter((_, i) => i !== index)
-    setFormData({ ...formData, pairing_foods: newFoods })
+    const newFoods = formData.pairing_foods.filter((_, i) => i !== index); setFormData({ ...formData, pairing_foods: newFoods })
   }
 
+  // [수정] 정확한 와인 코드(SUL_W) 체크
+  const isWine = formData.category === 'SUL_W';
+
   const handleSubmit = async () => {
+    // SUL_W가 아닐 경우 wine_type을 null로 초기화하여 전송
     const cleanData = {
       ...formData,
-      // 카테고리가 와인이 아니면 wine_type은 null 처리
-      wine_type: formData.category === 'WINE' ? formData.wine_type : null, 
+      wine_type: isWine ? formData.wine_type : null,
       image_urls: formData.image_urls.filter(s => s.trim() !== ''),
       pairing_foods: formData.pairing_foods.filter(s => s.trim() !== '')
     }
@@ -103,9 +98,6 @@ function LiquorInsertPage() {
     }
   }
 
-  // [중요] 렌더링 시 와인 여부 판단을 위한 변수
-  const isWine = formData.category === 'WINE';
-
   return (
     <div className="content-box">
       <style>{`
@@ -116,12 +108,9 @@ function LiquorInsertPage() {
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .form-group textarea { min-height: 100px; resize: vertical; }
-        
         .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
         .btn-add-sub { background: #f9f9f9; border: 1px dashed #aaa; width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; color: #666; font-size: 13px; }
         .btn-del { background: #ff4d4f; color: white; border: none; padding: 0 12px; border-radius: 6px; cursor: pointer; }
-        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
       `}</style>
@@ -141,19 +130,19 @@ function LiquorInsertPage() {
         </div>
         
         <div className="form-group">
-          <label>종류 *</label>
-          {/* 두 셀렉트 박스를 나란히 놓기 위해 flex 컨테이너 적용 */}
+          <label>종류</label>
           <div style={{ display: 'flex', gap: '8px' }}>
+            {/* 1. 대분류 선택 */}
             <select name="category" value={formData.category} onChange={handleChange} style={{ flex: 1 }}>
               {categories.map(cat => (
                 <option key={cat.code_id} value={cat.code_id}>{cat.code_name}</option>
               ))}
             </select>
             
-            {/* [추가] 와인일 경우 세부 종류 선택 */}
+            {/* 2. SUL_W 일 때만 보이는 상세 종류 선택 (WINE_C) */}
             {isWine && (
-              <select name="wine_type" value={formData.wine_type} onChange={handleChange} style={{ flex: 1 }}>
-                <option value="">-- 와인 종류 --</option>
+              <select name="wine_type" value={formData.wine_type} onChange={handleChange} style={{ flex: 1, border:'2px solid #26DCD6', background:'#f0fffe' }}>
+                <option value="">-- 와인 종류 선택 --</option>
                 {wineTypes.map(type => (
                   <option key={type.code_id} value={type.code_id}>{type.code_name}</option>
                 ))}
@@ -193,24 +182,24 @@ function LiquorInsertPage() {
 
       <div className="grid-2">
         <div>
-          <div className="form-group">
+           <div className="form-group">
             <label>👨 남편 평점</label>
             <input type="number" name="rating_husband" value={formData.rating_husband} onChange={handleChange} step="0.5" min="0" max="5" />
-          </div>
-          <div className="form-group">
+           </div>
+           <div className="form-group">
             <label>👨 남편 코멘트</label>
             <textarea name="comment_husband" value={formData.comment_husband} onChange={handleChange}></textarea>
-          </div>
+           </div>
         </div>
         <div>
-          <div className="form-group">
+           <div className="form-group">
             <label>👩 아내 평점</label>
             <input type="number" name="rating_wife" value={formData.rating_wife} onChange={handleChange} step="0.5" min="0" max="5" />
-          </div>
-          <div className="form-group">
+           </div>
+           <div className="form-group">
             <label>👩 아내 코멘트</label>
             <textarea name="comment_wife" value={formData.comment_wife} onChange={handleChange}></textarea>
-          </div>
+           </div>
         </div>
       </div>
 
