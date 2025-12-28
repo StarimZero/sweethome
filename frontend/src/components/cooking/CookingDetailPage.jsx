@@ -85,11 +85,10 @@ function CookingDetailPage() {
           
           <h1 style={{ fontSize: '32px', margin: '20px 0 10px' }}>{recipe.name}</h1>
           <div style={{ color: '#888', marginBottom: '20px' }}>
-             {/* [수정] 난이도 대신 요리 종류 표시 */}
              요리사: {recipe.chef === 'husband' ? '👨‍💼 남편' : '👩‍💼 아내'} | 종류: {recipe.cooking_type}
           </div>
           
-          <p style={{ fontSize: '18px', lineHeight: '1.8', background: '#f8f9fa', padding: '20px', borderRadius: '10px' }}>
+          <p style={{ fontSize: '18px', lineHeight: '1.8', background: '#f8f9fa', padding: '20px', borderRadius: '10px', whiteSpace: 'pre-wrap'  }}>
             {recipe.description}
           </p>
 
