@@ -1,44 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../../api'
 
 function CookingDetailPage() {
-  const { id } = useParams(); // URL에서 id 가져오기
+  const { id } = useParams();
   const navigate = useNavigate();
   
   const [recipe, setRecipe] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드인지 여부
-  const [editData, setEditData] = useState({}); // 수정용 데이터
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({});
+  
+  // [추가] 수정 모드에서 사용할 공통 코드 목록
+  const [cookingCodes, setCookingCodes] = useState([]);
 
   // 1. 상세 데이터 가져오기
   useEffect(() => {
-    axios.apiClient(`/cooking/${id}`)
+    apiClient.get(`/cooking/${id}`)
       .then(res => {
         setRecipe(res.data);
         setEditData(res.data);
       })
       .catch(err => console.error(err));
+      
+    // [추가] 수정 시 선택할 코드 목록 미리 로드
+    apiClient.get('/code/group/COOKING')
+      .then(res => setCookingCodes(res.data))
+      .catch(err => console.error(err));
   }, [id]);
 
-  // 2. 삭제 처리
   const handleDelete = async () => {
     if(window.confirm("정말 삭제하시겠습니까?")) {
       await apiClient.delete(`/cooking/${id}`);
       alert("삭제되었습니다.");
-      navigate('/cooking'); // 목록으로 복귀
+      navigate('/cooking');
     }
   };
 
-  // 3. 수정 저장 처리
   const handleUpdate = async () => {
     await apiClient.put(`/cooking/${id}`, editData);
-    setRecipe(editData); // 화면 갱신
-    setIsEditing(false); // 수정 모드 종료
+    setRecipe(editData);
+    setIsEditing(false);
     alert("수정되었습니다!");
   };
 
-  // 4. 입력값 핸들러
   const handleChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
@@ -57,9 +61,16 @@ function CookingDetailPage() {
              <option value="husband">남편</option><option value="wife">아내</option>
           </select>
           <textarea name="description" value={editData.description} onChange={handleChange} style={{...inputStyle, minHeight:'100px'}} />
-          <select name="difficulty" value={editData.difficulty} onChange={handleChange} style={inputStyle}>
-             <option value="상">상</option><option value="중">중</option><option value="하">하</option>
+          
+          {/* [수정] 난이도 -> 요리 종류 (공통 코드 드롭다운) */}
+          <select name="cooking_type" value={editData.cooking_type} onChange={handleChange} style={inputStyle}>
+             {cookingCodes.map((code) => (
+                <option key={code.code_id} value={code.code_name}>
+                  {code.code_name}
+                </option>
+             ))}
           </select>
+
           <input name="image_url" value={editData.image_url} onChange={handleChange} style={inputStyle} />
           
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -74,7 +85,8 @@ function CookingDetailPage() {
           
           <h1 style={{ fontSize: '32px', margin: '20px 0 10px' }}>{recipe.name}</h1>
           <div style={{ color: '#888', marginBottom: '20px' }}>
-             요리사: {recipe.chef === 'husband' ? '👨‍💼 남편' : '👩‍💼 아내'} | 난이도: {recipe.difficulty}
+             {/* [수정] 난이도 대신 요리 종류 표시 */}
+             요리사: {recipe.chef === 'husband' ? '👨‍💼 남편' : '👩‍💼 아내'} | 종류: {recipe.cooking_type}
           </div>
           
           <p style={{ fontSize: '18px', lineHeight: '1.8', background: '#f8f9fa', padding: '20px', borderRadius: '10px' }}>
