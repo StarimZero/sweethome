@@ -1,0 +1,132 @@
+개발일지 - 
+ㅡㅡㅡ파이썬 세팅 ㅡㅡㅡ
+mkdir holango
+cd holango
+mkdir backend
+cd backend
+
+가상환경 생성 및 활성화
+py -3.14 -m venv venv
+# Windows:
+venv\Scripts\activate
+# 필수 패키지 설치 (FastAPI, Uvicorn, SQLAlchemy, Postgres 드라이버)
+pip install fastapi uvicorn[standard] sqlalchemy psycopg2-binary python-dotenv
+
+
+라우터 생성
+mkdir routers
+
+-> 여기에 여러 모듈넣을거임
+
+app.py생성
+- 라우터에있는 모듈들 실행할거임
+
+
+확인 - http://localhost:8000/api/example/hello
+
+
+ㅡㅡㅡ리액트 세팅 ㅡㅡㅡ
+1. node.js 설치(24.11.1)
+npm create vite@latest frontend -- --template react
+
+y - > no -> yes 
+
+2. 패키지 설치
+cd frontend
+npm install
+npm install axios
+
+
+
+3. frontend/src/App.jsx 수정
+
+
+4. py app.py  실행
+5. npm run dev
+6. http://localhost:5173 에서 확인
+
+
+7. npm install react-router-dom
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+ㅡㅡㅡdb세팅ㅡㅡㅡㅡ
+
+1. dbeaver 설치
+2. 플러그 모양 아이콘 (새 데이터베이스 연결)
+3. edit connect - show all database
+4. table생성
+5. backend/.env에 db설정 
+
+
+-> MongoDB로 변경
+
+pip install motor beanie
+https://www.mongodb.com/try/download/community
+설치 
+
+models폴더생성 - 
+
+
+ㅡㅡ요리 CRUDㅡㅡ
+1. backend 수정
+2. C 작성
+3. R 작성
+4. app.jsx에 연결
+
+
+ReviewDetailPage.jsx
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+새로운페이지 만들기:
+models에 등록 - init.py에 등록 - 라우터 만들기 -app.py에 등록 - frontend페이지 만들기 - 라우터 및 헤더 연결
+
+ㅡㅡ리뷰ㅡㅡ
+1. backend/models을 review.py를 정의한다.
+2. init.py에 등록한다.
+3. 라우터를 만든다.
+4. app.py에 등록한다.
+5. 앞단페이지를 만든다.
+6. 라우터 및 헤더연결한다.
+
+
+ㅡㅡ관리자ㅡㅡ
+1. models - system 에 정의한다.
+2. ini.py 수정
+3. 라우터등록
+4. app.py등록
+
+
+ㅡㅡ여행일정ㅡㅡ
+1. models에 travel.py를 정의한다. 
+2. init.py에 등록한다. 
+3. 라우터를 만든다. 
+4. app.py에 등록한다.
+5. 앞단페이지를 만든다.
+6. 라우터 및 헤더연걸한다. 
+
+
+ㅡㅡ주류리뷰ㅡㅡ
+1. models에 liquor.py를 정의한다.
+2. init.py에 등록한다.
+
+
+ㅡㅡ로그인ㅡㅡ(JWT)
+1.  설치
+passlib[bcrypt]
+pyjwt
+python-multipart
+
+2. User모델 생성
+
+
+ㅡㅡ와인AI추가ㅡㅡ
+1. pip install google-generativeai
+2. routers/ai.py 생성
+3. model 변경
+4. 프론트 변경
+5. api 키받아서 env에설정
+6. app.py에 설정
+
+
+

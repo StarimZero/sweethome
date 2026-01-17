@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
@@ -6,8 +7,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from models.user import User
 
-# 비밀키 설정 (배포 시에는 환경변수로 관리하는 것이 좋습니다)
-SECRET_KEY = "sweethome_secret_key_change_this" 
+# 비밀키 설정 (환경변수에서 가져옴)
+SECRET_KEY = os.getenv("SECRET_KEY", "sweethome_secret_key_dev_only") 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24시간
 

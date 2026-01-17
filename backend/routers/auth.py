@@ -5,17 +5,17 @@ from datetime import timedelta
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
-# 1. 회원가입 (최초 1회 관리자 생성용, 이후 주석 처리 권장)
-@router.post("/signup", response_model=User)
-async def signup(user_data: UserLogin):
-    user_exists = await User.find_one(User.username == user_data.username)
-    if user_exists:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    
-    hashed_password = get_password_hash(user_data.password)
-    new_user = User(username=user_data.username, password_hash=hashed_password)
-    await new_user.insert()
-    return new_user
+# 1. 회원가입 (보안상 비활성화 - 필요시 주석 해제)
+# @router.post("/signup", response_model=User)
+# async def signup(user_data: UserLogin):
+#     user_exists = await User.find_one(User.username == user_data.username)
+#     if user_exists:
+#         raise HTTPException(status_code=400, detail="Username already registered")
+#
+#     hashed_password = get_password_hash(user_data.password)
+#     new_user = User(username=user_data.username, password_hash=hashed_password)
+#     await new_user.insert()
+#     return new_user
 
 # 2. 로그인
 @router.post("/login", response_model=Token)
