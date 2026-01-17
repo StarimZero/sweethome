@@ -1,26 +1,82 @@
-# 🏡 SweetHome (스위트홈)
+# Holango
 
-**SweetHome**은 우리 가족의 소소한 일상과 취미를 기록하고 관리하는 웹 애플리케이션입니다.  
-요리 레시피, 술(Liquor) 컬렉션, 여행 기록, 그리고 다양한 리뷰를 한곳에서 관리할 수 있습니다.
+부부 라이프로그 웹 애플리케이션입니다.
 
-## ✨ 주요 기능 (Features)
+요리 레시피, 리뷰, 여행 기록, 주류 리뷰를 관리하고 AI 소믈리에 기능을 제공합니다.
 
-*   **🍳 Cooking (요리)**: 우리 집만의 레시피를 등록하고, 난이도와 셰프(남편/아내) 정보를 관리합니다.
-*   **🍷 Liquor (술)**: 보유 중인 술 리스트와 시음 노트를 기록합니다.
-*   **✈️ Travel (여행)**: 다녀온 여행지 정보와 추억을 저장합니다.
-*   **📝 Review (리뷰)**: 맛집, 제품 등 다양한 생활 리뷰를 남깁니다.
-*   **⚙️ System (시스템)**: 공통 코드 관리 등 시스템 설정을 위한 관리자 기능을 제공합니다.
+## 기술 스택
 
-## 🛠 기술 스택 (Tech Stack)
+- **Frontend**: React + Vite + SCSS
+- **Backend**: FastAPI + Beanie (MongoDB ODM)
+- **Database**: MongoDB
+- **AI**: Google Gemini API
 
-### Frontend
-*   **Core**: React (18+)
-*   **Routing**: React-Router-Dom
-*   **Styling**: CSS Modules / Standard CSS
-*   **Build Tool**: Vite (Recommended)
+## 설치 방법
 
-### Backend
-*   **Framework**: FastAPI (Python)
-*   **Database**: MongoDB
-*   **ODM**: Beanie (Asynchronous ODM for MongoDB)
+### 1. 저장소 클론
 
+```bash
+git clone <저장소 URL>
+cd holango
+```
+
+### 2. 백엔드 설정
+
+```bash
+cd backend
+
+# 가상환경 생성 및 활성화
+python -m venv venv
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate  # Mac/Linux
+
+# 패키지 설치
+pip install -r requirements.txt
+```
+
+### 3. 프론트엔드 설정
+
+```bash
+cd frontend
+npm install
+```
+
+### 4. 환경변수 설정
+
+`backend/.env` 파일 생성:
+
+```
+MONGODB_URL=mongodb://localhost:27017
+DB_NAME=sweethome
+SECRET_KEY=your_secret_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+## 실행 방법
+
+### 백엔드 서버
+
+```bash
+cd backend
+.\venv\Scripts\activate  # Windows
+python app.py
+```
+- API: http://127.0.0.1:8000
+- Swagger 문서: http://127.0.0.1:8000/docs
+
+### 프론트엔드 서버
+
+```bash
+cd frontend
+npm run dev
+```
+- 접속: http://localhost:5173
+
+## 빌드
+
+```bash
+cd frontend
+npm run build
+```
+
+빌드 결과물은 `frontend/dist/` 폴더에 생성됩니다.

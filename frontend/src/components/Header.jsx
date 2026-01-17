@@ -25,7 +25,9 @@ const Header = () => {
             <Link to="/liquor" className="nav-item">🍷 Liquor</Link>
             <Link to="/travel" className="nav-item">✈️ Travel</Link>
             <Link to="/review" className="nav-item">📝 Review</Link>
-            
+            <Link to="/bucket" className="nav-item">🎯 Bucket</Link>
+            <Link to="/diary" className="nav-item">💬 소곤소곤</Link>
+
             {/* 시스템 메뉴는 관리자만 보게 할 수도 있지만 일단 로그인 유저 전체에게 공개 */}
             <Link to="/system" className="nav-item">⚙️ System</Link>
 

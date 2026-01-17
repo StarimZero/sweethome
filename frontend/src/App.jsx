@@ -7,7 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CookingPage from './components/cooking/CookingPage'
 import CookingInsertPage from './components/cooking/CookingInsertPage'
 import CookingDetailPage from './components/cooking/CookingDetailPage'
-import './App.css' 
+import './App.scss' 
 // 리뷰 관련 3총사
 import ReviewPage from './components/review/ReviewPage'
 import ReviewInsertPage from './components/review/ReviewInsertPage'
@@ -24,6 +24,14 @@ import TravelDetailPage from './components/travel/TravelDetailPage'
 import LiquorPage from './components/liquor/LiquorPage'
 import LiquorInsertPage from './components/liquor/LiquorInsertPage'
 import LiquorDetailPage from './components/liquor/LiquorDetailPage'
+// 버킷리스트 3총사
+import BucketPage from './components/bucket/BucketPage'
+import BucketInsertPage from './components/bucket/BucketInsertPage'
+import BucketDetailPage from './components/bucket/BucketDetailPage'
+// 일기 3총사
+import DiaryPage from './components/diary/DiaryPage'
+import DiaryInsertPage from './components/diary/DiaryInsertPage'
+import DiaryDetailPage from './components/diary/DiaryDetailPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -63,6 +71,16 @@ function App() {
             <Route path="/liquor" element={<LiquorPage />} />
             <Route path="/liquor/new" element={<LiquorInsertPage />} />
             <Route path="/liquor/:id" element={<LiquorDetailPage />} />
+
+            {/* 버킷리스트 (Bucket) */}
+            <Route path="/bucket" element={<BucketPage />} />
+            <Route path="/bucket/new" element={<BucketInsertPage />} />
+            <Route path="/bucket/:id" element={<BucketDetailPage />} />
+
+            {/* 일기 (Diary) */}
+            <Route path="/diary" element={<DiaryPage />} />
+            <Route path="/diary/new" element={<DiaryInsertPage />} />
+            <Route path="/diary/:id" element={<DiaryDetailPage />} />
 
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>

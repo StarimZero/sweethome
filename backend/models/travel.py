@@ -33,6 +33,8 @@ class Travel(Document):
     
     title: str  # 여행 제목 (예: "2025 후쿠오카 겨울여행")
     destination: str  # 목적지 (예: "후쿠오카, 일본")
+    destination_lat: Optional[float] = None  # 목적지 위도 (지도 기본 위치)
+    destination_lng: Optional[float] = None  # 목적지 경도 (지도 기본 위치)
     start_date: str  # 출발일 (YYYY-MM-DD)
     end_date: str  # 종료일 (YYYY-MM-DD)
     days: int  # 여행 일수

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(dir:*)",
       "Bash(Get-ChildItem -Path \"C:\\\\holango\")",
-      "Bash(Format-Table Name, Mode)"
+      "Bash(Format-Table Name, Mode)",
+      "Bash(npm install:*)"
     ]
   }
 }
