@@ -7,5 +7,6 @@ from .liquor import LiquorReview
 from .user import User
 from .bucket import BucketList
 from .diary import Diary
+from .calendar import CalendarEvent
 
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent]

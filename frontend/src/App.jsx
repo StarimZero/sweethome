@@ -32,6 +32,10 @@ import BucketDetailPage from './components/bucket/BucketDetailPage'
 import DiaryPage from './components/diary/DiaryPage'
 import DiaryInsertPage from './components/diary/DiaryInsertPage'
 import DiaryDetailPage from './components/diary/DiaryDetailPage'
+// 캘린더 3총사
+import CalendarPage from './components/calendar/CalendarPage'
+import CalendarInsertPage from './components/calendar/CalendarInsertPage'
+import CalendarDetailPage from './components/calendar/CalendarDetailPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -81,6 +85,11 @@ function App() {
             <Route path="/diary" element={<DiaryPage />} />
             <Route path="/diary/new" element={<DiaryInsertPage />} />
             <Route path="/diary/:id" element={<DiaryDetailPage />} />
+
+            {/* 캘린더 (Calendar) */}
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/calendar/new" element={<CalendarInsertPage />} />
+            <Route path="/calendar/:id" element={<CalendarDetailPage />} />
 
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>

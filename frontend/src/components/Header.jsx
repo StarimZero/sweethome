@@ -45,6 +45,7 @@ const Header = () => {
             <Link to="/review" className="nav-item" onClick={closeMenu}>📝 Review</Link>
             <Link to="/bucket" className="nav-item" onClick={closeMenu}>🎯 Bucket</Link>
             <Link to="/diary" className="nav-item" onClick={closeMenu}>💬 소곤소곤</Link>
+            <Link to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</Link>
 
             {/* 시스템 메뉴는 관리자만 보게 할 수도 있지만 일단 로그인 유저 전체에게 공개 */}
             <Link to="/system" className="nav-item" onClick={closeMenu}>⚙️ System</Link>

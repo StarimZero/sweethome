@@ -11,7 +11,7 @@ from dotenv import load_dotenv  # [추가 1] 환경변수 로드 라이브러리
 # 라우터들
 from routers import dashboard, cooking, review
 from routers.system import common_code
-from routers import travel, liquor, bucket, diary
+from routers import travel, liquor, bucket, diary, calendar
 from models.user import User
 from routers import auth 
 
@@ -51,6 +51,7 @@ app.include_router(travel.router)
 app.include_router(liquor.router)
 app.include_router(bucket.router)
 app.include_router(diary.router)
+app.include_router(calendar.router)
 app.include_router(auth.router)
 
 # --- 프론트엔드 연결 ---

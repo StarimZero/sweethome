@@ -1,0 +1,697 @@
+// Calendar Page
+.calendar-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+    color: #333;
+  }
+
+  .subtitle {
+    color: #868e96;
+    margin-bottom: 24px;
+  }
+
+  // 월 네비게이션
+  .month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #dee2e6;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #495057;
+      transition: all 0.2s;
+
+      &:hover {
+        background: #f8f9fa;
+        border-color: #adb5bd;
+      }
+    }
+
+    .month-label {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333;
+      min-width: 150px;
+      text-align: center;
+    }
+  }
+
+  // 달력 그리드
+  .calendar-grid {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .weekday-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+
+    .weekday {
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.9rem;
+
+      &.sunday {
+        color: #ff6b6b;
+      }
+
+      &.saturday {
+        color: #4dabf7;
+      }
+    }
+  }
+
+  // 기간 이벤트 섹션 (달력 상단)
+  .range-events-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+    margin-bottom: 16px;
+
+    .range-events-header {
+      margin-bottom: 12px;
+
+      .range-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #495057;
+      }
+    }
+
+    .range-events-bars {
+      position: relative;
+    }
+
+    .range-bar-row {
+      position: relative;
+      height: 28px;
+      margin-bottom: 6px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .range-bar {
+      position: absolute;
+      height: 24px;
+      border-radius: 6px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 500;
+      overflow: hidden;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+
+      &:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      }
+
+      .bar-title {
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .bar-date {
+        font-size: 0.7rem;
+        opacity: 0.9;
+        white-space: nowrap;
+      }
+
+      .open-arrow {
+        margin-left: auto;
+        font-size: 1rem;
+        animation: blink 1.2s infinite;
+      }
+
+      &.open-end {
+        border-right: 4px dashed rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .range-dates-ruler {
+      position: relative;
+      height: 20px;
+      margin-top: 8px;
+      border-top: 1px solid #e9ecef;
+      padding-top: 4px;
+
+      .ruler-date {
+        position: absolute;
+        font-size: 0.7rem;
+        color: #868e96;
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .calendar-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    position: relative;
+  }
+
+  .day-cell {
+    min-height: 90px;
+    padding: 8px;
+    padding-top: 6px;
+    border-right: 1px solid #f1f3f5;
+    border-bottom: 1px solid #f1f3f5;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+
+    &:nth-child(7n) {
+      border-right: none;
+    }
+
+    &:hover {
+      background: #f8f9fa;
+    }
+
+    &.disabled {
+      background: #fafafa;
+      cursor: default;
+    }
+
+    &.today {
+      background: #e7f5ff;
+
+      .day-number {
+        background: #339af0;
+        color: #fff;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    &.selected {
+      background: #fff3bf;
+    }
+
+    .day-number {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #333;
+      display: inline-block;
+      min-width: 26px;
+      text-align: center;
+
+      &.sunday {
+        color: #ff6b6b;
+      }
+
+      &.saturday {
+        color: #4dabf7;
+      }
+    }
+
+    .holiday-name {
+      font-size: 0.65rem;
+      color: #ff6b6b;
+      font-weight: 500;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &.holiday {
+      background: #fff5f5;
+    }
+
+    .range-markers {
+      display: flex;
+      gap: 3px;
+      margin: 4px 0;
+
+      .range-marker {
+        width: 100%;
+        height: 4px;
+        border-radius: 2px;
+        opacity: 0.7;
+      }
+    }
+
+    .day-events {
+      margin-top: 4px;
+    }
+
+    .event-item {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      font-size: 0.75rem;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .badge-icon {
+        font-size: 0.6rem;
+        flex-shrink: 0;
+      }
+
+      .event-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .more-events {
+      font-size: 0.7rem;
+      color: #868e96;
+      padding-left: 4px;
+    }
+  }
+
+  // 선택된 날짜 패널
+  .selected-date-panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+    margin-bottom: 20px;
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+
+      h3 {
+        font-size: 1.1rem;
+        color: #333;
+        margin: 0;
+      }
+    }
+
+    .event-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .event-list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      .color-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .event-title {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .event-range {
+        color: #868e96;
+        font-size: 0.8rem;
+        margin-left: auto;
+      }
+
+      .event-memo {
+        color: #868e96;
+        font-size: 0.85rem;
+      }
+    }
+
+    .no-events {
+      color: #868e96;
+      text-align: center;
+      padding: 20px;
+    }
+  }
+
+  // 툴바
+  .toolbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .add-btn {
+    padding: 10px 20px;
+    background: #20c997;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #12b886;
+    }
+  }
+}
+
+// Insert & Detail Pages
+.calendar-insert-page,
+.calendar-detail-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    color: #333;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #868e96;
+  }
+}
+
+.calendar-form {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #20c997;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    &.checkbox-group {
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          cursor: pointer;
+        }
+
+        span {
+          font-weight: normal;
+        }
+      }
+
+      .hint {
+        margin-top: 6px;
+        font-size: 0.85rem;
+        color: #868e96;
+      }
+    }
+  }
+
+  .color-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    .color-btn {
+      width: 36px;
+      height: 36px;
+      border: 3px solid transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &.active {
+        border-color: #333;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+
+    .cancel-btn {
+      padding: 12px 24px;
+      background: #f1f3f5;
+      color: #495057;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #e9ecef;
+      }
+    }
+
+    .submit-btn {
+      padding: 12px 24px;
+      background: #20c997;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #12b886;
+      }
+    }
+  }
+}
+
+// Detail View
+.calendar-detail-page {
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    .color-indicator {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    h1 {
+      margin: 0;
+      flex: 1;
+    }
+
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+
+        &.yearly {
+          background: #e7f5ff;
+          color: #1971c2;
+        }
+
+        &.lunar {
+          background: #fff3bf;
+          color: #e67700;
+        }
+
+        &.range {
+          background: #d3f9d8;
+          color: #2f9e44;
+        }
+      }
+    }
+  }
+
+  .detail-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-bottom: 20px;
+
+    .detail-row {
+      margin-bottom: 16px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .label {
+        display: block;
+        font-size: 0.85rem;
+        color: #868e96;
+        margin-bottom: 4px;
+      }
+
+      .value {
+        font-size: 1rem;
+        color: #333;
+
+        &.memo {
+          white-space: pre-wrap;
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 12px;
+
+    .back-btn {
+      padding: 12px 24px;
+      background: #f1f3f5;
+      color: #495057;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #e9ecef;
+      }
+    }
+
+    .edit-btn {
+      padding: 12px 24px;
+      background: #4dabf7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #339af0;
+      }
+    }
+
+    .delete-btn {
+      padding: 12px 24px;
+      background: #ff6b6b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #fa5252;
+      }
+    }
+  }
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .calendar-page {
+    .day-cell {
+      min-height: 60px;
+      padding: 4px;
+
+      .event-item {
+        padding: 1px 3px;
+        font-size: 0.65rem;
+
+        .yearly-icon {
+          display: none;
+        }
+      }
+
+      .holiday-name {
+        font-size: 0.55rem;
+      }
+    }
+
+    .month-nav .month-label {
+      font-size: 1.1rem;
+    }
+  }
+}
