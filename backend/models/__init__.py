@@ -8,5 +8,6 @@ from .user import User
 from .bucket import BucketList
 from .diary import Diary
 from .calendar import CalendarEvent
+from .family import FamilyMember
 
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent, FamilyMember]

@@ -1,4 +1,5 @@
 // 일기 스타일
+@use 'sass:color';
 
 // 변수
 $primary-color: #6c5ce7;
@@ -111,7 +112,7 @@ $gray-border: #ddd;
     font-size: 0.9rem;
 
     &:hover {
-      background: darken($primary-color, 10%);
+      background: color.adjust($primary-color, $lightness: -10%);
     }
   }
 
@@ -254,12 +255,12 @@ $gray-border: #ddd;
 
   &.husband {
     background: rgba($husband-color, 0.2);
-    color: darken($husband-color, 20%);
+    color: color.adjust($husband-color, $lightness: -20%);
   }
 
   &.wife {
     background: rgba($wife-color, 0.2);
-    color: darken($wife-color, 20%);
+    color: color.adjust($wife-color, $lightness: -20%);
   }
 }
 

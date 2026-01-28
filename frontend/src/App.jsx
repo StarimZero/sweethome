@@ -36,6 +36,10 @@ import DiaryDetailPage from './components/diary/DiaryDetailPage'
 import CalendarPage from './components/calendar/CalendarPage'
 import CalendarInsertPage from './components/calendar/CalendarInsertPage'
 import CalendarDetailPage from './components/calendar/CalendarDetailPage'
+// 가계도 3총사
+import FamilyPage from './components/family/FamilyPage'
+import FamilyInsertPage from './components/family/FamilyInsertPage'
+import FamilyDetailPage from './components/family/FamilyDetailPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -90,6 +94,11 @@ function App() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/calendar/new" element={<CalendarInsertPage />} />
             <Route path="/calendar/:id" element={<CalendarDetailPage />} />
+
+            {/* 가계도 (Family) */}
+            <Route path="/family" element={<FamilyPage />} />
+            <Route path="/family/new" element={<FamilyInsertPage />} />
+            <Route path="/family/:id" element={<FamilyDetailPage />} />
 
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>
