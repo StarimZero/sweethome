@@ -66,17 +66,24 @@ function LiquorDetailPage() {
   const isEditingWine = editData.category === 'SUL_W';
 
   const handleSave = async () => {
-    const cleanData = { 
-      ...editData, 
+    const cleanData = {
+      ...editData,
       // SUL_W가 아니면 null, 맞으면 선택값 저장
-      wine_type: isEditingWine ? editData.wine_type : null, 
-      image_urls: editData.image_urls.filter(s => s.trim() !== ''), 
-      pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '') 
+      wine_type: isEditingWine ? editData.wine_type : null,
+      image_urls: editData.image_urls.filter(s => s.trim() !== ''),
+      pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '')
     }
     try {
-      await apiClient.put(`/liquor/${id}`, cleanData)
+      const res = await apiClient.put(`/liquor/${id}`, cleanData)
       alert('수정되었습니다')
-      setLiquor(cleanData); setEditData(cleanData); setIsEditing(false); setCurrentImageIndex(0); fetchLiquor()
+
+      // PUT 응답 데이터를 직접 사용 (이름 변경 시에만 AI PENDING 상태 반영)
+      let data = res.data
+      if (!data.image_urls) data.image_urls = []
+      if (!data.pairing_foods) data.pairing_foods = []
+      if (!data.wine_type) data.wine_type = ''
+
+      setLiquor(data); setEditData(data); setIsEditing(false); setCurrentImageIndex(0)
     } catch (err) { console.error(err) }
   }
 

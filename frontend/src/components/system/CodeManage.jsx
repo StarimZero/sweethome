@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import apiClient from '../../api'; 
+import apiClient from '../../api';
 
 function CodeManage() {
   const [codes, setCodes] = useState([]);
@@ -72,73 +72,99 @@ function CodeManage() {
   };
 
   return (
-    <div>
-      <h2 style={{ marginTop: 0 }}>🏷️ 공통 코드 관리</h2>
-      
+    <div className="code-manage">
+      <style>{`
+        .code-manage h2 { margin-top: 0; }
+        .code-form-box { background: #f1f3f5; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+        .code-form-box h4 { margin: 0 0 15px; }
+        .code-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .code-form input, .code-form select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; width: 100%; }
+        .code-form-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
+        .btn-submit { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; background: #20c997; color: white; }
+        .btn-cancel { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; background: #ccc; }
+        .code-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .code-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
+        .code-table thead tr { background: #eee; text-align: left; }
+        .code-table th { padding: 10px; border-bottom: 2px solid #ddd; white-space: nowrap; }
+        .code-table td { padding: 10px; }
+        .code-table tbody tr { border-bottom: 1px solid #f0f0f0; }
+        .badge-yn { padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+        .badge-y { background: #d3f9d8; color: #2b8a3e; }
+        .badge-n { background: #ffe3e3; color: #c92a2a; }
+        .btn-edit { margin-right: 5px; cursor: pointer; border: 1px solid #ccc; background: white; border-radius: 4px; }
+        .btn-del { cursor: pointer; border: 1px solid #ffc9c9; background: #fff5f5; color: #fa5252; border-radius: 4px; }
+
+        @media (max-width: 768px) {
+          .code-form-box { padding: 16px; margin-bottom: 20px; }
+          .code-form { grid-template-columns: 1fr; }
+          .code-table { font-size: 13px; }
+          .code-table th, .code-table td { padding: 8px 6px; }
+        }
+      `}</style>
+
+      <h2>🏷️ 공통 코드 관리</h2>
+
       {/* 입력 폼 */}
-      <div style={{ background: '#f1f3f5', padding: '20px', borderRadius: '10px', marginBottom: '30px' }}>
-        <h4 style={{ margin: '0 0 15px' }}>{isEditing ? '코드 수정' : '새 코드 등록'}</h4>
-        <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-          <input name="group_code" value={form.group_code} onChange={handleChange} placeholder="그룹코드 (예: FOOD)" required style={inputStyle} />
-          <input name="group_name" value={form.group_name} onChange={handleChange} placeholder="그룹명 (예: 음식종류)" required style={inputStyle} />
-          <input name="code_id" value={form.code_id} onChange={handleChange} placeholder="코드ID (예: KOREAN)" required style={inputStyle} />
-          <input name="code_name" value={form.code_name} onChange={handleChange} placeholder="코드명 (예: 한식)" required style={inputStyle} />
-          <input type="number" name="sort_order" value={form.sort_order} onChange={handleChange} placeholder="정렬순서" style={inputStyle} />
-          <select name="use_yn" value={form.use_yn} onChange={handleChange} style={inputStyle}>
+      <div className="code-form-box">
+        <h4>{isEditing ? '코드 수정' : '새 코드 등록'}</h4>
+        <form onSubmit={handleSubmit} className="code-form">
+          <input name="group_code" value={form.group_code} onChange={handleChange} placeholder="그룹코드 (예: FOOD)" required />
+          <input name="group_name" value={form.group_name} onChange={handleChange} placeholder="그룹명 (예: 음식종류)" required />
+          <input name="code_id" value={form.code_id} onChange={handleChange} placeholder="코드ID (예: KOREAN)" required />
+          <input name="code_name" value={form.code_name} onChange={handleChange} placeholder="코드명 (예: 한식)" required />
+          <input type="number" name="sort_order" value={form.sort_order} onChange={handleChange} placeholder="정렬순서" />
+          <select name="use_yn" value={form.use_yn} onChange={handleChange}>
             <option value="Y">사용(Y)</option>
             <option value="N">미사용(N)</option>
           </select>
-          
-          <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '10px' }}>
-            <button type="submit" style={{ ...btnBase, background: '#20c997', color: 'white' }}>
+
+          <div className="code-form-actions">
+            <button type="submit" className="btn-submit">
               {isEditing ? '수정 완료' : '등록'}
             </button>
-            {isEditing && <button type="button" onClick={resetForm} style={{ ...btnBase, background: '#ccc' }}>취소</button>}
+            {isEditing && <button type="button" onClick={resetForm} className="btn-cancel">취소</button>}
           </div>
         </form>
       </div>
 
       {/* 리스트 테이블 */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
-        <thead>
-          <tr style={{ background: '#eee', textAlign: 'left' }}>
-            <th style={thStyle}>그룹코드</th>
-            <th style={thStyle}>그룹명</th>
-            <th style={thStyle}>코드ID</th>
-            <th style={thStyle}>코드명</th>
-            <th style={thStyle}>정렬</th>
-            <th style={thStyle}>사용</th>
-            <th style={thStyle}>관리</th>
-          </tr>
-        </thead>
-        <tbody>
-          {codes.map((code) => (
-            <tr key={code._id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-              <td style={tdStyle}>{code.group_code}</td>
-              <td style={tdStyle}>{code.group_name}</td>
-              <td style={tdStyle}>{code.code_id}</td>
-              <td style={tdStyle}><strong>{code.code_name}</strong></td>
-              <td style={tdStyle}>{code.sort_order}</td>
-              <td style={tdStyle}>
-                <span style={{ padding: '2px 6px', borderRadius: '4px', background: code.use_yn === 'Y' ? '#d3f9d8' : '#ffe3e3', color: code.use_yn === 'Y' ? '#2b8a3e' : '#c92a2a', fontSize: '11px' }}>
-                  {code.use_yn}
-                </span>
-              </td>
-              <td style={tdStyle}>
-                <button onClick={() => handleEdit(code)} style={{ marginRight: '5px', cursor: 'pointer', border: '1px solid #ccc', background: 'white', borderRadius: '4px' }}>수정</button>
-                <button onClick={() => handleDelete(code._id)} style={{ cursor: 'pointer', border: '1px solid #ffc9c9', background: '#fff5f5', color: '#fa5252', borderRadius: '4px' }}>삭제</button>
-              </td>
+      <div className="code-table-wrap">
+        <table className="code-table">
+          <thead>
+            <tr>
+              <th>그룹코드</th>
+              <th>그룹명</th>
+              <th>코드ID</th>
+              <th>코드명</th>
+              <th>정렬</th>
+              <th>사용</th>
+              <th>관리</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {codes.map((code) => (
+              <tr key={code._id}>
+                <td>{code.group_code}</td>
+                <td>{code.group_name}</td>
+                <td>{code.code_id}</td>
+                <td><strong>{code.code_name}</strong></td>
+                <td>{code.sort_order}</td>
+                <td>
+                  <span className={`badge-yn ${code.use_yn === 'Y' ? 'badge-y' : 'badge-n'}`}>
+                    {code.use_yn}
+                  </span>
+                </td>
+                <td style={{whiteSpace:'nowrap'}}>
+                  <button className="btn-edit" onClick={() => handleEdit(code)}>수정</button>
+                  <button className="btn-del" onClick={() => handleDelete(code._id)}>삭제</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
-
-const inputStyle = { padding: '8px', border: '1px solid #ddd', borderRadius: '4px' };
-const btnBase = { padding: '8px 15px', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' };
-const thStyle = { padding: '10px', borderBottom: '2px solid #ddd' };
-const tdStyle = { padding: '10px' };
 
 export default CodeManage;

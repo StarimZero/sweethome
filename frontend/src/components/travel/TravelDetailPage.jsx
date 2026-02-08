@@ -324,6 +324,18 @@ function TravelDetailPage() {
         .btn-mini-add { background: #26DCD6; color: white; border: none; border-radius: 4px; width: 30px; cursor: pointer; }
         .btn-mini-del { background: none; border: none; cursor: pointer; font-size: 12px; color: #aaa; }
         .btn-mini-del:hover { color: red; }
+        .map-section { flex: 1; position: relative; }
+
+        @media (max-width: 768px) {
+          .detail-container { flex-direction: column; height: auto; min-height: calc(100vh - 60px); }
+          .timeline-section { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid #e0e0e0; max-height: none; }
+          .map-section { height: 50vh; min-height: 300px; }
+          .detail-header { padding: 20px 16px; }
+          .header-buttons { top: 12px; right: 12px; }
+          .day-tabs { padding: 0 16px; gap: 16px; }
+          .timeline-list { padding: 16px; }
+          .edit-add-area { flex-wrap: wrap; }
+        }
       `}</style>
 
       <div className="timeline-section">
@@ -523,7 +535,7 @@ function TravelDetailPage() {
         </div>
       </div>
 
-      <div style={{flex:1, position:'relative'}}>
+      <div className="map-section">
         {isLoaded ? (
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
