@@ -327,9 +327,9 @@ function TravelDetailPage() {
         .map-section { flex: 1; position: relative; }
 
         @media (max-width: 768px) {
-          .detail-container { flex-direction: column; height: auto; min-height: calc(100vh - 60px); }
-          .timeline-section { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid #e0e0e0; max-height: none; }
-          .map-section { height: 50vh; min-height: 300px; }
+          .detail-container { flex-direction: column; height: calc(100vh - 60px); overflow: hidden; }
+          .timeline-section { width: 100%; min-width: unset; border-right: none; border-bottom: 1px solid #e0e0e0; flex: 1; min-height: 0; overflow-y: auto; }
+          .map-section { flex: none; height: 40vh; min-height: 250px; order: -1; }
           .detail-header { padding: 20px 16px; }
           .header-buttons { top: 12px; right: 12px; }
           .day-tabs { padding: 0 16px; gap: 16px; }

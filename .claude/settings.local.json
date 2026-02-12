@@ -4,7 +4,9 @@
       "Bash(dir:*)",
       "Bash(Get-ChildItem -Path \"C:\\\\holango\")",
       "Bash(Format-Table Name, Mode)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(cmd /c \"cd /d C:\\\\holango\\\\frontend & npx vite build\")",
+      "Bash(powershell -Command \"Set-Location ''C:\\\\holango\\\\frontend''; npx vite build 2>&1\")"
     ]
   }
 }

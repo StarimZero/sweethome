@@ -3,16 +3,70 @@ import { useNavigate } from 'react-router-dom';
 import ReactFlow, {
   Background,
   Controls,
-  MarkerType
+  MarkerType,
+  Handle,
+  Position
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import apiClient from '../../api';
 
+// --- 모듈 레벨 상수 ---
+const btnS = {
+  padding: '1px 4px', border: '1px solid #ccc', borderRadius: '3px',
+  background: 'white', cursor: 'pointer', fontSize: '9px'
+};
+
+const handleStyle = { background: 'transparent', border: 'none', width: 6, height: 6 };
+
+// 커스텀 노드 (컴포넌트 외부 정의 - ReactFlow 필수)
+const FamilyNode = ({ data }) => {
+  const { member, openModalRef } = data;
+  const hasParent = !!member.parent_id;
+  const hasSpouse = !!member.spouse_id;
+
+  return (
+    <div style={{
+      padding: '8px',
+      border: `2px solid ${member.gender === 'male' ? '#4a90d9' : '#e91e63'}`,
+      borderRadius: '8px',
+      background: member.generation === 0 ? '#fff9db' : 'white',
+      textAlign: 'center',
+      minWidth: '70px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+    }}>
+      <Handle type="target" position={Position.Top} id="top" style={handleStyle} />
+      <Handle type="source" position={Position.Bottom} id="bottom" style={handleStyle} />
+      <Handle type="source" position={Position.Left} id="left-src" style={handleStyle} />
+      <Handle type="target" position={Position.Left} id="left-tgt" style={handleStyle} />
+      <Handle type="source" position={Position.Right} id="right-src" style={handleStyle} />
+      <Handle type="target" position={Position.Right} id="right-tgt" style={handleStyle} />
+
+      <div style={{ fontSize: '18px' }}>{member.gender === 'male' ? '👨' : '👩'}</div>
+      <div style={{ fontWeight: 'bold', fontSize: '10px' }}>{member.name}</div>
+      <div style={{ fontSize: '8px', color: '#666' }}>{member.relation_type}</div>
+      <div style={{ display: 'flex', gap: '2px', marginTop: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {!hasParent && (
+          <button onClick={(e) => { e.stopPropagation(); openModalRef.current('parent', member); }} style={btnS}>↑</button>
+        )}
+        {!hasSpouse && (
+          <button onClick={(e) => { e.stopPropagation(); openModalRef.current('spouse', member); }} style={{...btnS, color: '#e91e63'}}>♥</button>
+        )}
+        <button onClick={(e) => { e.stopPropagation(); openModalRef.current('sibling', member); }} style={btnS}>±</button>
+        <button onClick={(e) => { e.stopPropagation(); openModalRef.current('child', member); }} style={btnS}>↓</button>
+      </div>
+    </div>
+  );
+};
+
+const nodeTypes = { familyNode: FamilyNode };
+
+// --- 메인 컴포넌트 ---
 const FamilyTree = ({ members, onRefresh }) => {
   const navigate = useNavigate();
   const [addModal, setAddModal] = useState(null);
   const [newMember, setNewMember] = useState({ gender: 'male', relation_type: '' });
   const nameInputRef = useRef(null);
+  const openModalRef = useRef(null);
 
   // 헬퍼 함수
   const getMember = (id) => members.find(m => m._id === id);
@@ -64,6 +118,9 @@ const FamilyTree = ({ members, onRefresh }) => {
     setAddModal({ type, baseMember, side, generation: targetGen, options, ...extraData });
   };
 
+  // openModalRef를 통해 외부 FamilyNode에서 접근 (useMemo 의존성 제거)
+  openModalRef.current = openModal;
+
   const handleAdd = async () => {
     const name = nameInputRef.current?.value?.trim();
     if (!name) return alert('이름을 입력하세요');
@@ -98,131 +155,192 @@ const FamilyTree = ({ members, onRefresh }) => {
     }
   };
 
+  // 노드 클릭 → 상세 페이지 이동 (버튼 클릭 제외)
+  const onNodeClick = useCallback((event, node) => {
+    if (event.target.closest('button')) return;
+    navigate(`/family/${node.id}`);
+  }, [navigate]);
+
   // 노드/엣지 생성
   const { nodes, edges } = useMemo(() => {
-    const nodes = [];
-    const edges = [];
+    const nodeList = [];
+    const edgeList = [];
     const processedIds = new Set();
+    const nodePositions = {};
 
     const CENTER_X = 400;
     const CENTER_Y = 300;
-    const NODE_W = 80;
-    const NODE_H = 90;
-    const GAP_X = 120;
-    const GAP_Y = 140;
+    const GAP_X = 180;
+    const GAP_Y = 150;
+    const SPOUSE_OFFSET = 90;
 
-    // 노드 추가 함수
+    // 노드 추가
     const addNode = (member, x, y) => {
       if (!member || processedIds.has(member._id)) return;
       processedIds.add(member._id);
-
-      nodes.push({
+      nodePositions[member._id] = { x, y };
+      nodeList.push({
         id: member._id,
         type: 'familyNode',
         position: { x, y },
-        data: { member, openModal, navigate }
+        data: { member, openModalRef }
       });
     };
 
-    // 엣지 추가 함수
-    const addEdge = (sourceId, targetId, type = 'default') => {
-      if (!sourceId || !targetId) return;
-      const edgeId = `${sourceId}-${targetId}`;
-      if (edges.find(e => e.id === edgeId)) return;
-
-      edges.push({
+    // 부모-자녀 엣지 (세로: bottom → top)
+    const addParentChildEdge = (parentId, childId) => {
+      if (!parentId || !childId) return;
+      const edgeId = `pc-${parentId}-${childId}`;
+      if (edgeList.find(e => e.id === edgeId)) return;
+      edgeList.push({
         id: edgeId,
-        source: sourceId,
-        target: targetId,
+        source: parentId,
+        target: childId,
+        sourceHandle: 'bottom',
+        targetHandle: 'top',
         type: 'smoothstep',
-        style: { stroke: type === 'spouse' ? '#e91e63' : '#999', strokeWidth: 2 },
-        markerEnd: type === 'spouse' ? undefined : { type: MarkerType.Arrow }
+        style: { stroke: '#999', strokeWidth: 2 },
+        markerEnd: { type: MarkerType.Arrow }
       });
     };
 
-    // 가족 트리 구성 (한쪽)
+    // 배우자 엣지 (가로: right → left, 위치 기반 방향 결정)
+    const addSpouseEdge = (id1, id2) => {
+      if (!id1 || !id2) return;
+      const edgeId = `sp-${[id1, id2].sort().join('-')}`;
+      if (edgeList.find(e => e.id === edgeId)) return;
+
+      const pos1 = nodePositions[id1];
+      const pos2 = nodePositions[id2];
+      if (!pos1 || !pos2) return;
+
+      const [leftId, rightId] = pos1.x <= pos2.x ? [id1, id2] : [id2, id1];
+
+      edgeList.push({
+        id: edgeId,
+        source: leftId,
+        target: rightId,
+        sourceHandle: 'right-src',
+        targetHandle: 'left-tgt',
+        type: 'smoothstep',
+        style: { stroke: '#e91e63', strokeWidth: 2 }
+      });
+    };
+
+    // 한쪽 가족 트리 구성
     const buildFamilyBranch = (member, startX, startY, side) => {
       if (!member) return;
-
-      // 방향: 남편쪽은 왼쪽(-1), 아내쪽은 오른쪽(+1)
       const dir = side === 'husband' ? -1 : 1;
-      const SPOUSE_GAP = 90;
 
-      // 본인
-      addNode(member, startX, startY);
-
-      // 형제들
-      const siblings = getSiblings(member);
-      siblings.forEach((sib, i) => {
-        const sibX = startX + (i + 1) * dir * GAP_X;
-        addNode(sib, sibX, startY);
-        // 형제의 배우자
-        const sibSpouse = getSpouse(sib);
-        if (sibSpouse) {
-          addNode(sibSpouse, sibX + dir * 70, startY);
-          addEdge(sib._id, sibSpouse._id, 'spouse');
-        }
-        // 형제의 자녀
-        const sibChildren = getChildren(sib._id);
-        sibChildren.forEach((child, ci) => {
-          addNode(child, sibX + ci * dir * 80, startY + GAP_Y);
-          addEdge(sib._id, child._id);
-        });
-      });
-
-      // 부모
+      // === 조부모/부모 세대 먼저 배치 ===
       const parent = getParent(member);
       if (parent) {
         const parentY = startY - GAP_Y;
-        addNode(parent, startX, parentY);
-        addEdge(parent._id, member._id);
-
-        // 부모의 배우자
-        const parentSpouse = getSpouse(parent);
-        if (parentSpouse) {
-          addNode(parentSpouse, startX + dir * SPOUSE_GAP, parentY);
-          addEdge(parent._id, parentSpouse._id, 'spouse');
-        }
-
-        // 부모의 형제들 (삼촌, 고모 등)
-        const parentSiblings = getSiblings(parent);
-        parentSiblings.forEach((ps, i) => {
-          const psX = startX + (i + 1) * dir * GAP_X;
-          addNode(ps, psX, parentY);
-          addEdge(parent.parent_id, ps._id);
-
-          // 삼촌/고모의 배우자
-          const psSpouse = getSpouse(ps);
-          if (psSpouse) {
-            addNode(psSpouse, psX + dir * 70, parentY);
-            addEdge(ps._id, psSpouse._id, 'spouse');
-          }
-
-          // 삼촌/고모의 자녀 (사촌)
-          const psChildren = getChildren(ps._id);
-          psChildren.forEach((cousin, ci) => {
-            addNode(cousin, psX + ci * dir * 70, parentY + GAP_Y * 0.7);
-            addEdge(ps._id, cousin._id);
-          });
-        });
 
         // 조부모
         const grandparent = getParent(parent);
         if (grandparent) {
           const gpY = parentY - GAP_Y;
           addNode(grandparent, startX, gpY);
-          addEdge(grandparent._id, parent._id);
 
           const gpSpouse = getSpouse(grandparent);
           if (gpSpouse) {
-            addNode(gpSpouse, startX + dir * SPOUSE_GAP, gpY);
-            addEdge(grandparent._id, gpSpouse._id, 'spouse');
+            addNode(gpSpouse, startX + dir * SPOUSE_OFFSET, gpY);
+            addSpouseEdge(grandparent._id, gpSpouse._id);
           }
         }
+
+        // 부모
+        addNode(parent, startX, parentY);
+        if (grandparent) addParentChildEdge(grandparent._id, parent._id);
+
+        const parentSpouse = getSpouse(parent);
+        if (parentSpouse) {
+          addNode(parentSpouse, startX + dir * SPOUSE_OFFSET, parentY);
+          addSpouseEdge(parent._id, parentSpouse._id);
+        }
+      }
+
+      // === 본인 세대 ===
+      addNode(member, startX, startY);
+      if (parent) addParentChildEdge(parent._id, member._id);
+
+      // 형제들
+      const siblings = getSiblings(member);
+      let maxSiblingExtent = 0;
+
+      siblings.forEach((sib, i) => {
+        const offset = (i + 1) * GAP_X;
+        const sibX = startX + offset * dir;
+        addNode(sib, sibX, startY);
+        if (parent) addParentChildEdge(parent._id, sib._id);
+
+        // 형제 배우자
+        const sibSpouse = getSpouse(sib);
+        if (sibSpouse) {
+          addNode(sibSpouse, sibX + dir * SPOUSE_OFFSET, startY);
+          addSpouseEdge(sib._id, sibSpouse._id);
+          maxSiblingExtent = Math.max(maxSiblingExtent, offset + SPOUSE_OFFSET);
+        } else {
+          maxSiblingExtent = Math.max(maxSiblingExtent, offset);
+        }
+
+        // 형제 자녀 (형제 + 형제배우자의 자녀를 합산)
+        const sibKids = getChildren(sib._id);
+        const sibSpouseKids = sibSpouse
+          ? getChildren(sibSpouse._id).filter(c => !sibKids.find(k => k._id === c._id))
+          : [];
+        const allSibKids = [...sibKids, ...sibSpouseKids];
+
+        if (allSibKids.length > 0) {
+          const childBaseX = sibX + (sibSpouse ? dir * SPOUSE_OFFSET / 2 : 0);
+          const totalW = (allSibKids.length - 1) * 90;
+          allSibKids.forEach((child, ci) => {
+            const childX = childBaseX - totalW / 2 + ci * 90;
+            addNode(child, childX, startY + GAP_Y);
+            addParentChildEdge(child.parent_id, child._id);
+          });
+        }
+      });
+
+      // === 부모 형제들 (삼촌/고모 등) - 본인 형제보다 더 바깥에 배치 ===
+      if (parent) {
+        const parentSiblings = getSiblings(parent);
+        const pSibStart = maxSiblingExtent > 0 ? maxSiblingExtent + GAP_X : GAP_X;
+
+        parentSiblings.forEach((ps, i) => {
+          const psOffset = pSibStart + i * GAP_X;
+          const psX = startX + psOffset * dir;
+          const parentY = startY - GAP_Y;
+          addNode(ps, psX, parentY);
+
+          // 조부모 → 부모형제 엣지
+          const grandparent = getParent(parent);
+          if (grandparent) addParentChildEdge(grandparent._id, ps._id);
+
+          // 부모형제 배우자
+          const psSpouse = getSpouse(ps);
+          if (psSpouse) {
+            addNode(psSpouse, psX + dir * SPOUSE_OFFSET, parentY);
+            addSpouseEdge(ps._id, psSpouse._id);
+          }
+
+          // 사촌들 (부모형제의 자녀)
+          const cousins = getChildren(ps._id);
+          if (cousins.length > 0) {
+            const cousinBaseX = psX + (psSpouse ? dir * SPOUSE_OFFSET / 2 : 0);
+            const totalCW = (cousins.length - 1) * 90;
+            cousins.forEach((cousin, ci) => {
+              const cousinX = cousinBaseX - totalCW / 2 + ci * 90;
+              addNode(cousin, cousinX, startY);
+              addParentChildEdge(ps._id, cousin._id);
+            });
+          }
+        });
       }
     };
 
-    // 남편 가족 (왼쪽) - 부부가 붙어있도록 간격 좁힘
+    // 남편 가족 (왼쪽)
     if (husband) {
       buildFamilyBranch(husband, CENTER_X - 50, CENTER_Y, 'husband');
     }
@@ -234,54 +352,32 @@ const FamilyTree = ({ members, onRefresh }) => {
 
     // 부부 연결
     if (husband && wife) {
-      addEdge(husband._id, wife._id, 'spouse');
+      addSpouseEdge(husband._id, wife._id);
     }
 
-    // 자녀들 (아래)
-    const children = members.filter(m => m.generation < 0);
-    children.forEach((child, i) => {
-      const childX = CENTER_X + (i - children.length / 2) * 100;
-      addNode(child, childX, CENTER_Y + GAP_Y);
-      if (husband) addEdge(husband._id, child._id);
-    });
-
-    return { nodes, edges };
-  }, [members, husband, wife]);
-
-  // 커스텀 노드
-  const FamilyNode = ({ data }) => {
-    const { member, openModal, navigate } = data;
-    const hasParent = !!member.parent_id;
-    const hasSpouse = !!member.spouse_id;
-
-    return (
-      <div style={{
-        padding: '8px',
-        border: `2px solid ${member.gender === 'male' ? '#4a90d9' : '#e91e63'}`,
-        borderRadius: '8px',
-        background: member.generation === 0 ? '#fff9db' : 'white',
-        textAlign: 'center',
-        cursor: 'pointer',
-        minWidth: '70px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-      }}
-      onClick={() => navigate(`/family/${member._id}`)}
-      >
-        <div style={{ fontSize: '18px' }}>{member.gender === 'male' ? '👨' : '👩'}</div>
-        <div style={{ fontWeight: 'bold', fontSize: '10px' }}>{member.name}</div>
-        <div style={{ fontSize: '8px', color: '#666' }}>{member.relation_type}</div>
-        <div style={{ display: 'flex', gap: '2px', marginTop: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {!hasParent && <button onClick={(e) => { e.stopPropagation(); openModal('parent', member); }} style={btnS}>↑</button>}
-          {!hasSpouse && <button onClick={(e) => { e.stopPropagation(); openModal('spouse', member); }} style={{...btnS, color: '#e91e63'}}>♥</button>}
-          <button onClick={(e) => { e.stopPropagation(); openModal('sibling', member); }} style={btnS}>±</button>
-          <button onClick={(e) => { e.stopPropagation(); openModal('child', member); }} style={btnS}>↓</button>
-        </div>
-      </div>
+    // 자녀들 (본인 부부의 직계 자녀만 필터링)
+    const myChildren = members.filter(m =>
+      m.generation < 0 &&
+      (m.parent_id === husband?._id || m.parent_id === wife?._id)
     );
-  };
 
-  const btnS = { padding: '1px 4px', border: '1px solid #ccc', borderRadius: '3px', background: 'white', cursor: 'pointer', fontSize: '9px' };
-  const nodeTypes = useMemo(() => ({ familyNode: FamilyNode }), []);
+    if (myChildren.length > 0) {
+      const childCenterX = (husband && wife) ? CENTER_X
+        : husband ? CENTER_X - 50 : CENTER_X + 50;
+      const childY = CENTER_Y + GAP_Y;
+      const totalChildW = (myChildren.length - 1) * 100;
+
+      myChildren.forEach((child, i) => {
+        const childX = childCenterX - totalChildW / 2 + i * 100;
+        addNode(child, childX, childY);
+        // 부부 양쪽에서 자녀로 연결
+        if (husband) addParentChildEdge(husband._id, child._id);
+        if (wife) addParentChildEdge(wife._id, child._id);
+      });
+    }
+
+    return { nodes: nodeList, edges: edgeList };
+  }, [members]);
 
   // 모달
   const Modal = () => {
@@ -351,6 +447,7 @@ const FamilyTree = ({ members, onRefresh }) => {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        onNodeClick={onNodeClick}
         fitView
         fitViewOptions={{ padding: 0.3 }}
         minZoom={0.3}
