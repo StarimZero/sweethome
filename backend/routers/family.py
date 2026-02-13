@@ -99,16 +99,36 @@ async def partial_update_member(id: PydanticObjectId, member_data: FamilyMemberU
 
 @router.delete("/{id}")
 async def delete_member(id: PydanticObjectId):
-    """가족 구성원 삭제"""
+    """가족 구성원 삭제 (본인 세대 삭제 시 해당 side 전체 연쇄 삭제)"""
     member = await FamilyMember.get(id)
     if not member:
         raise HTTPException(status_code=404, detail="Family member not found")
 
+    # 본인 세대(generation 0) 삭제 시 해당 side 가족 전체 삭제
+    if member.generation == 0:
+        side_members = await FamilyMember.find(
+            FamilyMember.side == member.side,
+            FamilyMember.id != member.id
+        ).to_list()
+        for m in side_members:
+            # 다른 side 멤버의 배우자 연결 해제
+            if m.spouse_id:
+                try:
+                    spouse = await FamilyMember.get(PydanticObjectId(m.spouse_id))
+                    if spouse and spouse.side != member.side:
+                        await spouse.set({"spouse_id": None})
+                except Exception:
+                    pass
+            await m.delete()
+
     # 배우자 연결 해제
     if member.spouse_id:
-        spouse = await FamilyMember.get(PydanticObjectId(member.spouse_id))
-        if spouse and spouse.spouse_id == str(member.id):
-            await spouse.set({"spouse_id": None})
+        try:
+            spouse = await FamilyMember.get(PydanticObjectId(member.spouse_id))
+            if spouse and spouse.spouse_id == str(member.id):
+                await spouse.set({"spouse_id": None})
+        except Exception:
+            pass
 
     # 자녀의 parent_id 연결 해제
     children = await FamilyMember.find(FamilyMember.parent_id == str(member.id)).to_list()

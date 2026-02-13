@@ -16,7 +16,17 @@ def lunar_to_solar(year: int, month: int, day: int) -> Optional[date]:
         calendar.setLunarDate(year, month, day, False)
         return date(calendar.solarYear, calendar.solarMonth, calendar.solarDay)
     except Exception:
-        # 라이브러리가 없거나 변환 실패 시 None 반환
+        return None
+
+# 양력→음력 변환 함수
+def solar_to_lunar(year: int, month: int, day: int) -> Optional[tuple]:
+    """양력 날짜를 음력으로 변환. (year, month, day) 튜플 반환"""
+    try:
+        from korean_lunar_calendar import KoreanLunarCalendar
+        calendar = KoreanLunarCalendar()
+        calendar.setSolarDate(year, month, day)
+        return (calendar.lunarYear, calendar.lunarMonth, calendar.lunarDay)
+    except Exception:
         return None
 
 # 응답용 모델 (양력 변환 날짜 포함)
@@ -234,16 +244,42 @@ async def get_holidays(year: int):
     return holidays
 
 # 3. 상세 조회
-@router.get("/{id}", response_model=CalendarEvent)
+@router.get("/{id}", response_model=CalendarEventResponse)
 async def get_event(id: PydanticObjectId):
     event = await CalendarEvent.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Not found")
-    return event
+    # 음력 이벤트인 경우 저장된 날짜의 연도로 양력 변환
+    target_year = int(event.date.split('-')[0]) if event.date else datetime.now().year
+    return event_to_response(event, target_year)
+
+# 양력 날짜를 음력으로 변환하여 저장용 문자열로 반환
+def convert_solar_date_to_lunar_str(date_str: str) -> Optional[str]:
+    """양력 날짜 문자열(YYYY-MM-DD)을 음력으로 변환하여 YYYY-MM-DD 문자열로 반환"""
+    try:
+        parts = date_str.split('-')
+        y, m, d = int(parts[0]), int(parts[1]), int(parts[2])
+        result = solar_to_lunar(y, m, d)
+        if result:
+            ly, lm, ld = result
+            return f"{ly}-{lm:02d}-{ld:02d}"
+    except Exception:
+        pass
+    return None
 
 # 3. 등록
 @router.post("", response_model=CalendarEvent)
 async def create_event(event: CalendarEvent):
+    # 음력 체크 시: 입력된 양력 날짜를 음력으로 변환하여 저장
+    if event.is_lunar:
+        lunar_date = convert_solar_date_to_lunar_str(event.date)
+        if lunar_date:
+            event.date = lunar_date
+        if event.end_date:
+            lunar_end = convert_solar_date_to_lunar_str(event.end_date)
+            if lunar_end:
+                event.end_date = lunar_end
+
     event.created_at = datetime.now()
     event.updated_at = datetime.now()
     await event.insert()
@@ -255,6 +291,16 @@ async def update_event(id: PydanticObjectId, data: CalendarEvent):
     event = await CalendarEvent.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Not found")
+
+    # 음력 체크 시: 입력된 양력 날짜를 음력으로 변환하여 저장
+    if data.is_lunar:
+        lunar_date = convert_solar_date_to_lunar_str(data.date)
+        if lunar_date:
+            data.date = lunar_date
+        if data.end_date:
+            lunar_end = convert_solar_date_to_lunar_str(data.end_date)
+            if lunar_end:
+                data.end_date = lunar_end
 
     data.updated_at = datetime.now()
     update_data = data.model_dump(exclude_unset=True)

@@ -29,10 +29,17 @@ const CalendarDetailPage = () => {
       try {
         const res = await apiClient.get(`/calendar/${id}`);
         setEvent(res.data);
+        // 음력 이벤트: 수정 폼에는 양력 날짜(solar_date)를 표시 (date picker가 양력이므로)
+        const displayDate = res.data.is_lunar && res.data.solar_date
+          ? res.data.solar_date
+          : res.data.date;
+        const displayEndDate = res.data.is_lunar && res.data.solar_end_date
+          ? res.data.solar_end_date
+          : (res.data.end_date || '');
         setForm({
           title: res.data.title,
-          date: res.data.date,
-          end_date: res.data.end_date || '',
+          date: displayDate,
+          end_date: displayEndDate,
           memo: res.data.memo || '',
           is_yearly: res.data.is_yearly,
           is_lunar: res.data.is_lunar || false,
@@ -99,6 +106,17 @@ const CalendarDetailPage = () => {
 
   const formatDateDisplay = () => {
     if (!event) return '';
+    if (event.is_lunar) {
+      // 음력 이벤트: 음력 날짜와 양력 변환 날짜를 함께 표시
+      const lunarDate = event.date;
+      const solarDate = event.solar_date;
+      if (event.is_range) {
+        const lunarEnd = event.end_date || '미정';
+        const solarEnd = event.solar_end_date || '미정';
+        return `음력 ${lunarDate} ~ ${lunarEnd} (양력 ${solarDate || '?'} ~ ${solarEnd})`;
+      }
+      return `음력 ${lunarDate} (양력 ${solarDate || '?'})`;
+    }
     if (event.is_range) {
       const endStr = event.end_date ? event.end_date : '미정';
       return `${event.date} ~ ${endStr}`;
