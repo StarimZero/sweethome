@@ -1,8 +1,9 @@
-from beanie import Document
-from pydantic import BaseModel
+from beanie import Document, PydanticObjectId
+from pydantic import Field
 from typing import Optional
 
 class FamilyMember(Document):
+    id: Optional[PydanticObjectId] = Field(None, alias="_id")
     name: str                          # 이름
     gender: str                        # male / female
     birth_date: Optional[str] = None   # YYYY-MM-DD
@@ -16,3 +17,7 @@ class FamilyMember(Document):
 
     class Settings:
         name = "family_members"
+
+    class Config:
+        populate_by_name = True
+        json_encoders = {PydanticObjectId: str}
