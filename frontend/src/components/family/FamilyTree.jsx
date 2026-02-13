@@ -92,7 +92,7 @@ const FamilyTree = ({ members, onRefresh }) => {
 
   // 관계 옵션
   const getRelationOptions = (type, gen, side) => {
-    if (type === 'self') return side === 'husband' ? ['남편'] : ['아내'];
+    if (type === 'self') return side === 'husband' ? ['본인', '남편'] : ['본인', '부인', '아내'];
     if (type === 'parent') {
       if (gen === 1) return side === 'husband' ? ['아버지', '어머니'] : ['장인', '장모'];
       if (gen === 2) return ['할아버지', '할머니'];
@@ -110,7 +110,11 @@ const FamilyTree = ({ members, onRefresh }) => {
 
   const openModal = (type, baseMember, extraData = {}) => {
     const gen = baseMember?.generation ?? extraData.generation ?? 0;
-    const side = baseMember?.side || extraData.side || 'husband';
+    let side = baseMember?.side || extraData.side || 'husband';
+    // 본인 세대(generation 0) 배우자 추가 시 반대쪽으로 설정
+    if (type === 'spouse' && gen === 0) {
+      side = side === 'husband' ? 'wife' : 'husband';
+    }
     const targetGen = type === 'parent' ? gen + 1 : type === 'child' ? gen - 1 : gen;
     const options = getRelationOptions(type, targetGen, side);
     const defaultGender = (type === 'spouse' && baseMember?.gender === 'male') ? 'female' : 'male';
