@@ -86,9 +86,11 @@ const FamilyTree = ({ members, onRefresh }) => {
     return members.filter(s => s.sibling_of === m._id);
   };
 
-  // 본인들 찾기
-  const husband = members.find(m => m.generation === 0 && m.side === 'husband');
-  const wife = members.find(m => m.generation === 0 && m.side === 'wife');
+  // 본인들 찾기 (relation_type '본인' 우선, 없으면 fallback)
+  const husband = members.find(m => m.generation === 0 && m.side === 'husband' && m.relation_type === '본인')
+    || members.find(m => m.generation === 0 && m.side === 'husband' && !m.sibling_of);
+  const wife = members.find(m => m.generation === 0 && m.side === 'wife' && m.relation_type === '본인')
+    || members.find(m => m.generation === 0 && m.side === 'wife' && !m.sibling_of);
 
   // 관계 옵션 (양쪽 모두 본인 기준)
   const getRelationOptions = (type, gen) => {
@@ -303,6 +305,8 @@ const FamilyTree = ({ members, onRefresh }) => {
         const slots = makeSlots(sorted);
 
         let x = baseX;
+        // generation 0은 본인이 이미 baseX에 배치되어 있으므로 한 칸 옆에서 시작
+        if (gen === 0) x += UNIT_GAP * dir;
         slots.forEach((slot, i) => {
           if (i > 0) x += UNIT_GAP * dir;
           addNode(slot[0], x, y);
