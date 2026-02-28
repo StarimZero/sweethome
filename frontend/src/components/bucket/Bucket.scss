@@ -600,3 +600,142 @@ $gray-border: #ddd;
     }
   }
 }
+
+// === 반응형 ===
+@media (max-width: 768px) {
+  // 통계 카드
+  .stats {
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .stat-card {
+      flex: 1 1 calc(33% - 10px);
+      min-width: 80px;
+      padding: 15px 10px;
+
+      .stat-number { font-size: 1.5rem; }
+      .stat-label { font-size: 0.8rem; }
+    }
+  }
+
+  // 검색
+  .search-box {
+    flex-direction: column;
+
+    .search-input,
+    .category-select,
+    .search-btn {
+      width: 100%;
+    }
+  }
+
+  // 툴바
+  .toolbar {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+
+    .filter-tabs {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .add-btn {
+      text-align: center;
+    }
+  }
+
+  // 카드 목록
+  .bucket-list .bucket-card {
+    flex-wrap: wrap;
+    padding: 15px;
+
+    .bucket-thumbnail {
+      width: 60px;
+      height: 60px;
+    }
+
+    .bucket-content .bucket-meta {
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      order: 10;
+    }
+  }
+
+  // 폼
+  .bucket-form .form-row,
+  .edit-form .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  // 상세 페이지
+  .bucket-detail-page {
+    .detail-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+
+      h1 { font-size: 1.5rem; }
+
+      .header-actions {
+        justify-content: flex-end;
+      }
+    }
+
+    .detail-content .detail-row {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+
+  // 코멘트
+  .comments-section {
+    padding: 20px;
+
+    .comment-input-box {
+      flex-direction: column;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bucket-page, .bucket-insert-page, .bucket-detail-page {
+    h1 { font-size: 1.5rem; }
+  }
+
+  .stats .stat-card {
+    flex: 1 1 calc(50% - 10px);
+    padding: 12px 8px;
+
+    .stat-number { font-size: 1.2rem; }
+  }
+
+  .toolbar .filter-tabs .filter-tab {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .bucket-list .bucket-card {
+    .bucket-thumbnail {
+      width: 50px;
+      height: 50px;
+    }
+
+    .bucket-content .bucket-title {
+      font-size: 1rem;
+    }
+  }
+
+  .bucket-form, .edit-form {
+    padding: 20px;
+  }
+
+  .comments-section {
+    padding: 15px;
+  }
+}

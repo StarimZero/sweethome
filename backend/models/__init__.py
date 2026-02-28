@@ -9,5 +9,6 @@ from .bucket import BucketList
 from .diary import Diary
 from .calendar import CalendarEvent
 from .family import FamilyMember
+from .culture import CultureReview
 
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent, FamilyMember]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent, FamilyMember, CultureReview]

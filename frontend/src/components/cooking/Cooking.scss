@@ -1,0 +1,413 @@
+// 요리 스타일
+
+// 공통
+.cooking-page, .cooking-insert-page, .cooking-detail-page {
+  h1 {
+    margin: 0;
+  }
+}
+
+// === 목록 페이지 ===
+.cooking-page {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .btn-add {
+    padding: 10px 20px;
+    background: #20c997;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  // 필터
+  .filter-box {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+  }
+
+  .filter-top {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .tab-group {
+    display: flex;
+    gap: 5px;
+  }
+
+  .tab-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+
+    &.active {
+      background: #4dabf7;
+      color: white;
+      border: none;
+    }
+
+    &:not(.active) {
+      background: #fff;
+      color: #495057;
+      border: 1px solid #ced4da;
+    }
+  }
+
+  .filter-select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    min-width: 120px;
+  }
+
+  .filter-bottom {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .filter-input {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .btn-search {
+    padding: 10px 20px;
+    background: #343a40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  // 카드 그리드
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .recipe-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+
+  .card-image {
+    height: 160px;
+    overflow: hidden;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .placeholder {
+      font-size: 40px;
+    }
+
+    .chef-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+  }
+
+  .card-body {
+    padding: 15px;
+
+    h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      border-left: none;
+      padding-left: 0;
+    }
+
+    .type-badge {
+      font-size: 12px;
+      margin-left: 8px;
+      padding: 2px 6px;
+      background: #e7f5ff;
+      color: #1c7ed6;
+      border-radius: 4px;
+      vertical-align: middle;
+      font-weight: normal;
+    }
+
+    p {
+      margin: 0;
+      color: #868e96;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #adb5bd;
+  }
+}
+
+// === 등록 페이지 ===
+.cooking-insert-page {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .insert-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: 80px;
+  }
+
+  .btn-submit {
+    padding: 15px;
+    background: #20c997;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+// === 상세 페이지 ===
+.cooking-detail-page {
+  max-width: 800px;
+  margin: 0 auto;
+
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: 100px;
+  }
+
+  .detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .detail-title {
+    font-size: 32px;
+    margin: 20px 0 10px;
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .detail-meta {
+    color: #888;
+    margin-bottom: 20px;
+  }
+
+  .detail-description {
+    font-size: 18px;
+    line-height: 1.8;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+  .detail-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+
+    &.edit { background: #fab005; color: white; }
+    &.delete { background: #ff6b6b; color: white; }
+    &.back { background: #f1f3f5; }
+    &.save { background: #4dabf7; color: white; }
+    &.cancel { background: #ccc; }
+  }
+}
+
+// === 반응형 ===
+@media (max-width: 768px) {
+  .cooking-page {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-add {
+      text-align: center;
+    }
+
+    .filter-top {
+      flex-direction: column;
+    }
+
+    .tab-group {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .filter-select {
+      width: 100%;
+    }
+
+    .filter-bottom {
+      flex-direction: column;
+
+      .btn-search {
+        width: 100%;
+      }
+    }
+
+    .recipe-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+  }
+
+  .cooking-detail-page {
+    .detail-title {
+      font-size: 24px;
+    }
+
+    .detail-description {
+      font-size: 16px;
+      padding: 15px;
+    }
+
+    .detail-actions {
+      justify-content: stretch;
+      flex-direction: row;
+
+      .btn {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .cooking-page {
+    .tab-btn {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
+    .recipe-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .card-image {
+      height: 120px;
+    }
+
+    .card-body {
+      padding: 10px;
+
+      h3 { font-size: 14px; }
+      p { font-size: 12px; }
+    }
+  }
+
+  .cooking-insert-page,
+  .cooking-detail-page {
+    .detail-title { font-size: 20px; }
+  }
+}

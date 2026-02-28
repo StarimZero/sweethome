@@ -1,0 +1,738 @@
+// 주류 리뷰 스타일
+
+// === 목록 페이지 ===
+.liquor-page {
+  .header-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-toggle {
+    background: none;
+    border: none;
+    color: #26DCD6;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-add {
+    background: #26DCD6;
+    color: white;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  // 필터
+  .filter-box {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .filter-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .filter-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .range-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .range-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .btn-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+  }
+
+  .btn-search {
+    background: #333;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .btn-reset {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #555;
+  }
+
+  // 카드
+  .liquor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .liquor-card {
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+  }
+
+  .card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .card-category {
+    background: #f0f7ff;
+    color: #0066cc;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .card-price {
+    font-size: 13px;
+    color: #777;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: #222;
+  }
+
+  .card-ratings {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    background: #f9f9f9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    justify-content: center;
+
+    .wife-score { color: #ff6b9d; }
+    .separator { color: #ddd; }
+  }
+
+  .card-foods {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .food-tag {
+    font-size: 11px;
+    background: #fff0f0;
+    color: #d6336c;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #888;
+  }
+}
+
+// === 등록 페이지 ===
+.liquor-insert-page {
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background: white;
+
+    &.primary { background: #26DCD6; color: white; border: none; }
+    &.danger { background: #ff4d4f; color: white; border: none; }
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  }
+
+  .category-row {
+    display: flex;
+    gap: 8px;
+
+    select { flex: 1; }
+
+    .wine-select {
+      border: 2px solid #26DCD6;
+      background: #f0fffe;
+    }
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .btn-add-sub {
+    background: #f9f9f9;
+    border: 1px dashed #aaa;
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #666;
+    font-size: 13px;
+  }
+
+  .btn-del {
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 0 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+// === 상세 페이지 ===
+.liquor-detail-page {
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+    font-weight: 600;
+    margin-left: 8px;
+
+    &.primary { background: #26DCD6; color: white; border: none; }
+    &.danger { background: #ff4d4f; color: white; border: none; }
+  }
+
+  .layout {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+
+  .left-col {
+    flex: 1;
+    min-width: 0;
+    max-width: 500px;
+  }
+
+  .right-col {
+    flex: 1.5;
+    min-width: 0;
+  }
+
+  // 이미지 슬라이더
+  .slider-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: background 0.2s;
+    user-select: none;
+
+    &:hover { background: rgba(0,0,0,0.7); }
+    &.prev { left: 10px; }
+    &.next { right: 10px; }
+  }
+
+  .thumbnail-list {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+
+  .thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.5;
+    transition: all 0.2s;
+    flex-shrink: 0;
+
+    &.active {
+      border-color: #26DCD6;
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  // 정보
+  .info-row {
+    margin-bottom: 16px;
+  }
+
+  .label {
+    display: block;
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .value {
+    font-size: 16px;
+    color: #333;
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .category-edit-row {
+    display: flex;
+    gap: 5px;
+
+    select { flex: 1; }
+
+    .wine-select {
+      border: 2px solid #26DCD6;
+      background: #f0fffe;
+    }
+  }
+
+  .wine-badge {
+    background: #6c5ce7;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: bold;
+  }
+
+  .price-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0984e3;
+  }
+
+  .food-tag {
+    display: inline-block;
+    background: #fff0f0;
+    color: #d6336c;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  // 평점
+  .rating-box {
+    background: #f9f9f9;
+    padding: 25px;
+    border-radius: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 30px;
+    border: 1px solid #eee;
+  }
+
+  .rating-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .rating-score {
+    font-size: 28px;
+    font-weight: 800;
+    color: #26DCD6;
+
+    &.wife { color: #ff6b9d; }
+  }
+
+  // AI 섹션
+  .ai-section {
+    margin-top: 40px;
+    border-top: 3px dashed #eee;
+    padding-top: 40px;
+    animation: fadeIn 0.8s;
+  }
+
+  .ai-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #2d3436;
+  }
+
+  .ai-pending {
+    background: #f8f9fa;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #eee;
+
+    p { margin-bottom: 10px; font-size: 18px; }
+    small { color: #999; }
+  }
+
+  .ai-card {
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+    border-radius: 16px;
+    padding: 30px;
+    margin-top: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #fff;
+  }
+
+  .ai-description {
+    margin-bottom: 30px;
+
+    .ai-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ai-text { line-height: 1.8; font-size: 16px; color: #444; }
+  }
+
+  .ai-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 25px;
+  }
+
+  .ai-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+    }
+
+    .ai-label {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ai-text { color: #555; line-height: 1.5; }
+  }
+
+  .ai-failed {
+    background: #fff0f0;
+    padding: 20px;
+    border-radius: 12px;
+    color: #c0392b;
+    text-align: center;
+    border: 1px solid #ffcccc;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    border-top-color: #6c5ce7;
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+// === 반응형 ===
+@media (max-width: 1024px) {
+  .liquor-page .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  // 목록
+  .liquor-page {
+    .header-area {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .header-actions {
+      justify-content: space-between;
+    }
+
+    .filter-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .btn-row {
+      flex-direction: column;
+
+      .btn-search, .btn-reset {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .liquor-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .card-image { height: 160px; }
+  }
+
+  // 등록
+  .liquor-insert-page {
+    .form-header {
+      flex-direction: column;
+      align-items: stretch;
+
+      .btn-group { justify-content: flex-end; }
+    }
+
+    .grid-2 {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+
+  // 상세
+  .liquor-detail-page {
+    .layout {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .left-col {
+      max-width: 100%;
+    }
+
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rating-box {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .ai-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .liquor-page {
+    .liquor-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .card-image { height: 130px; }
+
+    .card-body { padding: 10px; }
+    .card-title { font-size: 14px; }
+    .card-ratings { font-size: 12px; padding: 6px 8px; }
+    .card-meta { margin-bottom: 8px; }
+    .card-category { font-size: 10px; padding: 2px 6px; }
+  }
+
+  .liquor-detail-page {
+    .ai-card { padding: 20px; }
+    .ai-item { padding: 15px; }
+  }
+}

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../../api'; 
+import apiClient from '../../api';
+import './Cooking.scss';
 
 function CookingPage() {
   const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
-  
-  // 검색 필터 상태 (keyword -> name, description 분리)
+
   const [filters, setFilters] = useState({
     chef: 'all',
-    name: '',          // 이름 검색어
-    description: '',   // 내용 검색어
+    name: '',
+    description: '',
     cooking_type: ''
   });
 
@@ -21,7 +21,6 @@ function CookingPage() {
     fetchRecipes();
   }, []);
 
-  // 탭(chef)이나 종류(cooking_type) 변경 시에는 즉시 재검색
   useEffect(() => {
     fetchRecipes();
   }, [filters.chef, filters.cooking_type]);
@@ -36,11 +35,8 @@ function CookingPage() {
   const fetchRecipes = async () => {
     try {
       const params = {};
-      
       if (filters.chef && filters.chef !== 'all') params.chef = filters.chef;
       if (filters.cooking_type && filters.cooking_type !== '전체') params.cooking_type = filters.cooking_type;
-      
-      // [수정] 분리된 파라미터 전송
       if (filters.name) params.name = filters.name;
       if (filters.description) params.description = filters.description;
 
@@ -59,49 +55,38 @@ function CookingPage() {
   };
 
   return (
-    <div className="content-box">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+    <div className="content-box cooking-page">
+      <div className="page-header">
         <h1>👨‍🍳 요리 도감</h1>
-        <button 
-          onClick={() => navigate('/cooking/new')} 
-          style={{ padding: '10px 20px', background: '#20c997', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}
-        >
+        <button onClick={() => navigate('/cooking/new')} className="btn-add">
           + 요리 등록
         </button>
       </div>
 
-      {/* --- 검색 필터 영역 --- */}
-      <div style={{ background: '#f8f9fa', padding: '20px', borderRadius: '12px', marginBottom: '20px', border: '1px solid #eee' }}>
-        
-        {/* 상단: 탭 & 드롭다운 */}
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', gap: '5px' }}>
+      {/* 검색 필터 */}
+      <div className="filter-box">
+        <div className="filter-top">
+          <div className="tab-group">
             {[
               { id: 'all', label: '전체 보기' },
               { id: 'husband', label: '👨‍💼 남편' },
               { id: 'wife', label: '👩‍💼 아내' }
             ].map(tab => (
-               <button 
-                 key={tab.id} 
-                 onClick={() => setFilters(prev => ({ ...prev, chef: tab.id }))} 
-                 style={{ 
-                   padding: '8px 15px', 
-                   background: filters.chef === tab.id ? '#4dabf7' : '#fff', 
-                   color: filters.chef === tab.id ? 'white' : '#495057',
-                   border: filters.chef === tab.id ? 'none' : '1px solid #ced4da', 
-                   borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s'
-                 }}
-               >
-                 {tab.label}
-               </button>
+              <button
+                key={tab.id}
+                onClick={() => setFilters(prev => ({ ...prev, chef: tab.id }))}
+                className={`tab-btn ${filters.chef === tab.id ? 'active' : ''}`}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
 
-          <select 
-            name="cooking_type" 
-            value={filters.cooking_type} 
-            onChange={handleFilterChange} 
-            style={{ ...inputStyle, minWidth: '120px' }}
+          <select
+            name="cooking_type"
+            value={filters.cooking_type}
+            onChange={handleFilterChange}
+            className="filter-select"
           >
             <option value="">전체 종류</option>
             {cookingCodes.map(code => (
@@ -110,85 +95,65 @@ function CookingPage() {
           </select>
         </div>
 
-        {/* 하단: 검색 입력창들 */}
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <input 
-            name="name" 
-            value={filters.name} 
-            onChange={handleFilterChange} 
+        <div className="filter-bottom">
+          <input
+            name="name"
+            value={filters.name}
+            onChange={handleFilterChange}
             onKeyDown={handleKeyDown}
-            placeholder="요리 이름으로 검색" 
-            style={{ ...inputStyle, flex: 1 }} 
+            placeholder="요리 이름으로 검색"
+            className="filter-input"
           />
-          <input 
-            name="description" 
-            value={filters.description} 
-            onChange={handleFilterChange} 
+          <input
+            name="description"
+            value={filters.description}
+            onChange={handleFilterChange}
             onKeyDown={handleKeyDown}
-            placeholder="내용(설명)으로 검색" 
-            style={{ ...inputStyle, flex: 1.5 }} 
+            placeholder="내용(설명)으로 검색"
+            className="filter-input"
           />
-          <button onClick={fetchRecipes} style={{ padding: '10px 20px', background: '#343a40', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}>
+          <button onClick={fetchRecipes} className="btn-search">
             🔍 검색
           </button>
         </div>
       </div>
 
-      {/* --- 목록 영역 --- */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
+      {/* 목록 */}
+      <div className="recipe-grid">
         {recipes.map((recipe) => (
-          <div 
-            key={recipe._id} 
+          <div
+            key={recipe._id}
             onClick={() => navigate(`/cooking/${recipe._id}`)}
-            style={{ 
-              border: '1px solid #eee', borderRadius: '12px', cursor: 'pointer', overflow: 'hidden', 
-              background: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', transition: 'transform 0.2s' 
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            className="recipe-card"
           >
-            <div style={{ height: '160px', overflow: 'hidden', background: '#f1f3f5', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-               {recipe.image_url ? (
-                 <img src={recipe.image_url} alt={recipe.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-               ) : (
-                 <span style={{ fontSize: '40px' }}>🍳</span>
-               )}
-               <span style={{ 
-                 position: 'absolute', top: '10px', right: '10px', 
-                 background: 'rgba(0,0,0,0.6)', color: 'white', padding: '4px 8px', borderRadius: '12px', fontSize: '12px' 
-               }}>
-                 {recipe.chef === 'husband' ? '남편' : '아내'}
-               </span>
+            <div className="card-image">
+              {recipe.image_url ? (
+                <img src={recipe.image_url} alt={recipe.name} />
+              ) : (
+                <span className="placeholder">🍳</span>
+              )}
+              <span className="chef-badge">
+                {recipe.chef === 'husband' ? '남편' : '아내'}
+              </span>
             </div>
-            
-            <div style={{ padding: '15px' }}>
-              <h3 style={{ margin: '0 0 5px', fontSize: '18px' }}>
-                {recipe.name} 
+
+            <div className="card-body">
+              <h3>
+                {recipe.name}
                 {recipe.cooking_type && (
-                  <span style={{ 
-                    fontSize: '12px', marginLeft: '8px', padding: '2px 6px', 
-                    background: '#e7f5ff', color: '#1c7ed6', borderRadius: '4px', verticalAlign: 'middle', fontWeight: 'normal' 
-                  }}>
-                    {recipe.cooking_type}
-                  </span>
+                  <span className="type-badge">{recipe.cooking_type}</span>
                 )}
               </h3>
-              <p style={{ margin: 0, color: '#868e96', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {recipe.description}
-              </p>
+              <p>{recipe.description}</p>
             </div>
           </div>
         ))}
         {recipes.length === 0 && (
-          <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '40px', color: '#adb5bd' }}>
-            검색 결과가 없습니다.
-          </div>
+          <div className="empty-message">검색 결과가 없습니다.</div>
         )}
       </div>
     </div>
   );
 }
-
-const inputStyle = { padding: '10px', border: '1px solid #ced4da', borderRadius: '5px' };
 
 export default CookingPage;

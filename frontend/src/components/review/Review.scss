@@ -1,0 +1,729 @@
+// 맛집 리뷰 스타일
+
+// 공통
+.review-page, .review-insert-page, .review-detail-page {
+  h1 {
+    margin: 0;
+  }
+}
+
+// === 목록 페이지 ===
+.review-page {
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .header-info {
+    .count-text {
+      margin: 5px 0 0;
+      color: #868e96;
+      font-size: 14px;
+    }
+  }
+
+  .btn-add {
+    padding: 10px 20px;
+    background: #20c997;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  // 검색 패널
+  .search-panel {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+  }
+
+  .search-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+    h4 { margin: 0; color: #495057; }
+  }
+
+  .btn-reset {
+    padding: 5px 10px;
+    background: #868e96;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  // 텍스트 검색 행
+  .search-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    min-width: 120px;
+  }
+
+  .search-select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+    min-width: 120px;
+  }
+
+  // 날짜+별점 행
+  .filter-detail-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    .group-label {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    &.husband .group-label { color: #1971c2; }
+    &.wife .group-label { color: #c2255c; }
+  }
+
+  .date-input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .mini-input {
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: #ddd;
+  }
+
+  // 카드 그리드
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    min-height: 300px;
+  }
+
+  .review-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .review-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: relative;
+    transition: transform 0.2s;
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .category-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 12px;
+
+      h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-left: none;
+        padding-left: 0;
+      }
+    }
+
+    .card-ratings {
+      display: flex;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      background: #f8f9fa;
+      padding: 5px;
+      border-radius: 5px;
+
+      .husband { color: #1971c2; }
+      .wife { color: #c2255c; }
+      .avg {
+        color: #868e96;
+        font-weight: normal;
+        margin-left: auto;
+      }
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #888;
+
+      .location {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 60%;
+      }
+    }
+  }
+
+  .empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    color: #adb5bd;
+  }
+
+  // 페이지네이션
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+
+  .page-btn {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+
+    &.active {
+      background: #20c997;
+      color: white;
+      border-color: #20c997;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+// === 등록 페이지 ===
+.review-insert-page {
+  max-width: 700px;
+  margin: 0 auto;
+
+  .insert-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 15px;
+
+    .form-col {
+      flex: 1;
+
+      &.col-2 { flex: 2; }
+    }
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #343a40;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 15px;
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 15px;
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  // 부부 평가 섹션
+  .couple-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      border-left: none;
+      padding-left: 0;
+    }
+  }
+
+  .person-block {
+    margin-bottom: 25px;
+
+    &:last-child { margin-bottom: 0; }
+
+    .person-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .person-label {
+      font-weight: bold;
+
+      &.husband { color: #1971c2; }
+      &.wife { color: #c2255c; }
+    }
+
+    .rating-input-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      input {
+        width: 60px;
+        padding: 5px;
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+    }
+  }
+
+  // 이미지 섹션
+  .image-section {
+    .image-item { margin-bottom: 8px; }
+
+    .btn-add-image {
+      background: #e9ecef;
+      color: #495057;
+      font-size: 13px;
+      width: 100%;
+      margin-top: 5px;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+  }
+
+  .btn {
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+
+    &.cancel { background: #f1f3f5; color: #495057; flex: 1; }
+    &.submit { background: #20c997; color: white; flex: 2; }
+  }
+}
+
+// === 상세 페이지 ===
+.review-detail-page {
+  max-width: 800px;
+  margin: 0 auto;
+
+  // 수정 모드
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 10px;
+
+    .form-col { flex: 1; }
+    .form-col.col-2 { flex: 2; }
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #343a40;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    min-height: 80px;
+  }
+
+  .rating-edit-row {
+    background: #f1f3f5;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    gap: 20px;
+
+    label {
+      flex: 1;
+
+      input { margin-top: 5px; }
+    }
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  // 조회 모드
+  .detail-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .detail-info {
+    flex: 1;
+
+    .category-tag {
+      background: #e7f5ff;
+      color: #1971c2;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    h1 {
+      margin: 5px 0 10px;
+      display: inline-block;
+    }
+
+    .meta {
+      color: #888;
+      font-size: 15px;
+    }
+  }
+
+  .naver-link {
+    padding: 8px 15px;
+    background: #03C75A;
+    color: white;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+  }
+
+  // 부부 코멘트
+  .couple-comments {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .comment-card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 15px;
+
+    &.husband {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+
+      h3 { color: #495057; }
+    }
+
+    &.wife {
+      background: #fff0f6;
+      border: 1px solid #ffdeeb;
+
+      h3 { color: #c2255c; }
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      border-left: none;
+      padding-left: 0;
+
+      .rating { color: #fcc419; }
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+  }
+
+  // 갤러리
+  .gallery-title {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #eee;
+    }
+  }
+
+  .detail-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+
+    &.edit { background: #fab005; color: white; }
+    &.delete { background: #ff6b6b; color: white; }
+    &.back { background: #f1f3f5; color: #333; }
+    &.save { background: #4dabf7; color: white; }
+    &.cancel { background: #ccc; }
+    &.add-photo { background: #eee; color: #333; font-size: 12px; }
+  }
+}
+
+// === 반응형 ===
+@media (max-width: 768px) {
+  // 목록
+  .review-page {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .btn-add {
+      text-align: center;
+    }
+
+    .search-row {
+      flex-direction: column;
+    }
+
+    .filter-detail-row {
+      flex-direction: column;
+      gap: 15px;
+
+      .divider { display: none; }
+
+      .filter-group {
+        width: 100%;
+      }
+    }
+
+    .review-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+  }
+
+  // 등록
+  .review-insert-page {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .person-header {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 8px;
+    }
+  }
+
+  // 상세
+  .review-detail-page {
+    .detail-top {
+      flex-direction: column;
+    }
+
+    .naver-link {
+      align-self: flex-start;
+    }
+
+    .couple-comments {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .rating-edit-row {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .gallery-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .detail-actions {
+      justify-content: stretch;
+
+      .btn {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .review-page {
+    .review-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .review-card {
+      img { height: 120px; }
+
+      .card-body h3 { font-size: 14px; }
+      .card-ratings { font-size: 11px; }
+      .card-footer { font-size: 11px; }
+    }
+  }
+
+  .review-detail-page {
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr;
+
+      img { height: 150px; }
+    }
+  }
+}

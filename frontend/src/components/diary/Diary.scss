@@ -626,3 +626,155 @@ $gray-border: #ddd;
     }
   }
 }
+
+// === 반응형 ===
+@media (max-width: 768px) {
+  // 검색
+  .diary-page .search-box {
+    flex-direction: column;
+
+    .search-input,
+    .author-select,
+    .search-btn {
+      width: 100%;
+    }
+  }
+
+  // 날짜 필터
+  .diary-page .date-filter {
+    flex-wrap: wrap;
+    gap: 8px;
+
+    input[type="date"] {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .date-search-btn,
+    .date-reset-btn {
+      flex: 1;
+    }
+  }
+
+  // 카드
+  .diary-list .diary-card {
+    flex-direction: column;
+    padding: 16px;
+    gap: 12px;
+
+    .diary-thumbnail {
+      width: 100%;
+      height: 200px;
+    }
+
+    .diary-content .diary-title {
+      font-size: 1.15rem;
+    }
+  }
+
+  // 폼
+  .diary-form, .edit-form {
+    padding: 20px;
+
+    .form-group.half-width {
+      max-width: 100%;
+    }
+
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  // 기분/날씨 선택기
+  .mood-selector, .weather-selector {
+    gap: 8px;
+
+    .mood-btn, .weather-btn {
+      padding: 10px 12px;
+
+      .emoji { font-size: 1.3rem; }
+    }
+  }
+
+  // 상세 페이지
+  .diary-detail-page {
+    .detail-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+
+      .header-info {
+        justify-content: space-between;
+      }
+
+      .header-actions {
+        justify-content: flex-end;
+      }
+    }
+
+    .detail-content {
+      padding: 24px;
+
+      .diary-title {
+        font-size: 1.4rem;
+      }
+
+      .diary-info {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+    }
+  }
+
+  // 코멘트
+  .comments-section {
+    padding: 20px;
+
+    .comment-input-box {
+      flex-direction: column;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .diary-page, .diary-insert-page, .diary-detail-page {
+    h1 { font-size: 1.5rem; }
+  }
+
+  .diary-list .diary-card {
+    .diary-thumbnail {
+      height: 160px;
+    }
+
+    .diary-content {
+      .diary-title { font-size: 1rem; }
+      .diary-preview { font-size: 0.85rem; }
+      .diary-meta { font-size: 0.8rem; gap: 10px; }
+    }
+  }
+
+  .mood-selector, .weather-selector {
+    .mood-btn, .weather-btn {
+      padding: 8px 10px;
+      .emoji { font-size: 1.1rem; }
+      .label { font-size: 0.65rem; }
+    }
+  }
+
+  .diary-detail-page .detail-content {
+    padding: 16px;
+
+    .diary-body {
+      font-size: 1rem;
+    }
+  }
+
+  .diary-form, .edit-form {
+    padding: 16px;
+  }
+
+  .comments-section {
+    padding: 16px;
+  }
+}

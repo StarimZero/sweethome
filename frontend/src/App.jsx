@@ -40,6 +40,10 @@ import CalendarDetailPage from './components/calendar/CalendarDetailPage'
 import FamilyPage from './components/family/FamilyPage'
 import FamilyInsertPage from './components/family/FamilyInsertPage'
 import FamilyDetailPage from './components/family/FamilyDetailPage'
+// 문화생활 3총사
+import CulturePage from './components/culture/CulturePage'
+import CultureInsertPage from './components/culture/CultureInsertPage'
+import CultureDetailPage from './components/culture/CultureDetailPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -99,6 +103,11 @@ function App() {
             <Route path="/family" element={<FamilyPage />} />
             <Route path="/family/new" element={<FamilyInsertPage />} />
             <Route path="/family/:id" element={<FamilyDetailPage />} />
+
+            {/* 문화생활 (Culture) */}
+            <Route path="/culture" element={<CulturePage />} />
+            <Route path="/culture/new" element={<CultureInsertPage />} />
+            <Route path="/culture/:id" element={<CultureDetailPage />} />
 
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>

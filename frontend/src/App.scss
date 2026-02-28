@@ -252,6 +252,19 @@ strong {
   }
 }
 
+/* 가계도 노드 호버 액션 */
+.family-node-actions {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.family-node-wrapper:hover .family-node-actions {
+  opacity: 1;
+  max-height: 40px;
+}
+
 /* 더 작은 화면 (모바일) */
 @media (max-width: 480px) {
   .header-container {

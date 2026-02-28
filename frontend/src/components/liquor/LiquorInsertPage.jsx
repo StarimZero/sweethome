@@ -1,52 +1,40 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import apiClient from '../../api'; 
+import apiClient from '../../api'
+import './Liquor.scss'
 
 function LiquorInsertPage() {
   const navigate = useNavigate()
-  
-  // 상태 관리
-  const [categories, setCategories] = useState([]) 
-  const [wineTypes, setWineTypes] = useState([])   
-  
+
+  const [categories, setCategories] = useState([])
+  const [wineTypes, setWineTypes] = useState([])
+
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',     
-    wine_type: '',    
-    purchase_place: '',
-    pairing_foods: [''],
-    image_urls: [''],
-    rating_husband: 0,
-    rating_wife: 0,
-    comment_husband: '',
-    comment_wife: '',
-    visit_date: '',
-    price: 0
+    name: '', category: '', wine_type: '',
+    purchase_place: '', pairing_foods: [''], image_urls: [''],
+    rating_husband: 0, rating_wife: 0,
+    comment_husband: '', comment_wife: '',
+    visit_date: '', price: 0
   })
 
   useEffect(() => {
     fetchCategories()
-    fetchWineTypes() 
+    fetchWineTypes()
   }, [])
 
-  // 1. 대분류 코드 (SUL) 가져오기
   const fetchCategories = async () => {
     try {
       const res = await apiClient.get('/code/group/SUL')
       setCategories(res.data)
-      // 초기값이 없으면 첫 번째 항목 선택
       if (res.data.length > 0 && !formData.category) {
         setFormData(prev => ({ ...prev, category: res.data[0].code_id }))
       }
     } catch (err) { console.error(err) }
   }
 
-  // 2. 와인 상세 코드 (WINE_C) 가져오기
   const fetchWineTypes = async () => {
-    try {
-      const res = await apiClient.get('/code/group/WINE_C')
-      setWineTypes(res.data)
-    } catch (err) { console.error(err) }
+    try { const res = await apiClient.get('/code/group/WINE_C'); setWineTypes(res.data) }
+    catch (err) { console.error(err) }
   }
 
   const handleChange = (e) => {
@@ -54,7 +42,6 @@ function LiquorInsertPage() {
     setFormData({ ...formData, [name]: value })
   }
 
-  // --- 이미지/음식 핸들러 ---
   const handleImageChange = (index, value) => {
     const newImages = [...formData.image_urls]; newImages[index] = value; setFormData({ ...formData, image_urls: newImages })
   }
@@ -71,11 +58,9 @@ function LiquorInsertPage() {
     const newFoods = formData.pairing_foods.filter((_, i) => i !== index); setFormData({ ...formData, pairing_foods: newFoods })
   }
 
-  // [수정] 정확한 와인 코드(SUL_W) 체크
   const isWine = formData.category === 'SUL_W';
 
   const handleSubmit = async () => {
-    // SUL_W가 아닐 경우 wine_type을 null로 초기화하여 전송
     const cleanData = {
       ...formData,
       wine_type: isWine ? formData.wine_type : null,
@@ -83,10 +68,7 @@ function LiquorInsertPage() {
       pairing_foods: formData.pairing_foods.filter(s => s.trim() !== '')
     }
 
-    if (!cleanData.name) {
-      alert('주류명을 입력하세요')
-      return
-    }
+    if (!cleanData.name) { alert('주류명을 입력하세요'); return }
 
     try {
       await apiClient.post('/liquor', cleanData)
@@ -99,26 +81,11 @@ function LiquorInsertPage() {
   }
 
   return (
-    <div className="content-box">
-      <style>{`
-        .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .btn-group { display: flex; gap: 8px; }
-        .btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: 600; background:white; }
-        .btn-primary { background: #26DCD6; color: white; border: none; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .btn-add-sub { background: #f9f9f9; border: 1px dashed #aaa; width: 100%; padding: 10px; border-radius: 6px; cursor: pointer; color: #666; font-size: 13px; }
-        .btn-del { background: #ff4d4f; color: white; border: none; padding: 0 12px; border-radius: 6px; cursor: pointer; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
-      `}</style>
-
+    <div className="content-box liquor-insert-page">
       <div className="form-header">
         <h1>🍷 주류 등록</h1>
         <div className="btn-group">
-          <button className="btn btn-primary" onClick={handleSubmit}>저장</button>
+          <button className="btn primary" onClick={handleSubmit}>저장</button>
           <button className="btn" onClick={() => navigate('/liquor')}>취소</button>
         </div>
       </div>
@@ -128,20 +95,17 @@ function LiquorInsertPage() {
           <label>주류명 *</label>
           <input name="name" value={formData.name} onChange={handleChange} placeholder="예: 샤또 마고 2015" />
         </div>
-        
+
         <div className="form-group">
           <label>종류</label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {/* 1. 대분류 선택 */}
-            <select name="category" value={formData.category} onChange={handleChange} style={{ flex: 1 }}>
+          <div className="category-row">
+            <select name="category" value={formData.category} onChange={handleChange}>
               {categories.map(cat => (
                 <option key={cat.code_id} value={cat.code_id}>{cat.code_name}</option>
               ))}
             </select>
-            
-            {/* 2. SUL_W 일 때만 보이는 상세 종류 선택 (WINE_C) */}
             {isWine && (
-              <select name="wine_type" value={formData.wine_type} onChange={handleChange} style={{ flex: 1, border:'2px solid #26DCD6', background:'#f0fffe' }}>
+              <select name="wine_type" value={formData.wine_type} onChange={handleChange} className="wine-select">
                 <option value="">-- 와인 종류 선택 --</option>
                 {wineTypes.map(type => (
                   <option key={type.code_id} value={type.code_id}>{type.code_name}</option>
@@ -182,24 +146,24 @@ function LiquorInsertPage() {
 
       <div className="grid-2">
         <div>
-           <div className="form-group">
+          <div className="form-group">
             <label>👨 남편 평점</label>
             <input type="number" name="rating_husband" value={formData.rating_husband} onChange={handleChange} step="0.5" min="0" max="5" />
-           </div>
-           <div className="form-group">
+          </div>
+          <div className="form-group">
             <label>👨 남편 코멘트</label>
             <textarea name="comment_husband" value={formData.comment_husband} onChange={handleChange}></textarea>
-           </div>
+          </div>
         </div>
         <div>
-           <div className="form-group">
+          <div className="form-group">
             <label>👩 아내 평점</label>
             <input type="number" name="rating_wife" value={formData.rating_wife} onChange={handleChange} step="0.5" min="0" max="5" />
-           </div>
-           <div className="form-group">
+          </div>
+          <div className="form-group">
             <label>👩 아내 코멘트</label>
             <textarea name="comment_wife" value={formData.comment_wife} onChange={handleChange}></textarea>
-           </div>
+          </div>
         </div>
       </div>
 
