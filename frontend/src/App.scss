@@ -265,6 +265,14 @@ strong {
   max-height: 40px;
 }
 
+/* 모바일: 터치 기기에서는 항상 액션 버튼 표시 */
+@media (hover: none) and (pointer: coarse) {
+  .family-node-actions {
+    opacity: 1;
+    max-height: 40px;
+  }
+}
+
 /* 더 작은 화면 (모바일) */
 @media (max-width: 480px) {
   .header-container {

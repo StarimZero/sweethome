@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import apiClient from '../../../api'; 
+import apiClient from '../../../api';
 
 function CodeInsertPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  // URL 파라미터로 전달된 그룹코드가 있으면 초기값으로 세팅 (예: ?group=FOOD)
+
   const initialGroupCode = searchParams.get('group') || '';
-  
-  // 그룹명을 알아오기 위해 코드를 한 번 조회할 수도 있지만, 
-  // 여기서는 간단히 빈 값으로 두고 사용자가 입력하게 하거나, 생략합니다.
-  
-  const [form, setForm] = useState({ 
-    group_code: initialGroupCode, 
-    group_name: '', 
-    code_id: '', 
-    code_name: '', 
-    sort_order: 0, 
-    use_yn: 'Y' 
+  const isDetailMode = !!initialGroupCode; // 기존 그룹에 상세코드 추가 모드
+
+  const [form, setForm] = useState({
+    group_code: initialGroupCode,
+    group_name: '',
+    code_id: '',
+    code_name: '',
+    sort_order: 0,
+    use_yn: 'Y'
   });
+  const [existingGroups, setExistingGroups] = useState({}); // { group_code: group_name }
+
+  // 기존 그룹 목록 조회 → 그룹명 자동 세팅
+  useEffect(() => {
+    apiClient.get('/code').then(res => {
+      const groupMap = {};
+      res.data.forEach(c => {
+        if (!groupMap[c.group_code]) groupMap[c.group_code] = c.group_name;
+      });
+      setExistingGroups(groupMap);
+      if (initialGroupCode && groupMap[initialGroupCode]) {
+        setForm(prev => ({ ...prev, group_name: groupMap[initialGroupCode] }));
+      }
+    }).catch(console.error);
+  }, [initialGroupCode]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -44,26 +55,67 @@ function CodeInsertPage() {
         
         <div style={{background:'#f8f9fa', padding:'20px', borderRadius:'8px', border:'1px solid #e9ecef'}}>
             <h4 style={{margin:'0 0 10px 0', color:'#495057'}}>1. 그룹 정보</h4>
-            <div style={{display:'flex', gap:'15px'}}>
+            {isDetailMode ? (
+              <div style={{display:'flex', gap:'15px'}}>
                 <div style={{flex:1}}>
+                  <label style={labelStyle}>그룹코드</label>
+                  <input value={form.group_code} readOnly style={{...inputStyle, background:'#e9ecef', color:'#868e96'}} />
+                </div>
+                <div style={{flex:1}}>
+                  <label style={labelStyle}>그룹명</label>
+                  <input value={form.group_name} readOnly style={{...inputStyle, background:'#e9ecef', color:'#868e96'}} />
+                </div>
+              </div>
+            ) : (
+              <div style={{display:'flex', flexDirection:'column', gap:'15px'}}>
+                <div>
+                  <label style={labelStyle}>기존 그룹 선택</label>
+                  <select
+                    value={form.group_code && existingGroups[form.group_code] ? form.group_code : ''}
+                    onChange={(e) => {
+                      const gc = e.target.value;
+                      if (gc) {
+                        setForm({ ...form, group_code: gc, group_name: existingGroups[gc] });
+                      } else {
+                        setForm({ ...form, group_code: '', group_name: '' });
+                      }
+                    }}
+                    style={inputStyle}
+                  >
+                    <option value="">새 그룹 직접 입력</option>
+                    {Object.entries(existingGroups).map(([gc, gn]) => (
+                      <option key={gc} value={gc}>{gn} ({gc})</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{display:'flex', gap:'15px'}}>
+                  <div style={{flex:1}}>
                     <label style={labelStyle}>그룹코드 (KEY)</label>
-                    {/* 이미 그룹이 정해져 있으면 수정 불가능하게 읽기 전용으로 설정하면 편함 */}
-                    <input 
-                        name="group_code" 
-                        value={form.group_code} 
-                        onChange={handleChange} 
-                        placeholder="예: FOOD" 
-                        required 
-                        style={inputStyle} 
-                        readOnly={!!initialGroupCode} 
-                        title={initialGroupCode ? "그룹 상세 추가 모드입니다" : ""}
+                    <input
+                      name="group_code"
+                      value={form.group_code}
+                      onChange={handleChange}
+                      placeholder="예: FOOD"
+                      required
+                      style={{...inputStyle, ...(existingGroups[form.group_code] ? {background:'#e9ecef', color:'#868e96'} : {})}}
+                      readOnly={!!existingGroups[form.group_code]}
                     />
-                </div>
-                <div style={{flex:1}}>
+                  </div>
+                  <div style={{flex:1}}>
                     <label style={labelStyle}>그룹명 (설명)</label>
-                    <input name="group_name" value={form.group_name} onChange={handleChange} placeholder="예: 음식 구분" required style={inputStyle} />
+                    <input
+                      name="group_name"
+                      value={form.group_name}
+                      onChange={handleChange}
+                      placeholder="예: 음식 구분"
+                      required
+                      style={{...inputStyle, ...(existingGroups[form.group_code] ? {background:'#e9ecef', color:'#868e96'} : {})}}
+                      readOnly={!!existingGroups[form.group_code]}
+                    />
+                  </div>
                 </div>
-            </div>
+              </div>
+            )}
         </div>
 
         <div>

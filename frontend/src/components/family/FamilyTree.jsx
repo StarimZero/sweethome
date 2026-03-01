@@ -13,7 +13,7 @@ import apiClient from '../../api';
 
 // --- 레이아웃 상수 ---
 const NODE_W = 160;
-const NODE_H = 100;
+const NODE_H = 120;
 const COUPLE_GAP = 24;
 
 const handleStyle = { background: 'transparent', border: 'none', width: 6, height: 6 };
@@ -68,8 +68,10 @@ const FamilyNode = ({ data }) => {
 };
 
 const actionBtn = {
-  padding: '1px 5px', border: '1px solid #ccc', borderRadius: '4px',
-  background: 'white', cursor: 'pointer', fontSize: '10px', lineHeight: '16px'
+  padding: '4px 8px', border: '1px solid #ccc', borderRadius: '4px',
+  background: 'white', cursor: 'pointer', fontSize: '12px', lineHeight: '16px',
+  minWidth: '28px', minHeight: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+  touchAction: 'manipulation'
 };
 
 // 중앙 구분선 노드
