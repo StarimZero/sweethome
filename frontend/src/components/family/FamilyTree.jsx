@@ -906,15 +906,15 @@ const FamilyTree = ({ members, onRefresh, husbandLineage = 'paternal', wifeLinea
     const wLabel = wifeLineage === 'paternal' ? '친가' : '외가';
     const label = hLabel === wLabel ? hLabel : `남편측 ${hLabel} / 아내측 ${wLabel}`;
     return (
-      <div style={{ width: '100%', height: '70vh', minHeight: '500px', position: 'relative' }}>
+      <div style={{ width: '100%', height: '85vh', minHeight: '600px', position: 'relative' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
           onNodeClick={onNodeClick}
           fitView
-          fitViewOptions={{ padding: 0.4 }}
-          minZoom={0.3}
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.15}
           maxZoom={2.0}
         >
           <Background color="#ddd" gap={20} />
@@ -937,15 +937,15 @@ const FamilyTree = ({ members, onRefresh, husbandLineage = 'paternal', wifeLinea
   }
 
   return (
-    <div style={{ width: '100%', height: '70vh', minHeight: '500px' }}>
+    <div style={{ width: '100%', height: '85vh', minHeight: '600px' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         onNodeClick={onNodeClick}
         fitView
-        fitViewOptions={{ padding: 0.4 }}
-        minZoom={0.3}
+        fitViewOptions={{ padding: 0.2 }}
+        minZoom={0.15}
         maxZoom={2.0}
       >
         <Background color="#ddd" gap={20} />

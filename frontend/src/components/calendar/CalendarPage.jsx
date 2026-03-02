@@ -1,7 +1,19 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
 import apiClient from '../../api';
 import './Calendar.scss';
+
+const ZoomControls = () => {
+  const { zoomIn, zoomOut, resetTransform } = useControls();
+  return (
+    <div className="zoom-controls">
+      <button onClick={() => zoomIn()}>+</button>
+      <button onClick={() => zoomOut()}>−</button>
+      <button onClick={() => resetTransform()}>↺</button>
+    </div>
+  );
+};
 
 const CalendarPage = () => {
   const navigate = useNavigate();
@@ -233,86 +245,96 @@ const CalendarPage = () => {
       )}
 
       {/* 달력 그리드 */}
-      <div className="calendar-grid">
-        {/* 요일 헤더 */}
-        <div className="weekday-header">
-          {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
-            <div key={day} className={`weekday ${idx === 0 ? 'sunday' : ''} ${idx === 6 ? 'saturday' : ''}`}>
-              {day}
+      <TransformWrapper
+        minScale={0.5}
+        maxScale={2}
+        doubleClick={{ disabled: true }}
+        panning={{ velocityDisabled: true }}
+      >
+        <ZoomControls />
+        <TransformComponent wrapperClass="calendar-zoom-wrapper" contentClass="calendar-zoom-content">
+          <div className="calendar-grid">
+            {/* 요일 헤더 */}
+            <div className="weekday-header">
+              {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
+                <div key={day} className={`weekday ${idx === 0 ? 'sunday' : ''} ${idx === 6 ? 'saturday' : ''}`}>
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* 날짜 셀 */}
-        <div className="calendar-body">
-          {calendarInfo.days.map((item, idx) => {
-            const dayStr = item.day ? String(item.day).padStart(2, '0') : null;
-            const dateStr = dayStr ? `${currentYear}-${String(currentMonth).padStart(2, '0')}-${dayStr}` : null;
-            const dayEvents = dayStr ? eventsByDate[dayStr] || [] : [];
-            const isSunday = idx % 7 === 0;
-            const isSaturday = idx % 7 === 6;
+            {/* 날짜 셀 */}
+            <div className="calendar-body">
+              {calendarInfo.days.map((item, idx) => {
+                const dayStr = item.day ? String(item.day).padStart(2, '0') : null;
+                const dateStr = dayStr ? `${currentYear}-${String(currentMonth).padStart(2, '0')}-${dayStr}` : null;
+                const dayEvents = dayStr ? eventsByDate[dayStr] || [] : [];
+                const isSunday = idx % 7 === 0;
+                const isSaturday = idx % 7 === 6;
 
-            // 해당 날짜의 공휴일
-            const dayHolidays = dateStr ? holidayMap[dateStr] || [] : [];
-            const isHoliday = dayHolidays.length > 0;
+                // 해당 날짜의 공휴일
+                const dayHolidays = dateStr ? holidayMap[dateStr] || [] : [];
+                const isHoliday = dayHolidays.length > 0;
 
-            // 해당 날짜에 기간 이벤트가 있는지
-            const rangeEventsForDay = item.day ? rangeEventDisplays.filter(ev =>
-              item.day >= ev.displayStart && item.day <= ev.displayEnd
-            ) : [];
+                // 해당 날짜에 기간 이벤트가 있는지
+                const rangeEventsForDay = item.day ? rangeEventDisplays.filter(ev =>
+                  item.day >= ev.displayStart && item.day <= ev.displayEnd
+                ) : [];
 
-            return (
-              <div
-                key={idx}
-                className={`day-cell ${!item.isCurrentMonth ? 'disabled' : ''} ${isToday(item.day) ? 'today' : ''} ${selectedDate === dateStr ? 'selected' : ''} ${isHoliday ? 'holiday' : ''}`}
-                onClick={() => handleDateClick(item.day)}
-              >
-                <span className={`day-number ${isSunday || isHoliday ? 'sunday' : ''} ${isSaturday ? 'saturday' : ''}`}>
-                  {item.day}
-                </span>
-                {/* 공휴일 표시 */}
-                {dayHolidays.length > 0 && (
-                  <div className="holiday-name">{dayHolidays[0]}</div>
-                )}
+                return (
+                  <div
+                    key={idx}
+                    className={`day-cell ${!item.isCurrentMonth ? 'disabled' : ''} ${isToday(item.day) ? 'today' : ''} ${selectedDate === dateStr ? 'selected' : ''} ${isHoliday ? 'holiday' : ''}`}
+                    onClick={() => handleDateClick(item.day)}
+                  >
+                    <span className={`day-number ${isSunday || isHoliday ? 'sunday' : ''} ${isSaturday ? 'saturday' : ''}`}>
+                      {item.day}
+                    </span>
+                    {/* 공휴일 표시 */}
+                    {dayHolidays.length > 0 && (
+                      <div className="holiday-name">{dayHolidays[0]}</div>
+                    )}
 
-                {/* 기간 이벤트 마커 */}
-                {rangeEventsForDay.length > 0 && (
-                  <div className="range-markers">
-                    {rangeEventsForDay.map((ev, i) => (
-                      <div
-                        key={ev.id || i}
-                        className="range-marker"
-                        style={{ backgroundColor: ev.color || '#6c5ce7' }}
-                        title={ev.title}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* 단일 이벤트 */}
-                {dayEvents.length > 0 && (
-                  <div className="day-events">
-                    {dayEvents.slice(0, 2).map((ev) => (
-                      <div
-                        key={ev.id}
-                        className="event-item"
-                        style={{ backgroundColor: ev.color || '#6c5ce7' }}
-                      >
-                        {ev.is_yearly && <span className="badge-icon">🔄</span>}
-                        {ev.is_lunar && <span className="badge-icon">🌙</span>}
-                        <span className="event-title">{ev.title}</span>
+                    {/* 기간 이벤트 마커 */}
+                    {rangeEventsForDay.length > 0 && (
+                      <div className="range-markers">
+                        {rangeEventsForDay.map((ev, i) => (
+                          <div
+                            key={ev.id || i}
+                            className="range-marker"
+                            style={{ backgroundColor: ev.color || '#6c5ce7' }}
+                            title={ev.title}
+                          />
+                        ))}
                       </div>
-                    ))}
-                    {dayEvents.length > 2 && (
-                      <div className="more-events">+{dayEvents.length - 2}</div>
+                    )}
+
+                    {/* 단일 이벤트 */}
+                    {dayEvents.length > 0 && (
+                      <div className="day-events">
+                        {dayEvents.slice(0, 2).map((ev) => (
+                          <div
+                            key={ev.id}
+                            className="event-item"
+                            style={{ backgroundColor: ev.color || '#6c5ce7' }}
+                          >
+                            {ev.is_yearly && <span className="badge-icon">🔄</span>}
+                            {ev.is_lunar && <span className="badge-icon">🌙</span>}
+                            <span className="event-title">{ev.title}</span>
+                          </div>
+                        ))}
+                        {dayEvents.length > 2 && (
+                          <div className="more-events">+{dayEvents.length - 2}</div>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                );
+              })}
+            </div>
+          </div>
+        </TransformComponent>
+      </TransformWrapper>
 
       {/* 선택된 날짜 이벤트 */}
       {selectedDate && (
