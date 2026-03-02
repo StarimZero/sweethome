@@ -93,6 +93,194 @@ const CoupleJointNode = () => (
 
 const nodeTypes = { familyNode: FamilyNode, centerLine: CenterLineNode, coupleJoint: CoupleJointNode };
 
+// ====== 친가/외가 분류 (BFS 기반 — relation_type 무관, 그래프 구조만 사용) ======
+
+function bfsDown(members, startIds, result, cls) {
+  const queue = [...startIds];
+  while (queue.length > 0) {
+    const pid = queue.shift();
+    members.forEach(m => {
+      if (!result[m._id] && m.parent_id === pid) {
+        result[m._id] = cls;
+        queue.push(m._id);
+      }
+    });
+  }
+}
+
+function findSiblings(members, memberId, byId) {
+  const m = byId[memberId];
+  if (!m) return [];
+  const ids = new Set();
+  // sibling_of가 이 멤버를 가리키는 멤버
+  members.forEach(s => { if (s.sibling_of === memberId) ids.add(s._id); });
+  // 같은 parent_id를 가진 멤버 (본인 제외)
+  if (m.parent_id) {
+    members.forEach(s => {
+      if (s._id !== memberId && s.parent_id === m.parent_id) ids.add(s._id);
+    });
+  }
+  // 이 멤버가 sibling_of로 가리키는 멤버
+  if (m.sibling_of) ids.add(m.sibling_of);
+  return [...ids];
+}
+
+function markSpouses(members, result, byId, cls) {
+  members.forEach(m => {
+    if (result[m._id] === cls && m.spouse_id && byId[m.spouse_id] && !result[m.spouse_id]) {
+      result[m.spouse_id] = cls;
+    }
+  });
+}
+
+function classifyLineage(members) {
+  const byId = {};
+  members.forEach(m => { byId[m._id] = m; });
+  const result = {};
+
+  // ── Step 1: 본인 + 배우자 + 직계 자손 → universal ──
+  members.forEach(m => {
+    if (m.generation === 0 && m.relation_type === '본인') {
+      result[m._id] = 'universal';
+    }
+  });
+  // 본인의 배우자 (spouse_id 연결)
+  members.forEach(m => {
+    if (result[m._id] === 'universal' && m.spouse_id && byId[m.spouse_id]) {
+      result[m.spouse_id] = 'universal';
+    }
+  });
+  // 본인 부부의 모든 자손 BFS
+  const selfCoupleIds = [];
+  members.forEach(m => { if (result[m._id] === 'universal') selfCoupleIds.push(m._id); });
+  bfsDown(members, selfCoupleIds, result, 'universal');
+
+  // ── Step 2: 각 side별 처리 ──
+  const sides = ['husband', 'wife'];
+  sides.forEach(side => {
+    const cls = (tag) => `${side}-${tag}`;
+
+    // 해당 side의 본인 또는 배우자 찾기
+    const selfOfSide = members.find(m =>
+      result[m._id] === 'universal' && m.side === side && m.generation === 0
+    );
+    if (!selfOfSide) return;
+
+    // ── 2a: 부모 → core ──
+    const parentId = selfOfSide.parent_id;
+    const parent = parentId ? byId[parentId] : null;
+    if (parent && !result[parent._id]) {
+      result[parent._id] = cls('core');
+      // 부모의 배우자도 core
+      if (parent.spouse_id && byId[parent.spouse_id] && !result[parent.spouse_id]) {
+        result[parent.spouse_id] = cls('core');
+      }
+    }
+    // 부모의 배우자에서 역으로도 체크 (배우자가 먼저 등록된 경우)
+    const parentSpouse = parent?.spouse_id ? byId[parent.spouse_id] : null;
+    if (parentSpouse && !result[parentSpouse._id]) {
+      result[parentSpouse._id] = cls('core');
+    }
+
+    // ── 2b: 본인의 형제 + 형제 자손 → core ──
+    // 같은 부모를 가진 gen=0 멤버 또는 sibling_of로 연결된 멤버
+    const selfSiblingIds = [];
+    if (parentId) {
+      members.forEach(m => {
+        if (!result[m._id] && m.parent_id === parentId) {
+          result[m._id] = cls('core');
+          selfSiblingIds.push(m._id);
+        }
+      });
+    }
+    // sibling_of로 연결된 형제
+    members.forEach(m => {
+      if (!result[m._id] && m.sibling_of === selfOfSide._id) {
+        result[m._id] = cls('core');
+        selfSiblingIds.push(m._id);
+      }
+    });
+    // 형제의 모든 자손 → core
+    bfsDown(members, selfSiblingIds, result, cls('core'));
+    // 형제 + 형제 자손의 배우자 → core
+    markSpouses(members, result, byId, cls('core'));
+
+    // ── 2c: 아버지의 확대가족 → paternal ──
+    const father = parent?.gender === 'male' ? parent : parentSpouse?.gender === 'male' ? parentSpouse : null;
+    if (father) {
+      // 할아버지/할머니 (아버지의 부모)
+      const grandpaId = father.parent_id;
+      const grandpa = grandpaId ? byId[grandpaId] : null;
+      if (grandpa && !result[grandpa._id]) {
+        result[grandpa._id] = cls('paternal');
+        if (grandpa.spouse_id && byId[grandpa.spouse_id] && !result[grandpa.spouse_id]) {
+          result[grandpa.spouse_id] = cls('paternal');
+        }
+      }
+      // 아버지의 형제 (삼촌, 고모 등)
+      const fatherSibIds = findSiblings(members, father._id, byId)
+        .filter(id => !result[id]);
+      fatherSibIds.forEach(id => { result[id] = cls('paternal'); });
+      // 아버지 형제의 모든 자손 → paternal
+      bfsDown(members, fatherSibIds, result, cls('paternal'));
+      // 배우자 상속
+      markSpouses(members, result, byId, cls('paternal'));
+      // 할아버지의 부모 (증조부모)
+      if (grandpa?.parent_id && byId[grandpa.parent_id] && !result[grandpa.parent_id]) {
+        result[grandpa.parent_id] = cls('paternal');
+        const ggp = byId[grandpa.parent_id];
+        if (ggp.spouse_id && byId[ggp.spouse_id] && !result[ggp.spouse_id]) {
+          result[ggp.spouse_id] = cls('paternal');
+        }
+      }
+    }
+
+    // ── 2d: 어머니의 확대가족 → maternal ──
+    const mother = parent?.gender === 'female' ? parent : parentSpouse?.gender === 'female' ? parentSpouse : null;
+    if (mother) {
+      // 외할아버지/외할머니 (어머니의 부모)
+      const mgpId = mother.parent_id;
+      const mgp = mgpId ? byId[mgpId] : null;
+      if (mgp && !result[mgp._id]) {
+        result[mgp._id] = cls('maternal');
+        if (mgp.spouse_id && byId[mgp.spouse_id] && !result[mgp.spouse_id]) {
+          result[mgp.spouse_id] = cls('maternal');
+        }
+      }
+      // 어머니의 형제 (외삼촌, 이모 등)
+      const motherSibIds = findSiblings(members, mother._id, byId)
+        .filter(id => !result[id]);
+      motherSibIds.forEach(id => { result[id] = cls('maternal'); });
+      // 어머니 형제의 모든 자손 → maternal
+      bfsDown(members, motherSibIds, result, cls('maternal'));
+      // 배우자 상속
+      markSpouses(members, result, byId, cls('maternal'));
+      // 외할아버지의 부모 (외증조부모)
+      if (mgp?.parent_id && byId[mgp.parent_id] && !result[mgp.parent_id]) {
+        result[mgp.parent_id] = cls('maternal');
+        const mggp = byId[mgp.parent_id];
+        if (mggp.spouse_id && byId[mggp.spouse_id] && !result[mggp.spouse_id]) {
+          result[mggp.spouse_id] = cls('maternal');
+        }
+      }
+    }
+  });
+
+  // ── Step 3: 전역 배우자 상속 + fallback ──
+  members.forEach(m => {
+    if (!result[m._id] && m.spouse_id && result[m.spouse_id]) {
+      result[m._id] = result[m.spouse_id];
+    }
+  });
+  members.forEach(m => {
+    if (!result[m._id]) {
+      result[m._id] = 'universal';
+    }
+  });
+
+  return result;
+}
+
 // ====== dagre 레이아웃 (양쪽 분리 + 중앙 부부) ======
 function buildDagreLayout(members, openModalRef) {
   if (!members || members.length === 0) return { nodes: [], edges: [] };
@@ -507,6 +695,18 @@ function buildDagreLayout(members, openModalRef) {
           markerEnd: { type: MarkerType.Arrow, color: '#78909c' }
         });
       }
+    } else if (allPos[m._id] && allPos[ref._id]) {
+      // ref에 parent가 없는 경우: 수평 점선으로 형제 관계 표시
+      const pRef = allPos[ref._id];
+      const pM = allPos[m._id];
+      const [leftId, rightId] = pRef.x <= pM.x ? [ref._id, m._id] : [m._id, ref._id];
+      rfEdges.push({
+        id: `sib-link-${ref._id}-${m._id}`,
+        source: leftId, target: rightId,
+        sourceHandle: 'right-src', targetHandle: 'left-tgt',
+        type: 'straight',
+        style: { stroke: '#78909c', strokeWidth: 1.5, strokeDasharray: '6 3' }
+      });
     }
   });
 
@@ -531,7 +731,7 @@ function buildDagreLayout(members, openModalRef) {
 }
 
 // ====== 메인 컴포넌트 ======
-const FamilyTree = ({ members, onRefresh }) => {
+const FamilyTree = ({ members, onRefresh, husbandLineage = 'paternal', wifeLineage = 'paternal' }) => {
   const navigate = useNavigate();
   const [addModal, setAddModal] = useState(null);
   const [newMember, setNewMember] = useState({ gender: 'male', relation_type: '' });
@@ -610,8 +810,26 @@ const FamilyTree = ({ members, onRefresh }) => {
   }, [navigate]);
 
   const { nodes, edges } = useMemo(() => {
-    return buildDagreLayout(members, openModalRef);
-  }, [members]);
+    if (!members || members.length === 0) return { nodes: [], edges: [] };
+    const classification = classifyLineage(members);
+    const filtered = members.filter(m => {
+      const cls = classification[m._id];
+      return cls === 'universal'
+        || cls === 'husband-core'
+        || cls === 'wife-core'
+        || cls === `husband-${husbandLineage}`
+        || cls === `wife-${wifeLineage}`;
+    });
+    // 필터 후 spouse_id가 필터에서 제외된 경우 정리
+    const filteredIds = new Set(filtered.map(m => m._id));
+    const cleaned = filtered.map(m => {
+      if (m.spouse_id && !filteredIds.has(m.spouse_id)) {
+        return { ...m, spouse_id: null };
+      }
+      return m;
+    });
+    return buildDagreLayout(cleaned, openModalRef);
+  }, [members, husbandLineage, wifeLineage]);
 
   // 모달
   const Modal = () => {
@@ -668,6 +886,50 @@ const FamilyTree = ({ members, onRefresh }) => {
             style={{ padding: '12px 20px', border: '2px solid #e91e63', borderRadius: '8px', background: 'white', color: '#e91e63', cursor: 'pointer', fontSize: '14px' }}>
             👩 본인 등록 (아내측)
           </button>
+        </div>
+        <Modal />
+      </div>
+    );
+  }
+
+  // 빈 lineage 처리: 양쪽 모두 해당 lineage 멤버가 없으면 안내 메시지
+  const hasLineageMembers = (() => {
+    const classification = classifyLineage(members);
+    return members.some(m =>
+      classification[m._id] === `husband-${husbandLineage}`
+      || classification[m._id] === `wife-${wifeLineage}`
+    );
+  })();
+
+  if (!hasLineageMembers) {
+    const hLabel = husbandLineage === 'paternal' ? '친가' : '외가';
+    const wLabel = wifeLineage === 'paternal' ? '친가' : '외가';
+    const label = hLabel === wLabel ? hLabel : `남편측 ${hLabel} / 아내측 ${wLabel}`;
+    return (
+      <div style={{ width: '100%', height: '70vh', minHeight: '500px', position: 'relative' }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodeClick={onNodeClick}
+          fitView
+          fitViewOptions={{ padding: 0.4 }}
+          minZoom={0.3}
+          maxZoom={2.0}
+        >
+          <Background color="#ddd" gap={20} />
+          <Controls />
+        </ReactFlow>
+        <div style={{
+          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+          background: 'rgba(255,255,255,0.95)', padding: '24px 32px', borderRadius: '12px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.1)', textAlign: 'center', zIndex: 10,
+          pointerEvents: 'none'
+        }}>
+          <p style={{ color: '#888', fontSize: '14px', margin: 0 }}>
+            {label} 가족이 아직 등록되지 않았습니다.<br />
+            부모의 ± 버튼으로 형제를 추가하세요.
+          </p>
         </div>
         <Modal />
       </div>
