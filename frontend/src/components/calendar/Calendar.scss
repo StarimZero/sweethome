@@ -689,54 +689,39 @@
     padding: 12px;
 
     .zoom-controls {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      margin-bottom: 8px;
-
-      button {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        background: #fff;
-        font-size: 1.1rem;
-        color: #495057;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-        &:active {
-          background: #f1f3f5;
-        }
-      }
+      display: none;
     }
 
     .weekday-header {
-      min-width: 560px;
-
       .weekday {
-        padding: 8px 4px;
-        font-size: 0.8rem;
+        padding: 6px 2px;
+        font-size: 0.75rem;
       }
-    }
-
-    .calendar-body {
-      min-width: 560px;
     }
 
     .day-cell {
-      min-height: 70px;
-      padding: 4px;
+      min-height: 60px;
+      padding: 3px;
+
+      .day-number {
+        font-size: 0.75rem;
+        min-width: 22px;
+      }
 
       .event-item {
-        padding: 1px 4px;
-        font-size: 0.7rem;
+        padding: 1px 3px;
+        font-size: 0.65rem;
+
+        .badge-icon {
+          font-size: 0.5rem;
+        }
       }
 
       .holiday-name {
+        font-size: 0.55rem;
+      }
+
+      .more-events {
         font-size: 0.6rem;
       }
     }
