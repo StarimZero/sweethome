@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import './Calendar.scss';
@@ -11,6 +11,22 @@ const CalendarPage = () => {
   const [events, setEvents] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const calendarWrapperRef = useRef(null);
+  const [calendarScale, setCalendarScale] = useState(1);
+
+  // 캘린더 자동 축소 (모바일에서 화면에 맞게)
+  useEffect(() => {
+    const CALENDAR_MIN_WIDTH = 700;
+    const updateScale = () => {
+      if (calendarWrapperRef.current) {
+        const w = calendarWrapperRef.current.clientWidth;
+        setCalendarScale(w < CALENDAR_MIN_WIDTH ? w / CALENDAR_MIN_WIDTH : 1);
+      }
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
 
   // 공휴일 조회
   const fetchHolidays = async () => {
@@ -233,8 +249,8 @@ const CalendarPage = () => {
       )}
 
       {/* 달력 그리드 */}
-      <div className="calendar-scroll-wrapper">
-        <div className="calendar-grid">
+      <div className="calendar-scroll-wrapper" ref={calendarWrapperRef}>
+        <div className="calendar-grid" style={calendarScale < 1 ? { zoom: calendarScale } : {}}>
             {/* 요일 헤더 */}
             <div className="weekday-header">
               {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (

@@ -49,11 +49,10 @@
     }
   }
 
-  // 달력 스크롤 래퍼 (모바일에서 가로 스크롤 + 핀치줌 가능)
+  // 달력 래퍼 (모바일에서 자동 축소)
   .calendar-scroll-wrapper {
     width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
     margin-bottom: 20px;
   }
 
@@ -202,6 +201,7 @@
     cursor: pointer;
     transition: background 0.2s;
     position: relative;
+    overflow: hidden;
 
     &:nth-child(7n) {
       border-right: none;
@@ -284,23 +284,18 @@
     }
 
     .event-item {
-      display: flex;
-      align-items: center;
-      gap: 2px;
+      display: block;
       padding: 2px 6px;
       border-radius: 4px;
       margin-bottom: 2px;
       font-size: 0.75rem;
       color: #fff;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       .badge-icon {
         font-size: 0.6rem;
-        flex-shrink: 0;
-      }
-
-      .event-title {
-        white-space: nowrap;
       }
     }
 
