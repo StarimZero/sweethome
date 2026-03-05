@@ -233,7 +233,8 @@ const CalendarPage = () => {
       )}
 
       {/* 달력 그리드 */}
-          <div className="calendar-grid">
+      <div className="calendar-scroll-wrapper">
+        <div className="calendar-grid">
             {/* 요일 헤더 */}
             <div className="weekday-header">
               {['일', '월', '화', '수', '목', '금', '토'].map((day, idx) => (
@@ -312,7 +313,8 @@ const CalendarPage = () => {
                 );
               })}
             </div>
-          </div>
+        </div>
+      </div>
 
       {/* 선택된 날짜 이벤트 */}
       {selectedDate && (

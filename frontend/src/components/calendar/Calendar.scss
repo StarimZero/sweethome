@@ -49,21 +49,27 @@
     }
   }
 
+  // 달력 스크롤 래퍼 (모바일에서 가로 스크롤 + 핀치줌 가능)
+  .calendar-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+  }
+
   // 달력 그리드
   .calendar-grid {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    min-width: 700px;
     width: 100%;
-    max-width: 100%;
-    margin-bottom: 20px;
   }
 
   .weekday-header {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    width: 100%;
+    grid-template-columns: repeat(7, 1fr);
     background: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
 
@@ -183,15 +189,12 @@
 
   .calendar-body {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    width: 100%;
+    grid-template-columns: repeat(7, 1fr);
     position: relative;
   }
 
   .day-cell {
     min-height: 90px;
-    min-width: 0;
-    max-width: 100%;
     padding: 8px;
     padding-top: 6px;
     border-right: 1px solid #f1f3f5;
@@ -199,8 +202,6 @@
     cursor: pointer;
     transition: background 0.2s;
     position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
 
     &:nth-child(7n) {
       border-right: none;
@@ -283,24 +284,23 @@
     }
 
     .event-item {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 2px;
       padding: 2px 6px;
       border-radius: 4px;
       margin-bottom: 2px;
       font-size: 0.75rem;
       color: #fff;
-      overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
-      box-sizing: border-box;
 
       .badge-icon {
         font-size: 0.6rem;
+        flex-shrink: 0;
       }
 
       .event-title {
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 
@@ -682,42 +682,30 @@
 
     .weekday-header {
       .weekday {
-        padding: 6px 2px;
-        font-size: 0.75rem;
+        padding: 8px 4px;
+        font-size: 0.8rem;
       }
     }
 
     .day-cell {
-      min-height: 52px;
-      padding: 3px;
+      min-height: 60px;
+      padding: 4px;
 
       .day-number {
-        font-size: 0.75rem;
-        min-width: 22px;
+        font-size: 0.8rem;
       }
 
       .event-item {
-        padding: 1px 3px;
-        font-size: 0.6rem;
-
-        .badge-icon {
-          font-size: 0.5rem;
-        }
+        font-size: 0.7rem;
+        padding: 1px 4px;
       }
 
       .holiday-name {
-        font-size: 0.5rem;
-      }
-
-      .more-events {
         font-size: 0.6rem;
       }
 
-      &.today {
-        .day-number {
-          width: 22px;
-          height: 22px;
-        }
+      .more-events {
+        font-size: 0.65rem;
       }
     }
 
