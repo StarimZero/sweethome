@@ -49,20 +49,6 @@
     }
   }
 
-  // 줌 래퍼
-  .calendar-zoom-wrapper {
-    width: 100% !important;
-    margin-bottom: 20px;
-  }
-
-  .calendar-zoom-content {
-    width: 100% !important;
-  }
-
-  .zoom-controls {
-    display: none;
-  }
-
   // 달력 그리드
   .calendar-grid {
     background: #fff;
@@ -70,11 +56,14 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
   }
 
   .weekday-header {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
     background: #f8f9fa;
     border-bottom: 1px solid #e9ecef;
 
@@ -195,12 +184,14 @@
   .calendar-body {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
     position: relative;
   }
 
   .day-cell {
     min-height: 90px;
     min-width: 0;
+    max-width: 100%;
     padding: 8px;
     padding-top: 6px;
     border-right: 1px solid #f1f3f5;
@@ -209,6 +200,7 @@
     transition: background 0.2s;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 
     &:nth-child(7n) {
       border-right: none;
@@ -291,9 +283,7 @@
     }
 
     .event-item {
-      display: flex;
-      align-items: center;
-      gap: 2px;
+      display: block;
       padding: 2px 6px;
       border-radius: 4px;
       margin-bottom: 2px;
@@ -302,10 +292,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      box-sizing: border-box;
 
       .badge-icon {
         font-size: 0.6rem;
-        flex-shrink: 0;
       }
 
       .event-title {
@@ -689,21 +679,6 @@
 @media (max-width: 768px) {
   .calendar-page {
     padding: 12px;
-
-    .zoom-controls {
-      display: none;
-    }
-
-    // 모바일에서 핀치 줌 가능하도록 width 제한 해제
-    .calendar-zoom-wrapper {
-      width: 100% !important;
-      overflow: visible !important;
-    }
-
-    .calendar-zoom-content {
-      width: auto !important;
-      min-width: 100%;
-    }
 
     .weekday-header {
       .weekday {

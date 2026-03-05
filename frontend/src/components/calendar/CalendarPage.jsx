@@ -1,19 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TransformWrapper, TransformComponent, useControls } from 'react-zoom-pan-pinch';
 import apiClient from '../../api';
 import './Calendar.scss';
-
-const ZoomControls = () => {
-  const { zoomIn, zoomOut, resetTransform } = useControls();
-  return (
-    <div className="zoom-controls">
-      <button onClick={() => zoomIn()}>+</button>
-      <button onClick={() => zoomOut()}>−</button>
-      <button onClick={() => resetTransform()}>↺</button>
-    </div>
-  );
-};
 
 const CalendarPage = () => {
   const navigate = useNavigate();
@@ -245,14 +233,6 @@ const CalendarPage = () => {
       )}
 
       {/* 달력 그리드 */}
-      <TransformWrapper
-        minScale={0.5}
-        maxScale={2}
-        doubleClick={{ disabled: true }}
-        panning={{ velocityDisabled: true }}
-      >
-        <ZoomControls />
-        <TransformComponent wrapperClass="calendar-zoom-wrapper" contentClass="calendar-zoom-content">
           <div className="calendar-grid">
             {/* 요일 헤더 */}
             <div className="weekday-header">
@@ -333,8 +313,6 @@ const CalendarPage = () => {
               })}
             </div>
           </div>
-        </TransformComponent>
-      </TransformWrapper>
 
       {/* 선택된 날짜 이벤트 */}
       {selectedDate && (
