@@ -16,7 +16,8 @@ class Review(Document):
     naver_url: Optional[str] = None
     image_urls: List[str] = []
     category: Optional[str] = None
-    
+
+    created_by: Optional[PydanticObjectId] = None  # 작성자 user_id
 
     class Settings:
         name = "reviews"    # MongoDB 컬렉션 이름

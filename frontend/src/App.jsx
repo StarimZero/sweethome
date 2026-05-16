@@ -16,6 +16,10 @@ import ReviewDetailPage from './components/review/ReviewDetailPage'
 import CodeListPage from './components/system/code/CodeListPage';
 import CodeInsertPage from './components/system/code/CodeInsertPage';
 import CodeDetailPage from './components/system/code/CodeDetailPage';
+//사용자관리
+import UserListPage from './components/system/user/UserListPage';
+import UserInsertPage from './components/system/user/UserInsertPage';
+import UserDetailPage from './components/system/user/UserDetailPage';
 // 여행 관련 3총사
 import TravelPage from './components/travel/TravelPage'
 import TravelInsertPage from './components/travel/TravelInsertPage'
@@ -44,6 +48,10 @@ import FamilyDetailPage from './components/family/FamilyDetailPage'
 import CulturePage from './components/culture/CulturePage'
 import CultureInsertPage from './components/culture/CultureInsertPage'
 import CultureDetailPage from './components/culture/CultureDetailPage'
+// 뜨개록 3총사
+import KnittingPage from './components/knitting/KnittingPage'
+import KnittingInsertPage from './components/knitting/KnittingInsertPage'
+import KnittingDetailPage from './components/knitting/KnittingDetailPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -109,12 +117,21 @@ function App() {
             <Route path="/culture/new" element={<CultureInsertPage />} />
             <Route path="/culture/:id" element={<CultureDetailPage />} />
 
+            {/* 뜨개록 (Knitting) */}
+            <Route path="/knitting" element={<KnittingPage />} />
+            <Route path="/knitting/new" element={<KnittingInsertPage />} />
+            <Route path="/knitting/:id" element={<KnittingDetailPage />} />
+            <Route path="/knitting/:id/edit" element={<KnittingInsertPage />} />
+
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>
                {/* SystemLayout 내부의 자식 라우트들도 자동으로 보호됨 */}
                <Route path="code" element={<CodeListPage />} />
                <Route path="code/new" element={<CodeInsertPage />} />
                <Route path="code/:id" element={<CodeDetailPage />} />
+               <Route path="users" element={<UserListPage />} />
+               <Route path="users/new" element={<UserInsertPage />} />
+               <Route path="users/:id" element={<UserDetailPage />} />
             </Route>
 
           </Route> {/* End of ProtectedRoute */}

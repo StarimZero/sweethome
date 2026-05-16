@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from beanie import PydanticObjectId
 from models import Travel
+from models.user import User
+from auth.security import get_current_user, assert_owner_or_admin
 from datetime import datetime
 
 router = APIRouter(
@@ -25,30 +27,40 @@ async def get_travel(id: PydanticObjectId):
 
 # 3. 여행 등록
 @router.post("/", response_model=Travel)
-async def create_travel(travel: Travel):
+async def create_travel(travel: Travel, current_user: User = Depends(get_current_user)):
     """새 여행 등록"""
+    travel.created_by = current_user.id
     await travel.insert()
     return travel
 
 # 4. 여행 수정
 @router.put("/{id}", response_model=Travel)
-async def update_travel(id: PydanticObjectId, travel_data: Travel):
+async def update_travel(
+    id: PydanticObjectId,
+    travel_data: Travel,
+    current_user: User = Depends(get_current_user),
+):
     travel = await Travel.get(id)
     if not travel:
         raise HTTPException(status_code=404, detail="Travel not found")
-    
+    assert_owner_or_admin(travel, current_user)
+
     travel_data.updated_at = datetime.now()
     update_query = travel_data.dict(exclude_unset=True)
+    update_query.pop("created_by", None)
     await travel.set(update_query)
     return travel
 
 # 5. 여행 삭제
 @router.delete("/{id}")
-async def delete_travel(id: PydanticObjectId):
+async def delete_travel(
+    id: PydanticObjectId,
+    current_user: User = Depends(get_current_user),
+):
     travel = await Travel.get(id)
     if not travel:
         raise HTTPException(status_code=404, detail="Travel not found")
-    
+    assert_owner_or_admin(travel, current_user)
     await travel.delete()
     return {"message": "Travel deleted successfully"}
 

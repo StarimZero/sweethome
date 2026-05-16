@@ -7,7 +7,7 @@ import './Diary.scss';
 const DiaryDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { getAuthorName } = useAuth();
   const [diary, setDiary] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({});
@@ -72,9 +72,7 @@ const DiaryDetailPage = () => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     try {
-      const author = user?.username === 'wife' ? '아내' : '남편';
       await apiClient.post(`/diary/${id}/comments`, {
-        author,
         content: newComment
       });
       setNewComment('');
@@ -94,11 +92,6 @@ const DiaryDetailPage = () => {
     }
   };
 
-  const getAuthorLabel = (auth) => {
-    const map = { husband: '🙋‍♂️ 남편', wife: '🙋‍♀️ 아내' };
-    return map[auth] || auth;
-  };
-
   const getMoodLabel = (mood) => {
     const found = moods.find(m => m.id === mood);
     return found ? `${found.emoji} ${found.label}` : '';
@@ -116,7 +109,7 @@ const DiaryDetailPage = () => {
       <div className="detail-header">
         <div className="header-info">
           <span className="diary-date">{diary.date || diary.created_at?.slice(0, 10)}</span>
-          <span className={`author-tag ${diary.author}`}>{getAuthorLabel(diary.author)}</span>
+          <span className="author-tag">👤 {getAuthorName(diary.created_by)}</span>
         </div>
         <div className="header-actions">
           {isEditing ? (
@@ -210,12 +203,12 @@ const DiaryDetailPage = () => {
         <div className="comment-list">
           {diary.comments?.map((comment) => (
             <div key={comment.id} className="comment-item">
-              <div className={`comment-avatar ${comment.author === '아내' ? 'wife' : ''}`}>
-                {comment.author}
+              <div className="comment-avatar">
+                {getAuthorName(comment.created_by)}
               </div>
               <div className="comment-body">
                 <div className="comment-header">
-                  <span className="comment-author">{comment.author}</span>
+                  <span className="comment-author">👤 {getAuthorName(comment.created_by)}</span>
                   <span className="comment-date">{comment.created_at?.slice(0, 10)}</span>
                 </div>
                 <div className="comment-text">{comment.content}</div>

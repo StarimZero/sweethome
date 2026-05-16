@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from beanie import PydanticObjectId
 from typing import List, Optional
 from models.liquor import LiquorReview, AINote
+from models.user import User
+from auth.security import get_current_user, assert_owner_or_admin
 from datetime import datetime
 import google.generativeai as genai
 import os
@@ -162,7 +164,12 @@ async def get_liquors(
 
 # 2. 등록 (AI 분석 자동 요청)
 @router.post("", response_model=LiquorReview)
-async def create_liquor(liquor: LiquorReview, background_tasks: BackgroundTasks):
+async def create_liquor(
+    liquor: LiquorReview,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user),
+):
+    liquor.created_by = current_user.id
     liquor.created_at = datetime.now()
     liquor.updated_at = datetime.now()
     
@@ -197,15 +204,22 @@ async def get_liquor(id: PydanticObjectId):
 
 # 4. 수정 (이름 변경 시 AI 재분석)
 @router.put("/{id}", response_model=LiquorReview)
-async def update_liquor(id: PydanticObjectId, liquor_data: LiquorReview, background_tasks: BackgroundTasks):
+async def update_liquor(
+    id: PydanticObjectId,
+    liquor_data: LiquorReview,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user),
+):
     liquor = await LiquorReview.get(id)
     if not liquor:
         raise HTTPException(status_code=404, detail="Not found")
-    
+    assert_owner_or_admin(liquor, current_user)
+
     old_name = liquor.name
-    
+
     # 업데이트할 데이터 준비
     update_data = liquor_data.dict(exclude_unset=True)
+    update_data.pop("created_by", None)
     update_data["updated_at"] = datetime.now()
     
     # 평점 재계산
@@ -237,9 +251,13 @@ async def update_liquor(id: PydanticObjectId, liquor_data: LiquorReview, backgro
 
 # 5. 삭제
 @router.delete("/{id}")
-async def delete_liquor(id: PydanticObjectId):
+async def delete_liquor(
+    id: PydanticObjectId,
+    current_user: User = Depends(get_current_user),
+):
     liquor = await LiquorReview.get(id)
     if not liquor:
         raise HTTPException(status_code=404, detail="Not found")
+    assert_owner_or_admin(liquor, current_user)
     await liquor.delete()
     return {"message": "Deleted"}

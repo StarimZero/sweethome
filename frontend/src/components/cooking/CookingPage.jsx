@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import './Cooking.scss';
 
 function CookingPage() {
   const navigate = useNavigate();
+  const { userMap, getAuthorName } = useAuth();
   const [recipes, setRecipes] = useState([]);
 
   const [filters, setFilters] = useState({
-    chef: 'all',
+    created_by: 'all',
     name: '',
     description: '',
     cooking_type: ''
@@ -23,7 +25,7 @@ function CookingPage() {
 
   useEffect(() => {
     fetchRecipes();
-  }, [filters.chef, filters.cooking_type]);
+  }, [filters.created_by, filters.cooking_type]);
 
   const fetchCodes = async () => {
     try {
@@ -35,7 +37,7 @@ function CookingPage() {
   const fetchRecipes = async () => {
     try {
       const params = {};
-      if (filters.chef && filters.chef !== 'all') params.chef = filters.chef;
+      if (filters.created_by && filters.created_by !== 'all') params.created_by = filters.created_by;
       if (filters.cooking_type && filters.cooking_type !== '전체') params.cooking_type = filters.cooking_type;
       if (filters.name) params.name = filters.name;
       if (filters.description) params.description = filters.description;
@@ -67,17 +69,19 @@ function CookingPage() {
       <div className="filter-box">
         <div className="filter-top">
           <div className="tab-group">
-            {[
-              { id: 'all', label: '전체 보기' },
-              { id: 'husband', label: '👨‍💼 남편' },
-              { id: 'wife', label: '👩‍💼 아내' }
-            ].map(tab => (
+            <button
+              onClick={() => setFilters(prev => ({ ...prev, created_by: 'all' }))}
+              className={`tab-btn ${filters.created_by === 'all' ? 'active' : ''}`}
+            >
+              전체 보기
+            </button>
+            {Object.entries(userMap).map(([uid, info]) => (
               <button
-                key={tab.id}
-                onClick={() => setFilters(prev => ({ ...prev, chef: tab.id }))}
-                className={`tab-btn ${filters.chef === tab.id ? 'active' : ''}`}
+                key={uid}
+                onClick={() => setFilters(prev => ({ ...prev, created_by: uid }))}
+                className={`tab-btn ${filters.created_by === uid ? 'active' : ''}`}
               >
-                {tab.label}
+                👤 {info.nickname}
               </button>
             ))}
           </div>
@@ -133,7 +137,7 @@ function CookingPage() {
                 <span className="placeholder">🍳</span>
               )}
               <span className="chef-badge">
-                {recipe.chef === 'husband' ? '남편' : '아내'}
+                👤 {getAuthorName(recipe.created_by)}
               </span>
             </div>
 

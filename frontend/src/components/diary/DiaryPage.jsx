@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import './Diary.scss';
 
 const DiaryPage = () => {
   const navigate = useNavigate();
+  const { userMap, getAuthorName } = useAuth();
   const [diaries, setDiaries] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [author, setAuthor] = useState('');
@@ -15,7 +17,7 @@ const DiaryPage = () => {
     try {
       const params = {};
       if (keyword) params.keyword = keyword;
-      if (author) params.author = author;
+      if (author) params.created_by = author;
       if (dateFrom) params.date_from = dateFrom;
       if (dateTo) params.date_to = dateTo;
 
@@ -33,11 +35,6 @@ const DiaryPage = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     fetchData();
-  };
-
-  const getAuthorLabel = (auth) => {
-    const map = { husband: '🙋‍♂️ 남편', wife: '🙋‍♀️ 아내' };
-    return map[auth] || auth;
   };
 
   const getMoodEmoji = (mood) => {
@@ -82,9 +79,10 @@ const DiaryPage = () => {
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         >
-          <option value="">전체</option>
-          <option value="husband">남편</option>
-          <option value="wife">아내</option>
+          <option value="">전체 작성자</option>
+          {Object.entries(userMap).map(([uid, info]) => (
+            <option key={uid} value={uid}>{info.nickname}</option>
+          ))}
         </select>
         <button type="submit" className="search-btn">검색</button>
       </form>
@@ -117,7 +115,7 @@ const DiaryPage = () => {
         {diaries.map((diary) => (
           <div
             key={diary._id}
-            className={`diary-card ${diary.author}`}
+            className="diary-card"
             onClick={() => navigate(`/diary/${diary._id}`)}
           >
             {diary.image_url && (
@@ -133,7 +131,7 @@ const DiaryPage = () => {
               <div className="diary-title">{diary.title}</div>
               <div className="diary-preview">{diary.content?.slice(0, 100)}...</div>
               <div className="diary-meta">
-                <span className={`author-tag ${diary.author}`}>{getAuthorLabel(diary.author)}</span>
+                <span className="author-tag">👤 {getAuthorName(diary.created_by)}</span>
                 <span>💬 {diary.comments?.length || 0}</span>
               </div>
             </div>

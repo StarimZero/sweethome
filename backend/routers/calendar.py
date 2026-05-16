@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from beanie import PydanticObjectId
 from typing import List, Optional
 from datetime import datetime, date
 from pydantic import BaseModel
 from models.calendar import CalendarEvent
+from models.user import User
+from auth.security import get_current_user, assert_owner_or_admin
 
 router = APIRouter(prefix="/api/calendar", tags=["Calendar"])
 
@@ -269,7 +271,7 @@ def convert_solar_date_to_lunar_str(date_str: str) -> Optional[str]:
 
 # 3. 등록
 @router.post("", response_model=CalendarEvent)
-async def create_event(event: CalendarEvent):
+async def create_event(event: CalendarEvent, current_user: User = Depends(get_current_user)):
     # 음력 체크 시: 입력된 양력 날짜를 음력으로 변환하여 저장
     if event.is_lunar:
         lunar_date = convert_solar_date_to_lunar_str(event.date)
@@ -280,6 +282,7 @@ async def create_event(event: CalendarEvent):
             if lunar_end:
                 event.end_date = lunar_end
 
+    event.created_by = current_user.id
     event.created_at = datetime.now()
     event.updated_at = datetime.now()
     await event.insert()
@@ -287,10 +290,15 @@ async def create_event(event: CalendarEvent):
 
 # 4. 수정
 @router.put("/{id}", response_model=CalendarEvent)
-async def update_event(id: PydanticObjectId, data: CalendarEvent):
+async def update_event(
+    id: PydanticObjectId,
+    data: CalendarEvent,
+    current_user: User = Depends(get_current_user),
+):
     event = await CalendarEvent.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Not found")
+    assert_owner_or_admin(event, current_user)
 
     # 음력 체크 시: 입력된 양력 날짜를 음력으로 변환하여 저장
     if data.is_lunar:
@@ -304,14 +312,19 @@ async def update_event(id: PydanticObjectId, data: CalendarEvent):
 
     data.updated_at = datetime.now()
     update_data = data.model_dump(exclude_unset=True)
+    update_data.pop("created_by", None)
     await event.update({"$set": update_data})
     return await CalendarEvent.get(id)
 
 # 5. 삭제
 @router.delete("/{id}")
-async def delete_event(id: PydanticObjectId):
+async def delete_event(
+    id: PydanticObjectId,
+    current_user: User = Depends(get_current_user),
+):
     event = await CalendarEvent.get(id)
     if not event:
         raise HTTPException(status_code=404, detail="Not found")
+    assert_owner_or_admin(event, current_user)
     await event.delete()
     return {"message": "Deleted"}

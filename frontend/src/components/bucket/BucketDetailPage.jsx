@@ -8,8 +8,8 @@ import './Bucket.scss';
 const BucketDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { categories, statuses, owners, loading: codesLoading, getCategoryLabel, getStatusLabel, getOwnerLabel } = useBucketCodes();
+  const { getAuthorName } = useAuth();
+  const { categories, statuses, loading: codesLoading, getCategoryLabel, getStatusLabel } = useBucketCodes();
   const [bucket, setBucket] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({});
@@ -60,9 +60,7 @@ const BucketDetailPage = () => {
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
     try {
-      const author = user?.username === 'husband' ? '남편' : '아내';
       await apiClient.post(`/bucket/${id}/comments`, {
-        author,
         content: newComment
       });
       setNewComment('');
@@ -128,14 +126,6 @@ const BucketDetailPage = () => {
               </select>
             </div>
             <div className="form-group">
-              <label>담당</label>
-              <select name="owner" value={form.owner} onChange={handleChange}>
-                {owners.map(c => (
-                  <option key={c.code_id} value={c.code_id}>{c.code_name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
               <label>목표일</label>
               <input type="date" name="target_date" value={form.target_date || ''} onChange={handleChange} />
             </div>
@@ -178,8 +168,8 @@ const BucketDetailPage = () => {
               <span className={`category-tag ${bucket.category}`}>{getCategoryLabel(bucket.category)}</span>
             </div>
             <div className="detail-item">
-              <span className="label">담당</span>
-              <span>{getOwnerLabel(bucket.owner)}</span>
+              <span className="label">작성자</span>
+              <span>👤 {getAuthorName(bucket.created_by)}</span>
             </div>
             <div className="detail-item">
               <span className="label">목표일</span>
@@ -217,12 +207,12 @@ const BucketDetailPage = () => {
         <div className="comment-list">
           {bucket.comments?.map((comment) => (
             <div key={comment.id} className="comment-item">
-              <div className={`comment-avatar ${comment.author === '아내' ? 'wife' : ''}`}>
-                {comment.author}
+              <div className="comment-avatar">
+                {getAuthorName(comment.created_by)}
               </div>
               <div className="comment-body">
                 <div className="comment-header">
-                  <span className="comment-author">{comment.author}</span>
+                  <span className="comment-author">👤 {getAuthorName(comment.created_by)}</span>
                   <span className="comment-date">{comment.created_at?.slice(0, 10)}</span>
                 </div>
                 <div className="comment-text">{comment.content}</div>

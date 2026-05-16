@@ -15,6 +15,8 @@ class FamilyMember(Document):
     generation: int = 0                # 세대 (0=본인, 1=부모, 2=조부모, -1=자녀)
     memo: Optional[str] = None         # 메모
 
+    created_by: Optional[PydanticObjectId] = None  # 작성자 user_id
+
     class Settings:
         name = "family_members"
 

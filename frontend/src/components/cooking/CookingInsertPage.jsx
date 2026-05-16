@@ -7,7 +7,6 @@ function CookingInsertPage() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    chef: 'husband',
     name: '',
     description: '',
     cooking_type: '',
@@ -48,13 +47,6 @@ function CookingInsertPage() {
     <div className="content-box cooking-insert-page">
       <h1>🍳 요리 등록하기</h1>
       <form onSubmit={handleSubmit} className="insert-form">
-
-        <label>누가?
-          <select name="chef" value={formData.chef} onChange={handleChange} className="form-select">
-            <option value="husband">남편</option>
-            <option value="wife">아내</option>
-          </select>
-        </label>
 
         <label>이름
           <input name="name" value={formData.name} onChange={handleChange} required className="form-input" />

@@ -6,12 +6,11 @@ import './Bucket.scss';
 
 const BucketInsertPage = () => {
   const navigate = useNavigate();
-  const { categories, statuses, owners, loading } = useBucketCodes();
+  const { categories, statuses, loading } = useBucketCodes();
   const [form, setForm] = useState({
     title: '',
     description: '',
     category: '',
-    owner: '',
     target_date: '',
     progress: 0,
     status: '',
@@ -89,16 +88,6 @@ const BucketInsertPage = () => {
             <select name="category" value={form.category} onChange={handleChange}>
               <option value="">선택하세요</option>
               {categories.map(c => (
-                <option key={c.code_id} value={c.code_id}>{c.code_name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>담당</label>
-            <select name="owner" value={form.owner} onChange={handleChange}>
-              <option value="">선택하세요</option>
-              {owners.map(c => (
                 <option key={c.code_id} value={c.code_id}>{c.code_name}</option>
               ))}
             </select>

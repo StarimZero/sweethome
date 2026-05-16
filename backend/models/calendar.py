@@ -16,6 +16,8 @@ class CalendarEvent(Document):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
+    created_by: Optional[PydanticObjectId] = None  # 작성자 user_id
+
     class Settings:
         name = "calendar_events"
 

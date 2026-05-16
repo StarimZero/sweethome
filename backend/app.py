@@ -11,9 +11,9 @@ from dotenv import load_dotenv  # [추가 1] 환경변수 로드 라이브러리
 # 라우터들
 from routers import dashboard, cooking, review
 from routers.system import common_code
-from routers import travel, liquor, bucket, diary, calendar, family, culture
+from routers import travel, liquor, bucket, diary, calendar, family, culture, knitting
 from models.user import User
-from routers import auth 
+from routers import auth, user as user_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -54,7 +54,9 @@ app.include_router(diary.router)
 app.include_router(calendar.router)
 app.include_router(family.router)
 app.include_router(culture.router)
+app.include_router(knitting.router)
 app.include_router(auth.router)
+app.include_router(user_router.router)
 
 # --- 프론트엔드 연결 ---
 # 정적 파일 경로 설정 (Render 빌드 시 backend/static 으로 복사됨)

@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import apiClient from '../../api';
 import './Diary.scss';
 
 const DiaryInsertPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: '',
     content: '',
-    author: user?.username === 'wife' ? 'wife' : 'husband',
     date: today,
     mood: '',
     weather: '',
@@ -102,7 +99,7 @@ const DiaryInsertPage = () => {
           )}
         </div>
 
-        <div className="form-group half-width">
+        <div className="form-group">
           <label>날짜</label>
           <input
             type="date"
@@ -110,14 +107,6 @@ const DiaryInsertPage = () => {
             value={form.date}
             onChange={handleChange}
           />
-        </div>
-
-        <div className="form-group half-width">
-          <label>작성자</label>
-          <select name="author" value={form.author} onChange={handleChange}>
-            <option value="husband">🙋‍♂️ 남편</option>
-            <option value="wife">🙋‍♀️ 아내</option>
-          </select>
         </div>
 
         <div className="form-group">

@@ -1,4 +1,4 @@
-from beanie import Document
+from beanie import Document, PydanticObjectId
 from typing import Optional, List
 from datetime import datetime
 
@@ -21,6 +21,8 @@ class CultureReview(Document):
 
     created_at: datetime = datetime.now()
     updated_at: datetime = datetime.now()
+
+    created_by: Optional[PydanticObjectId] = None  # 작성자 user_id
 
     class Settings:
         name = "culture_reviews"

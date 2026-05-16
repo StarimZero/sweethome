@@ -47,13 +47,16 @@ const Header = () => {
             <Link to="/diary" className="nav-item" onClick={closeMenu}>💬 소곤소곤</Link>
             <Link to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</Link>
             <Link to="/culture" className="nav-item" onClick={closeMenu}>🎨 Culture</Link>
+            <Link to="/knitting" className="nav-item" onClick={closeMenu}>🧶 뜨개록</Link>
             <Link to="/family" className="nav-item" onClick={closeMenu}>👨‍👩‍👧‍👦 가계도</Link>
 
-            {/* 시스템 메뉴는 관리자만 보게 할 수도 있지만 일단 로그인 유저 전체에게 공개 */}
-            <Link to="/system" className="nav-item" onClick={closeMenu}>⚙️ System</Link>
+            {/* 시스템 메뉴는 admin만 표시 */}
+            {user.role === 'admin' && (
+              <Link to="/system" className="nav-item" onClick={closeMenu}>⚙️ System</Link>
+            )}
 
             <div className="user-info">
-              <span className="welcome-msg">Hi, <b>{user.username}</b>님</span>
+              <span className="welcome-msg">Hi, <b>{user.nickname || user.username}</b>님</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
             </div>
           </>

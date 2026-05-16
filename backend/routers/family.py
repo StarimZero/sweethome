@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from beanie import PydanticObjectId
 from pydantic import BaseModel
 from models.family import FamilyMember
+from models.user import User
+from auth.security import get_current_user, assert_owner_or_admin
 
 # 부분 업데이트용 모델
 class FamilyMemberUpdate(BaseModel):
@@ -54,8 +56,9 @@ async def get_family_tree(side: Optional[str] = None):
     }
 
 @router.post("", response_model=FamilyMember)
-async def add_member(member: FamilyMember):
+async def add_member(member: FamilyMember, current_user: User = Depends(get_current_user)):
     """가족 구성원 등록"""
+    member.created_by = current_user.id
     await member.insert()
 
     # 배우자 연결이 있으면 상대방도 업데이트
@@ -75,22 +78,33 @@ async def get_member(id: PydanticObjectId):
     return member
 
 @router.put("/{id}", response_model=FamilyMember)
-async def update_member(id: PydanticObjectId, member_data: FamilyMember):
+async def update_member(
+    id: PydanticObjectId,
+    member_data: FamilyMember,
+    current_user: User = Depends(get_current_user),
+):
     """가족 구성원 수정 (전체)"""
     member = await FamilyMember.get(id)
     if not member:
         raise HTTPException(status_code=404, detail="Family member not found")
+    assert_owner_or_admin(member, current_user)
 
     update_query = member_data.dict(exclude_unset=True)
+    update_query.pop("created_by", None)
     await member.set(update_query)
     return member
 
 @router.patch("/{id}", response_model=FamilyMember)
-async def partial_update_member(id: PydanticObjectId, member_data: FamilyMemberUpdate):
+async def partial_update_member(
+    id: PydanticObjectId,
+    member_data: FamilyMemberUpdate,
+    current_user: User = Depends(get_current_user),
+):
     """가족 구성원 부분 수정"""
     member = await FamilyMember.get(id)
     if not member:
         raise HTTPException(status_code=404, detail="Family member not found")
+    assert_owner_or_admin(member, current_user)
 
     update_data = member_data.dict(exclude_unset=True, exclude_none=True)
     if update_data:
@@ -98,11 +112,15 @@ async def partial_update_member(id: PydanticObjectId, member_data: FamilyMemberU
     return member
 
 @router.delete("/{id}")
-async def delete_member(id: PydanticObjectId):
+async def delete_member(
+    id: PydanticObjectId,
+    current_user: User = Depends(get_current_user),
+):
     """가족 구성원 삭제 (본인 세대 삭제 시 해당 side 전체 연쇄 삭제)"""
     member = await FamilyMember.get(id)
     if not member:
         raise HTTPException(status_code=404, detail="Family member not found")
+    assert_owner_or_admin(member, current_user)
 
     # 본인 세대(generation 0) 삭제 시 해당 side 가족 전체 삭제
     if member.generation == 0:

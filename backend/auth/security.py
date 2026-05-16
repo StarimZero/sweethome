@@ -45,8 +45,33 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-        
+
     user = await User.find_one(User.username == username)
     if user is None:
         raise credentials_exception
     return user
+
+
+# admin 전용 가드 (사용자 관리 API용)
+async def get_current_admin(current_user: User = Depends(get_current_user)):
+    if getattr(current_user, "role", "member") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="관리자 권한이 필요합니다.",
+        )
+    return current_user
+
+
+# 본인(작성자) 또는 admin만 통과시키는 권한 검사 헬퍼
+def assert_owner_or_admin(item, current_user: User):
+    """item.created_by가 current_user와 같거나, current_user가 admin이면 통과."""
+    owner_id = getattr(item, "created_by", None)
+    role = getattr(current_user, "role", "member")
+    if role == "admin":
+        return
+    if owner_id is not None and str(owner_id) == str(current_user.id):
+        return
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="본인이 작성한 항목 또는 관리자만 수정/삭제할 수 있습니다.",
+    )

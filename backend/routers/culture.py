@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from beanie import PydanticObjectId
 from typing import List, Optional
 from models.culture import CultureReview
+from models.user import User
+from auth.security import get_current_user, assert_owner_or_admin
 from datetime import datetime
 
 router = APIRouter(prefix="/api/culture", tags=["Culture"])
@@ -57,7 +59,8 @@ async def get_cultures(
 
 # 2. 등록
 @router.post("", response_model=CultureReview)
-async def create_culture(culture: CultureReview):
+async def create_culture(culture: CultureReview, current_user: User = Depends(get_current_user)):
+    culture.created_by = current_user.id
     culture.created_at = datetime.now()
     culture.updated_at = datetime.now()
 
@@ -84,12 +87,18 @@ async def get_culture(id: PydanticObjectId):
 
 # 4. 수정
 @router.put("/{id}", response_model=CultureReview)
-async def update_culture(id: PydanticObjectId, culture_data: CultureReview):
+async def update_culture(
+    id: PydanticObjectId,
+    culture_data: CultureReview,
+    current_user: User = Depends(get_current_user),
+):
     culture = await CultureReview.get(id)
     if not culture:
         raise HTTPException(status_code=404, detail="Not found")
+    assert_owner_or_admin(culture, current_user)
 
     update_data = culture_data.dict(exclude_unset=True)
+    update_data.pop("created_by", None)
     update_data["updated_at"] = datetime.now()
 
     # 평점 재계산
@@ -108,9 +117,13 @@ async def update_culture(id: PydanticObjectId, culture_data: CultureReview):
 
 # 5. 삭제
 @router.delete("/{id}")
-async def delete_culture(id: PydanticObjectId):
+async def delete_culture(
+    id: PydanticObjectId,
+    current_user: User = Depends(get_current_user),
+):
     culture = await CultureReview.get(id)
     if not culture:
         raise HTTPException(status_code=404, detail="Not found")
+    assert_owner_or_admin(culture, current_user)
     await culture.delete()
     return {"message": "Deleted"}

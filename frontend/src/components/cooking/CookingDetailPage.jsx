@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useAuth } from '../../context/AuthContext';
 import './Cooking.scss';
 
 function CookingDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { getAuthorName } = useAuth();
 
   const [recipe, setRecipe] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -52,10 +54,6 @@ function CookingDetailPage() {
         <div className="edit-form">
           <h2>✏️ 요리 수정 중</h2>
           <input name="name" value={editData.name} onChange={handleChange} className="form-input" />
-          <select name="chef" value={editData.chef} onChange={handleChange} className="form-select">
-            <option value="husband">남편</option>
-            <option value="wife">아내</option>
-          </select>
           <textarea name="description" value={editData.description} onChange={handleChange} className="form-textarea" />
 
           <select name="cooking_type" value={editData.cooking_type} onChange={handleChange} className="form-select">
@@ -77,7 +75,7 @@ function CookingDetailPage() {
 
           <h1 className="detail-title">{recipe.name}</h1>
           <div className="detail-meta">
-            요리사: {recipe.chef === 'husband' ? '👨‍💼 남편' : '👩‍💼 아내'} | 종류: {recipe.cooking_type}
+            작성자: 👤 {getAuthorName(recipe.created_by)} | 종류: {recipe.cooking_type}
           </div>
 
           <p className="detail-description">{recipe.description}</p>

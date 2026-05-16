@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import useBucketCodes from '../../hooks/useBucketCodes';
+import { useAuth } from '../../context/AuthContext';
 import './Bucket.scss';
 
 const BucketPage = () => {
   const navigate = useNavigate();
-  const { categories, statuses, owners, loading: codesLoading, getCategoryLabel, getStatusLabel, getOwnerLabel } = useBucketCodes();
+  const { getAuthorName } = useAuth();
+  const { categories, statuses, loading: codesLoading, getCategoryLabel } = useBucketCodes();
   const [buckets, setBuckets] = useState([]);
   const [stats, setStats] = useState({ total: 0, not_started: 0, active: 0, completed: 0, rate: 0 });
   const [keyword, setKeyword] = useState('');
@@ -145,7 +147,7 @@ const BucketPage = () => {
                 ) : (
                   <span>📅 {bucket.target_date || '미정'}</span>
                 )}
-                <span>{getOwnerLabel(bucket.owner)}</span>
+                <span>👤 {getAuthorName(bucket.created_by)}</span>
                 <span>💬 {bucket.comments?.length || 0}</span>
               </div>
             </div>
