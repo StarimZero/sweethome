@@ -1,12 +1,13 @@
 fastapi
 uvicorn
-beanie
-motor
+beanie==2.0.0
+motor==3.7.1
+pymongo==4.15.5
 python-dotenv
 pydantic
 passlib[bcrypt]
 python-multipart
 python-jose[cryptography]
-bcrypt==4.0.1  
+bcrypt==4.0.1
 google-generativeai
 korean-lunar-calendar
