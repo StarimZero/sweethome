@@ -62,16 +62,8 @@ async def get_current_admin(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-# 본인(작성자) 또는 admin만 통과시키는 권한 검사 헬퍼
+# 부부 공동 사용 컨셉: 로그인한 사용자라면 누구나 수정/삭제 가능
 def assert_owner_or_admin(item, current_user: User):
-    """item.created_by가 current_user와 같거나, current_user가 admin이면 통과."""
-    owner_id = getattr(item, "created_by", None)
-    role = getattr(current_user, "role", "member")
-    if role == "admin":
-        return
-    if owner_id is not None and str(owner_id) == str(current_user.id):
-        return
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail="본인이 작성한 항목 또는 관리자만 수정/삭제할 수 있습니다.",
-    )
+    """Holango는 부부가 함께 쓰는 라이프로그라 작성자 본인이 아니어도 수정/삭제를 허용한다.
+    (get_current_user 단계에서 로그인 여부는 이미 검증됨)"""
+    return
