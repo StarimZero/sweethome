@@ -344,6 +344,15 @@ function KnittingInsertPage() {
             <h3>나의 바늘
               <button type="button" className="btn-mini"
                       onClick={() => addArrayItem('my_needles', '')}>＋ 바늘 추가</button>
+              <button type="button" className="btn-mini"
+                      onClick={() => {
+                        const copied = form.orig_needles.filter(n => n.trim());
+                        if (copied.length === 0) {
+                          alert('원작 바늘을 먼저 입력해주세요.');
+                          return;
+                        }
+                        setField('my_needles', copied);
+                      }}>↩ 원작과 동일</button>
             </h3>
             <div className="row-list">
               {form.my_needles.length === 0
