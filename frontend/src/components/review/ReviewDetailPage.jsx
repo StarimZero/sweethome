@@ -1,28 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
+import { useConfirm } from '../common/ConfirmDialog';
 import './Review.scss';
 
 function ReviewDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
+  const confirm = useConfirm();
 
   const [review, setReview] = useState(null);
   const [editData, setEditData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setLoadError(false);
+
     apiClient.get(`/review/${id}`)
-      .then(res => {
-        setReview(res.data);
-        setEditData(res.data);
-      })
-      .catch(err => console.error(err));
+      .then(res => { if (!alive) return; setReview(res.data); setEditData(res.data); })
+      .catch(err => { console.error(err); if (alive) setLoadError(true); })
+      .finally(() => { if (alive) setLoading(false); });
 
     apiClient.get('/code/group/FOOD')
-      .then(res => setCategories(res.data))
+      .then(res => { if (alive) setCategories(res.data); })
       .catch(err => console.error(err));
+
+    return () => { alive = false; };
   }, [id]);
 
   const getCategoryName = (codeId) => {
@@ -41,25 +52,66 @@ function ReviewDetailPage() {
   const addImageField = () => setEditData({ ...editData, image_urls: [...(editData.image_urls || []), ''] });
 
   const handleUpdate = async () => {
+    if (submitting) return;
+    if (!editData.restaurant_name?.trim()) { toast.error('식당 이름을 입력해주세요.'); return; }
+
     const cleanData = {
       ...editData,
       image_urls: (editData.image_urls || []).filter(url => url.trim() !== "")
     };
-    await apiClient.put(`/review/${id}`, cleanData);
-    setReview(cleanData);
-    setIsEditing(false);
-    alert("수정되었습니다.");
-  };
-
-  const handleDelete = async () => {
-    if (window.confirm("정말 삭제하시겠습니까? 🗑️")) {
-      await apiClient.delete(`/review/${id}`);
-      alert("삭제되었습니다.");
-      navigate('/review');
+    setSubmitting(true);
+    try {
+      await apiClient.put(`/review/${id}`, cleanData);
+      setReview(cleanData);
+      setIsEditing(false);
+      toast.success('수정되었습니다.');
+    } catch (err) {
+      console.error(err);
+      toast.error('수정에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (!review) return <div>Loading...</div>;
+  const handleDelete = async () => {
+    const ok = await confirm({
+      title: '리뷰 삭제',
+      message: '이 맛집 리뷰를 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    });
+    if (!ok || submitting) return;
+
+    setSubmitting(true);
+    try {
+      await apiClient.delete(`/review/${id}`);
+      toast.success('삭제되었습니다.');
+      navigate('/review');
+    } catch (err) {
+      console.error(err);
+      toast.error('삭제에 실패했습니다.');
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="content-box review-detail-page">
+        <div className="detail-loading"><span className="spinner" /><span>불러오는 중...</span></div>
+      </div>
+    );
+  }
+
+  if (loadError || !review) {
+    return (
+      <div className="content-box review-detail-page">
+        <div className="detail-error">
+          <p>리뷰 정보를 불러오지 못했습니다.</p>
+          <button className="btn back" onClick={() => navigate('/review')}>목록으로</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="content-box review-detail-page">
@@ -109,8 +161,10 @@ function ReviewDetailPage() {
           <button onClick={addImageField} className="btn add-photo">+ 사진 추가</button>
 
           <div className="edit-actions">
-            <button onClick={handleUpdate} className="btn save">저장</button>
-            <button onClick={()=>setIsEditing(false)} className="btn cancel">취소</button>
+            <button onClick={handleUpdate} className="btn save" disabled={submitting}>
+              {submitting ? '저장 중...' : '저장'}
+            </button>
+            <button onClick={() => { setEditData(review); setIsEditing(false); }} className="btn cancel" disabled={submitting}>취소</button>
           </div>
         </div>
       ) : (
@@ -156,7 +210,7 @@ function ReviewDetailPage() {
 
           <div className="detail-actions">
             <button onClick={() => setIsEditing(true)} className="btn edit">수정</button>
-            <button onClick={handleDelete} className="btn delete">삭제</button>
+            <button onClick={handleDelete} className="btn delete" disabled={submitting}>삭제</button>
             <button onClick={() => navigate('/review')} className="btn back">목록으로</button>
           </div>
         </div>

@@ -384,18 +384,18 @@
   }
 
   .add-btn {
-    padding: 10px 20px;
-    background: #20c997;
+    padding: 11px 22px;
+    background: var(--grad-primary);
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--r-md);
     font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
 
-    &:hover {
-      background: #12b886;
-    }
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
   }
 }
 
@@ -447,7 +447,8 @@
 
       &:focus {
         outline: none;
-        border-color: #20c997;
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
       }
     }
 
@@ -527,17 +528,19 @@
 
     .submit-btn {
       padding: 12px 24px;
-      background: #20c997;
+      background: var(--grad-primary);
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--r-md);
       font-size: 1rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
+      box-shadow: var(--sh-primary);
+      transition: transform 0.18s, box-shadow 0.2s;
 
-      &:hover {
-        background: #12b886;
-      }
+      &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+
+      &:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none; }
     }
   }
 }

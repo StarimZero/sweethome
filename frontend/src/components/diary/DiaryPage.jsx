@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../common/Toast';
 import './Diary.scss';
 
 const DiaryPage = () => {
   const navigate = useNavigate();
   const { userMap, getAuthorName } = useAuth();
+  const toast = useToast();
   const [diaries, setDiaries] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [author, setAuthor] = useState('');
@@ -25,6 +27,7 @@ const DiaryPage = () => {
       setDiaries(res.data);
     } catch (err) {
       console.error(err);
+      toast.error('글 목록을 불러오지 못했습니다.');
     }
   };
 

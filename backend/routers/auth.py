@@ -6,6 +6,7 @@ from auth.security import (
     create_access_token,
     get_current_user,
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    REMEMBER_TOKEN_EXPIRE_MINUTES,
 )
 from datetime import timedelta
 
@@ -24,7 +25,8 @@ async def login(user_data: UserLogin):
     if not getattr(user, "is_active", True):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="비활성화된 계정입니다.")
 
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire_minutes = REMEMBER_TOKEN_EXPIRE_MINUTES if user_data.remember else ACCESS_TOKEN_EXPIRE_MINUTES
+    access_token_expires = timedelta(minutes=expire_minutes)
     access_token = create_access_token(
         data={"sub": user.username, "role": getattr(user, "role", "member")},
         expires_delta=access_token_expires,

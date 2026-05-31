@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
 import './Diary.scss';
 
 const DiaryInsertPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
+  const [submitting, setSubmitting] = useState(false);
   const today = new Date().toISOString().slice(0, 10);
   const [form, setForm] = useState({
     title: '',
@@ -40,19 +43,23 @@ const DiaryInsertPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
-      alert('제목을 입력하세요.');
+      toast.error('제목을 입력하세요.');
       return;
     }
     if (!form.content.trim()) {
-      alert('내용을 입력하세요.');
+      toast.error('내용을 입력하세요.');
       return;
     }
+    if (submitting) return;
+    setSubmitting(true);
     try {
       await apiClient.post('/diary', form);
+      toast.success('글이 등록되었습니다!');
       navigate('/diary');
     } catch (err) {
       console.error(err);
-      alert('등록 실패');
+      toast.error('등록에 실패했습니다.');
+      setSubmitting(false);
     }
   };
 
@@ -144,10 +151,12 @@ const DiaryInsertPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/diary')}>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/diary')} disabled={submitting}>
             취소
           </button>
-          <button type="submit" className="submit-btn">저장</button>
+          <button type="submit" className="submit-btn" disabled={submitting}>
+            {submitting ? '저장 중...' : '저장'}
+          </button>
         </div>
       </form>
     </div>

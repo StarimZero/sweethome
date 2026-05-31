@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 
@@ -21,7 +21,10 @@ const Header = () => {
   return (
     <header className="header-container">
       <div className="logo">
-        <Link to="/" onClick={closeMenu}>🏡 SweetHome</Link>
+        <Link to="/" onClick={closeMenu}>
+          <img src="/LOGO.png" alt="SweetHome" className="logo-img" />
+          <span className="logo-text">SweetHome</span>
+        </Link>
       </div>
 
       {/* 햄버거 메뉴 버튼 (모바일용) */}
@@ -39,20 +42,20 @@ const Header = () => {
         {user ? (
           // [로그인 상태] 보여줄 메뉴
           <>
-            <Link to="/cooking" className="nav-item" onClick={closeMenu}>🍳 Cooking</Link>
-            <Link to="/liquor" className="nav-item" onClick={closeMenu}>🍷 Liquor</Link>
-            <Link to="/travel" className="nav-item" onClick={closeMenu}>✈️ Travel</Link>
-            <Link to="/review" className="nav-item" onClick={closeMenu}>📝 Review</Link>
-            <Link to="/bucket" className="nav-item" onClick={closeMenu}>🎯 Bucket</Link>
-            <Link to="/diary" className="nav-item" onClick={closeMenu}>💬 소곤소곤</Link>
-            <Link to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</Link>
-            <Link to="/culture" className="nav-item" onClick={closeMenu}>🎨 Culture</Link>
-            <Link to="/knitting" className="nav-item" onClick={closeMenu}>🧶 뜨개록</Link>
-            <Link to="/family" className="nav-item" onClick={closeMenu}>👨‍👩‍👧‍👦 가계도</Link>
+            <NavLink to="/cooking" className="nav-item" onClick={closeMenu}>🍳 Cooking</NavLink>
+            <NavLink to="/liquor" className="nav-item" onClick={closeMenu}>🍷 Liquor</NavLink>
+            <NavLink to="/travel" className="nav-item" onClick={closeMenu}>✈️ Travel</NavLink>
+            <NavLink to="/review" className="nav-item" onClick={closeMenu}>📝 Review</NavLink>
+            <NavLink to="/bucket" className="nav-item" onClick={closeMenu}>🎯 Bucket</NavLink>
+            <NavLink to="/diary" className="nav-item" onClick={closeMenu}>💬 소곤소곤</NavLink>
+            <NavLink to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</NavLink>
+            <NavLink to="/culture" className="nav-item" onClick={closeMenu}>🎨 Culture</NavLink>
+            <NavLink to="/knitting" className="nav-item" onClick={closeMenu}>🧶 뜨개록</NavLink>
+            <NavLink to="/family" className="nav-item" onClick={closeMenu}>👨‍👩‍👧‍👦 가계도</NavLink>
 
             {/* 시스템 메뉴는 admin만 표시 */}
             {user.role === 'admin' && (
-              <Link to="/system" className="nav-item" onClick={closeMenu}>⚙️ System</Link>
+              <NavLink to="/system" className="nav-item" onClick={closeMenu}>⚙️ System</NavLink>
             )}
 
             <div className="user-info">

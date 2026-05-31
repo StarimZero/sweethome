@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import useBucketCodes from '../../hooks/useBucketCodes';
+import { useToast } from '../common/Toast';
 import './Bucket.scss';
 
 const BucketInsertPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const { categories, statuses, loading } = useBucketCodes();
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -25,15 +28,19 @@ const BucketInsertPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
-      alert('제목을 입력하세요.');
+      toast.error('제목을 입력하세요.');
       return;
     }
+    if (submitting) return;
+    setSubmitting(true);
     try {
       await apiClient.post('/bucket', form);
+      toast.success('버킷리스트가 추가되었습니다!');
       navigate('/bucket');
     } catch (err) {
       console.error(err);
-      alert('등록 실패');
+      toast.error('등록에 실패했습니다.');
+      setSubmitting(false);
     }
   };
 
@@ -129,10 +136,12 @@ const BucketInsertPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/bucket')}>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/bucket')} disabled={submitting}>
             취소
           </button>
-          <button type="submit" className="submit-btn">등록</button>
+          <button type="submit" className="submit-btn" disabled={submitting}>
+            {submitting ? '등록 중...' : '등록'}
+          </button>
         </div>
       </form>
     </div>

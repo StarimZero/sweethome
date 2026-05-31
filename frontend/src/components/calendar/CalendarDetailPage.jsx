@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
+import { useConfirm } from '../common/ConfirmDialog';
 import './Calendar.scss';
 
 const CalendarDetailPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const toast = useToast();
+  const confirm = useConfirm();
   const [event, setEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     title: '',
     date: '',
@@ -16,12 +21,12 @@ const CalendarDetailPage = () => {
     is_yearly: false,
     is_lunar: false,
     is_range: false,
-    color: '#6c5ce7'
+    color: '#105A88'
   });
 
   const colors = [
-    '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3',
-    '#54a0ff', '#5f27cd', '#00d2d3', '#1dd1a1'
+    '#105A88', '#4dabf7', '#ff6b6b', '#feca57',
+    '#48dbfb', '#1dd1a1', '#ff9ff3', '#5f27cd'
   ];
 
   useEffect(() => {
@@ -44,11 +49,11 @@ const CalendarDetailPage = () => {
           is_yearly: res.data.is_yearly,
           is_lunar: res.data.is_lunar || false,
           is_range: res.data.is_range || false,
-          color: res.data.color || '#6c5ce7'
+          color: res.data.color || '#105A88'
         });
       } catch (err) {
         console.error(err);
-        alert('이벤트를 찾을 수 없습니다.');
+        toast.error('이벤트를 찾을 수 없습니다.');
         navigate('/calendar');
       }
     };
@@ -74,33 +79,47 @@ const CalendarDetailPage = () => {
 
   const handleSave = async () => {
     if (!form.title.trim()) {
-      alert('제목을 입력하세요.');
+      toast.error('제목을 입력하세요.');
       return;
     }
+    if (submitting) return;
 
     const submitData = {
       ...form,
       end_date: form.is_range ? (form.end_date || null) : null
     };
 
+    setSubmitting(true);
     try {
       await apiClient.put(`/calendar/${id}`, submitData);
       setEvent({ ...event, ...submitData });
       setIsEditing(false);
+      toast.success('수정되었습니다.');
     } catch (err) {
       console.error(err);
-      alert('수정 실패');
+      toast.error('수정에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    const ok = await confirm({
+      title: '일정 삭제',
+      message: '이 일정을 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    });
+    if (!ok || submitting) return;
+    setSubmitting(true);
     try {
       await apiClient.delete(`/calendar/${id}`);
+      toast.success('삭제되었습니다.');
       navigate('/calendar');
     } catch (err) {
       console.error(err);
-      alert('삭제 실패');
+      toast.error('삭제에 실패했습니다.');
+      setSubmitting(false);
     }
   };
 
@@ -230,11 +249,11 @@ const CalendarDetailPage = () => {
             </div>
 
             <div className="form-actions">
-              <button type="button" className="cancel-btn" onClick={() => setIsEditing(false)}>
+              <button type="button" className="cancel-btn" onClick={() => setIsEditing(false)} disabled={submitting}>
                 취소
               </button>
-              <button type="button" className="submit-btn" onClick={handleSave}>
-                저장
+              <button type="button" className="submit-btn" onClick={handleSave} disabled={submitting}>
+                {submitting ? '저장 중...' : '저장'}
               </button>
             </div>
           </form>
@@ -244,7 +263,7 @@ const CalendarDetailPage = () => {
           <div className="detail-header">
             <div
               className="color-indicator"
-              style={{ backgroundColor: event.color || '#6c5ce7' }}
+              style={{ backgroundColor: event.color || '#105A88' }}
             />
             <h1>{event.title}</h1>
             <div className="badges">
@@ -275,7 +294,7 @@ const CalendarDetailPage = () => {
             <button className="edit-btn" onClick={() => setIsEditing(true)}>
               수정
             </button>
-            <button className="delete-btn" onClick={handleDelete}>
+            <button className="delete-btn" onClick={handleDelete} disabled={submitting}>
               삭제
             </button>
           </div>

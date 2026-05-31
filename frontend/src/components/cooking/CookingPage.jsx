@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../common/Toast';
 import './Cooking.scss';
 
 function CookingPage() {
   const navigate = useNavigate();
   const { userMap, getAuthorName } = useAuth();
+  const toast = useToast();
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState({
     created_by: 'all',
@@ -35,6 +38,7 @@ function CookingPage() {
   };
 
   const fetchRecipes = async () => {
+    setLoading(true);
     try {
       const params = {};
       if (filters.created_by && filters.created_by !== 'all') params.created_by = filters.created_by;
@@ -44,7 +48,12 @@ function CookingPage() {
 
       const res = await apiClient.get('/cooking', { params });
       setRecipes(res.data);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      toast.error('요리 목록을 불러오지 못했습니다.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -75,15 +84,21 @@ function CookingPage() {
             >
               전체 보기
             </button>
-            {Object.entries(userMap).map(([uid, info]) => (
-              <button
-                key={uid}
-                onClick={() => setFilters(prev => ({ ...prev, created_by: uid }))}
-                className={`tab-btn ${filters.created_by === uid ? 'active' : ''}`}
-              >
-                👤 {info.nickname}
-              </button>
-            ))}
+            {Object.entries(userMap)
+              .filter(([, info]) => {
+                // holango(부부 공용/관리) 계정은 필터 탭에서 제외 → 남편/아내만 노출
+                const key = `${info.username || ''} ${info.nickname || ''}`.toLowerCase();
+                return !key.includes('holango') && !key.includes('호랭');
+              })
+              .map(([uid, info]) => (
+                <button
+                  key={uid}
+                  onClick={() => setFilters(prev => ({ ...prev, created_by: uid }))}
+                  className={`tab-btn ${filters.created_by === uid ? 'active' : ''}`}
+                >
+                  👤 {info.nickname}
+                </button>
+              ))}
           </div>
 
           <select
@@ -124,7 +139,13 @@ function CookingPage() {
 
       {/* 목록 */}
       <div className="recipe-grid">
-        {recipes.map((recipe) => (
+        {loading && (
+          <div className="loading-grid">
+            <span className="spinner" />
+            <span>불러오는 중...</span>
+          </div>
+        )}
+        {!loading && recipes.map((recipe) => (
           <div
             key={recipe._id}
             onClick={() => navigate(`/cooking/${recipe._id}`)}
@@ -152,7 +173,7 @@ function CookingPage() {
             </div>
           </div>
         ))}
-        {recipes.length === 0 && (
+        {!loading && recipes.length === 0 && (
           <div className="empty-message">검색 결과가 없습니다.</div>
         )}
       </div>

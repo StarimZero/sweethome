@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import apiClient from '../../api'
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api' 
+import { useToast } from '../common/Toast'
+import { useConfirm } from '../common/ConfirmDialog'
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api'
 
 const mapContainerStyle = {
   width: '100%',
@@ -17,9 +19,12 @@ const libraries = ['places']
 function TravelDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const toast = useToast()
+  const confirm = useConfirm()
 
   const [travel, setTravel] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [currentDay, setCurrentDay] = useState(1)
 
   const [isEditing, setIsEditing] = useState(false)
@@ -264,26 +269,39 @@ function TravelDetailPage() {
   }
 
   const handleSave = async () => {
+    if (submitting) return
+    setSubmitting(true)
     try {
       await apiClient.put(`/travel/${id}`, editedTravel)
       setTravel(editedTravel)
       setIsEditing(false)
-      alert('수정되었습니다.')
+      toast.success('수정되었습니다.')
     } catch (error) {
       console.error(error)
-      alert('오류 발생')
+      toast.error('수정에 실패했습니다.')
+    } finally {
+      setSubmitting(false)
     }
   }
 
   const handleDelete = async () => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      try {
-        await apiClient.delete(`/travel/${id}`)
-        navigate('/travel')
-      } catch (error) {
-        console.error(error)
-        alert('삭제 실패')
-      }
+    const ok = await confirm({
+      title: '여행 삭제',
+      message: '이 여행 기록을 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    })
+    if (!ok || submitting) return
+
+    setSubmitting(true)
+    try {
+      await apiClient.delete(`/travel/${id}`)
+      toast.success('삭제되었습니다.')
+      navigate('/travel')
+    } catch (error) {
+      console.error(error)
+      toast.error('삭제에 실패했습니다.')
+      setSubmitting(false)
     }
   }
 
@@ -298,30 +316,30 @@ function TravelDetailPage() {
   return (
     <div className="detail-container">
       <style>{`
-        .detail-container { display: flex; height: calc(100vh - 60px); background: #f5f7f8; }
+        .detail-container { display: flex; height: calc(100vh - 60px); background: #f3f8fb; }
         .timeline-section { width: 420px; min-width: 420px; overflow-y: auto; border-right: 1px solid #e0e0e0; background: white; display: flex; flex-direction: column; }
         .detail-header { padding: 30px 24px; background: white; border-bottom: 1px solid #eee; position: relative; }
         .header-buttons { position: absolute; top: 20px; right: 20px; display: flex; gap: 8px; }
         .btn-action { padding: 6px 12px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer; font-size: 12px; }
-        .btn-save { border-color: #26DCD6; color: #26DCD6; font-weight: bold; }
+        .btn-save { border-color: #105A88; color: #105A88; font-weight: bold; }
         .btn-delete { border-color: #ff4d4f; color: #ff4d4f; }
         .input-edit { width: 100%; font-size: 15px; padding: 8px; margin-bottom: 6px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         .day-tabs { display: flex; padding: 0 24px; gap: 20px; border-bottom: 1px solid #eee; background: white; overflow-x: auto; flex-shrink: 0; }
         .tab { padding: 16px 0; cursor: pointer; color: #999; font-weight: 600; border-bottom: 3px solid transparent; white-space: nowrap; }
-        .tab.active { color: #26DCD6; border-bottom-color: #26DCD6; }
+        .tab.active { color: #105A88; border-bottom-color: #105A88; }
         .timeline-list { padding: 24px; flex: 1; overflow-y: auto; }
         .timeline-item { display: flex; gap: 16px; position: relative; padding-bottom: 30px; }
         .timeline-item::before { content: ''; position: absolute; left: 14px; top: 30px; bottom: 0; width: 0; border-left: 2px dashed #ddd; }
         .timeline-item:last-child::before { display: none; }
-        .time-badge { width: 28px; height: 28px; background: #26DCD6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; z-index: 2; flex-shrink: 0; box-shadow: 0 0 0 4px white; }
+        .time-badge { width: 28px; height: 28px; background: #105A88; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; z-index: 2; flex-shrink: 0; box-shadow: 0 0 0 4px white; }
         .place-card { flex: 1; background: white; border: 1px solid #eee; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: flex-start; transition: all 0.2s; }
-        .place-card:hover { border-color: #26DCD6; background: #f8ffff; }
-        .place-card.selected { border-color: #26DCD6; background: #e8fffe; box-shadow: 0 0 0 3px rgba(38,220,214,0.2); }
-        .place-time { font-size: 13px; color: #26DCD6; font-weight: 800; margin-bottom: 4px; display: block; }
+        .place-card:hover { border-color: #105A88; background: #eef5fa; }
+        .place-card.selected { border-color: #105A88; background: #e7f1f8; box-shadow: 0 0 0 3px rgba(16,90,136,0.2); }
+        .place-time { font-size: 13px; color: #105A88; font-weight: 800; margin-bottom: 4px; display: block; }
         .place-name { font-size: 16px; font-weight: 700; margin: 0; color: #333; }
         
         .edit-add-area { background: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 8px; }
-        .btn-mini-add { background: #26DCD6; color: white; border: none; border-radius: 4px; width: 30px; cursor: pointer; }
+        .btn-mini-add { background: #105A88; color: white; border: none; border-radius: 4px; width: 30px; cursor: pointer; }
         .btn-mini-del { background: none; border: none; cursor: pointer; font-size: 12px; color: #aaa; }
         .btn-mini-del:hover { color: red; }
         .map-section { flex: 1; position: relative; }
@@ -343,13 +361,13 @@ function TravelDetailPage() {
           <div className="header-buttons">
             {isEditing ? (
               <>
-                <button className="btn-action btn-save" onClick={handleSave}>저장</button>
-                <button className="btn-action" onClick={() => setIsEditing(false)}>취소</button>
+                <button className="btn-action btn-save" onClick={handleSave} disabled={submitting}>{submitting ? '저장 중...' : '저장'}</button>
+                <button className="btn-action" onClick={() => setIsEditing(false)} disabled={submitting}>취소</button>
               </>
             ) : (
               <>
                 <button className="btn-action" onClick={() => setIsEditing(true)}>수정</button>
-                <button className="btn-action btn-delete" onClick={handleDelete}>삭제</button>
+                <button className="btn-action btn-delete" onClick={handleDelete} disabled={submitting}>삭제</button>
               </>
             )}
           </div>
@@ -376,7 +394,7 @@ function TravelDetailPage() {
               <label style={{fontSize:'12px', color:'#888'}}>
                 📍 지도 기본 위치
                 {editedTravel.destination_lat ? (
-                  <span style={{color:'#26DCD6', marginLeft:'8px'}}>설정됨</span>
+                  <span style={{color:'#105A88', marginLeft:'8px'}}>설정됨</span>
                 ) : (
                   <span style={{color:'#ff6b6b', marginLeft:'8px'}}>미설정</span>
                 )}
@@ -472,11 +490,11 @@ function TravelDetailPage() {
                         onChange={(e) => handleTimeChange(place.id, e.target.value)}
                         onClick={(e) => e.stopPropagation()}
                         style={{
-                          border: '1px solid #26DCD6',
+                          border: '1px solid #105A88',
                           borderRadius: '4px',
                           padding: '4px 8px',
                           fontSize: '13px',
-                          color: '#26DCD6',
+                          color: '#105A88',
                           fontWeight: '800',
                           marginBottom: '4px',
                           cursor: 'pointer'
@@ -487,7 +505,7 @@ function TravelDetailPage() {
                     )}
                     <h3 className="place-name">{place.name}</h3>
                     {place.lat && place.lat !== 0 ? (
-                      <span style={{fontSize:'11px', color:'#26DCD6'}}>📍 위치 있음</span>
+                      <span style={{fontSize:'11px', color:'#105A88'}}>📍 위치 있음</span>
                     ) : (
                       <span style={{fontSize:'11px', color:'#ff6b6b'}}>📍 위치 없음</span>
                     )}
@@ -501,7 +519,7 @@ function TravelDetailPage() {
                         >
                           <input
                             placeholder="위치 검색..."
-                            style={{width:'100%', padding:'6px 8px', border:'1px solid #26DCD6', borderRadius:'4px', fontSize:'12px'}}
+                            style={{width:'100%', padding:'6px 8px', border:'1px solid #105A88', borderRadius:'4px', fontSize:'12px'}}
                             autoFocus
                           />
                         </Autocomplete>

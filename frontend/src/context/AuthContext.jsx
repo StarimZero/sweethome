@@ -52,24 +52,18 @@ export const AuthProvider = ({ children }) => {
     }
   }, [refreshUserMap]);
 
-  const login = async (username, password) => {
-    try {
-      const response = await apiClient.post('/auth/login', { username, password });
-      const { access_token, user: userInfo } = response.data;
+  const login = async (username, password, remember = false) => {
+    // 실패 시 에러를 throw → 호출부(Login)가 인라인 메시지로 처리한다.
+    // remember=true면 토큰 만료가 30일로 길어진다(백엔드에서 분기).
+    const response = await apiClient.post('/auth/login', { username, password, remember });
+    const { access_token, user: userInfo } = response.data;
 
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('user', JSON.stringify(userInfo));
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('user', JSON.stringify(userInfo));
 
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-      setUser(userInfo);
-      refreshUserMap();
-      return true;
-    } catch (error) {
-      console.error("Login failed", error);
-      const msg = error?.response?.data?.detail || "아이디/비번을 확인하세요.";
-      alert("로그인 실패: " + msg);
-      return false;
-    }
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+    setUser(userInfo);
+    refreshUserMap();
   };
 
   const logout = () => {

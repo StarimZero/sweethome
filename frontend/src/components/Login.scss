@@ -1,0 +1,189 @@
+/* 로그인 화면 — #105A88 딥블루 톤(토큰)에 맞춘 카드형 디자인 */
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 180px); /* 헤더 + 컨테이너 여백 보정 */
+  padding: 20px 0;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--c-surface);
+  border-radius: 24px;
+  padding: 48px 40px;
+  box-shadow: var(--sh-lg);
+  animation: loginFadeUp 0.5s ease;
+}
+
+@keyframes loginFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 32px;
+
+  .login-logo {
+    width: 76px;
+    height: 76px;
+    border-radius: 18px;
+    display: block;
+    margin: 0 auto 12px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin: 0 0 6px;
+    color: var(--c-text);
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--c-text-muted);
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--c-text-soft);
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--c-surface-alt);
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+
+    &::placeholder { color: var(--c-text-muted); }
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      background: var(--c-surface);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+  }
+}
+
+.password-wrap {
+  position: relative;
+
+  input { padding-right: 48px; }
+
+  .toggle-pw {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 8px;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover { background: var(--c-surface-alt); }
+  }
+}
+
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--c-text-soft);
+  cursor: pointer;
+  user-select: none;
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--c-primary);
+    cursor: pointer;
+  }
+}
+
+.login-error {
+  background: #fff0f0;
+  color: var(--c-danger-strong);
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ffe3e3;
+  text-align: center;
+}
+
+.login-submit {
+  margin-top: 8px;
+  min-height: 50px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--sh-primary);
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-lg);
+  }
+
+  &:active:not(:disabled) { transform: translateY(0); }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin 0.6s linear infinite;
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 36px 24px;
+    border-radius: 20px;
+  }
+}

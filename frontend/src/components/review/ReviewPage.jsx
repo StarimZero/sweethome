@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
 import './Review.scss';
 
 function ReviewPage() {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [allReviews, setAllReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [categoryMap, setCategoryMap] = useState({});
   const [categoryList, setCategoryList] = useState([]);
 
@@ -34,7 +37,8 @@ function ReviewPage() {
   useEffect(() => {
     apiClient.get('/review')
       .then(res => setAllReviews(res.data))
-      .catch(err => console.error(err));
+      .catch(err => { console.error(err); toast.error('리뷰 목록을 불러오지 못했습니다.'); })
+      .finally(() => setLoading(false));
 
     apiClient.get('/code/group/FOOD')
       .then(res => {
@@ -168,7 +172,9 @@ function ReviewPage() {
 
       {/* 리스트 */}
       <div className="review-grid">
-        {currentReviews.length > 0 ? (
+        {loading ? (
+          <div className="loading-grid"><span className="spinner" /><span>불러오는 중...</span></div>
+        ) : currentReviews.length > 0 ? (
           currentReviews.map((review) => (
             <Link key={review._id} to={`/review/${review._id}`} className="review-card-link">
               <div className="review-card">

@@ -10,7 +10,8 @@ from models.user import User
 # 비밀키 설정 (환경변수에서 가져옴)
 SECRET_KEY = os.getenv("SECRET_KEY", "sweethome_secret_key_dev_only") 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24시간
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24       # 24시간 (기본)
+REMEMBER_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30  # 30일 (로그인 상태 유지)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")

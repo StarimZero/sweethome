@@ -1,27 +1,33 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import apiClient from '../../api'; 
+import apiClient from '../../api';
+import { useToast } from '../common/Toast'
 
 function TravelPage() {
   const [travels, setTravels] = useState([])
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const toast = useToast()
 
   useEffect(() => {
     fetchTravels()
   }, [])
 
   const fetchTravels = async () => {
+    setLoading(true)
     try {
       const response = await apiClient.get('/travel/');
       // 날짜순 정렬 (최신순)
-      const sortedData = response.data.sort((a, b) => 
+      const sortedData = response.data.sort((a, b) =>
         new Date(b.start_date) - new Date(a.start_date)
       )
       setTravels(sortedData)
     } catch (error) {
       console.error('여행 목록 로딩 실패:', error)
       setTravels([])
+      toast.error('여행 목록을 불러오지 못했습니다.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -48,9 +54,9 @@ function TravelPage() {
         .header-area h1 { font-size: 28px; font-weight: 800; color: #333; margin: 0; }
         
         .btn-create {
-          background: #26DCD6; color: white; padding: 12px 24px; border-radius: 12px;
+          background: #105A88; color: white; padding: 12px 24px; border-radius: 12px;
           border: none; font-weight: 700; cursor: pointer;
-          box-shadow: 0 4px 12px rgba(38, 220, 214, 0.3); transition: all 0.2s;
+          box-shadow: 0 4px 12px rgba(16, 90, 136, 0.3); transition: all 0.2s;
         }
         .btn-create:hover { transform: translateY(-2px); }
 
@@ -100,7 +106,7 @@ function TravelPage() {
           font-weight: 800; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
           backdrop-filter: blur(4px); z-index: 2;
         }
-        .badge-future { background: rgba(255, 107, 107, 0.9); color: white; } 
+        .badge-future { background: rgba(16, 90, 136, 0.9); color: white; }
         .badge-past { background: rgba(255, 255, 255, 0.9); color: #555; }
 
         @media (max-width: 768px) {
@@ -116,6 +122,12 @@ function TravelPage() {
         <button className="btn-create" onClick={() => navigate('/travel/new')}>+ 여행 만들기</button>
       </div>
 
+      {loading && (
+        <div style={{textAlign:'center', padding:'60px', color:'#999'}}>불러오는 중...</div>
+      )}
+
+      {!loading && (
+      <>
       <div className="bento-grid">
         {travels.map((travel, index) => {
           const dDayText = getDDay(travel.start_date);
@@ -171,6 +183,8 @@ function TravelPage() {
         <div style={{textAlign:'center', padding:'60px', color:'#999'}}>
           <p>등록된 여행이 없습니다.</p>
         </div>
+      )}
+      </>
       )}
     </div>
   )

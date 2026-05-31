@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import apiClient from '../../api'
+import { useToast } from '../common/Toast'
+import { useConfirm } from '../common/ConfirmDialog'
 import './Culture.scss'
 
 function CultureDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const toast = useToast()
+  const confirm = useConfirm()
 
   const [culture, setCulture] = useState(null)
   const [categories, setCategories] = useState([])
@@ -13,6 +17,9 @@ function CultureDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     fetchCategories()
@@ -31,7 +38,13 @@ function CultureDetailPage() {
       if (!data.image_urls) data.image_urls = []
       setCulture(data)
       setEditData(data)
-    } catch (err) { console.error(err) }
+      setLoadError(false)
+    } catch (err) {
+      console.error(err)
+      setLoadError(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleEdit = () => setIsEditing(true)
@@ -43,30 +56,70 @@ function CultureDetailPage() {
   const removeImageField = (index) => { const newImages = editData.image_urls.filter((_, i) => i !== index); setEditData({ ...editData, image_urls: newImages }) }
 
   const handleSave = async () => {
+    if (submitting) return
+    if (!editData.title?.trim()) { toast.error('제목을 입력하세요.'); return }
+
     const cleanData = {
       ...editData,
       image_urls: editData.image_urls.filter(s => s.trim() !== '')
     }
+    setSubmitting(true)
     try {
       const res = await apiClient.put(`/culture/${id}`, cleanData)
-      alert('수정되었습니다')
+      toast.success('수정되었습니다.')
       let data = res.data
       if (!data.image_urls) data.image_urls = []
       setCulture(data); setEditData(data); setIsEditing(false); setCurrentImageIndex(0)
-    } catch (err) { console.error(err) }
+    } catch (err) {
+      console.error(err)
+      toast.error('수정에 실패했습니다.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleDelete = async () => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      try { await apiClient.delete(`/culture/${id}`); navigate('/culture') }
-      catch (err) { console.error(err) }
+    const ok = await confirm({
+      title: '문화생활 삭제',
+      message: '이 기록을 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    })
+    if (!ok || submitting) return
+
+    setSubmitting(true)
+    try {
+      await apiClient.delete(`/culture/${id}`)
+      toast.success('삭제되었습니다.')
+      navigate('/culture')
+    } catch (err) {
+      console.error(err)
+      toast.error('삭제에 실패했습니다.')
+      setSubmitting(false)
     }
   }
 
   const nextImage = () => { if (culture.image_urls.length > 1) setCurrentImageIndex((prev) => (prev + 1) % culture.image_urls.length) }
   const prevImage = () => { if (culture.image_urls.length > 1) setCurrentImageIndex((prev) => (prev - 1 + culture.image_urls.length) % culture.image_urls.length) }
 
-  if (!culture) return <div>Loading...</div>
+  if (loading) {
+    return (
+      <div className="content-box culture-detail-page">
+        <div className="detail-loading"><span className="spinner" /><span>불러오는 중...</span></div>
+      </div>
+    )
+  }
+
+  if (loadError || !culture) {
+    return (
+      <div className="content-box culture-detail-page">
+        <div className="detail-error">
+          <p>정보를 불러오지 못했습니다.</p>
+          <button className="btn" onClick={() => navigate('/culture')}>← 목록</button>
+        </div>
+      </div>
+    )
+  }
 
   const categoryName = categories.find(c => c.code_id === culture.category)?.code_name || culture.category
 
@@ -82,13 +135,15 @@ function CultureDetailPage() {
         <div>
           {isEditing ? (
             <>
-              <button className="btn primary" onClick={handleSave}>저장</button>
-              <button className="btn" onClick={handleCancel}>취소</button>
+              <button className="btn primary" onClick={handleSave} disabled={submitting}>
+                {submitting ? '저장 중...' : '저장'}
+              </button>
+              <button className="btn" onClick={handleCancel} disabled={submitting}>취소</button>
             </>
           ) : (
             <>
               <button className="btn" onClick={handleEdit}>수정</button>
-              <button className="btn danger" onClick={handleDelete}>삭제</button>
+              <button className="btn danger" onClick={handleDelete} disabled={submitting}>삭제</button>
             </>
           )}
         </div>
@@ -192,15 +247,22 @@ function CultureDetailPage() {
           </div>
 
           {isEditing && (
-            <div className="info-row" style={{marginTop:'20px'}}>
-              <span className="label">이미지 URL 관리</span>
-              {editData.image_urls.map((url, i) => (
-                <div key={i} className="input-row">
-                  <input value={url} onChange={e => handleImageChange(i, e.target.value)} placeholder="URL" />
-                  <button className="btn danger" onClick={() => removeImageField(i)}>X</button>
-                </div>
-              ))}
-              <button className="btn" onClick={addImageField}>+ 이미지 추가</button>
+            <div className="info-row image-manage">
+              <span className="label">이미지 URL 관리 <span style={{fontWeight:400, color:'var(--c-text-muted)', fontSize:'12px'}}>※ 첫 번째가 대표 이미지</span></span>
+              <div className="edit-list">
+                {editData.image_urls.map((url, i) => (
+                  <div key={i} className="edit-row image-row">
+                    <div className="thumb-box">
+                      {url
+                        ? <img src={url} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+                        : <span>🎨</span>}
+                    </div>
+                    <input value={url} onChange={e => handleImageChange(i, e.target.value)} placeholder={`이미지 URL #${i + 1}`} />
+                    <button type="button" className="btn-row-del" onClick={() => removeImageField(i)} aria-label="삭제">✕</button>
+                  </div>
+                ))}
+                <button type="button" className="btn-row-add" onClick={addImageField}>+ 이미지 추가</button>
+              </div>
             </div>
           )}
         </div>

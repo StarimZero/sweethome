@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api'
+import { useToast } from '../common/Toast'
 import './Culture.scss'
 
 function CulturePage() {
   const [cultures, setCultures] = useState([])
   const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const toast = useToast()
 
   const [filters, setFilters] = useState({
     title: '', category: '', location: '', comment: '',
@@ -26,6 +29,7 @@ function CulturePage() {
   }
 
   const fetchCultures = async (overrideFilters = null) => {
+    setLoading(true)
     try {
       const current = overrideFilters || filters
       const params = {}
@@ -37,6 +41,9 @@ function CulturePage() {
     } catch (err) {
       console.error(err)
       setCultures([])
+      toast.error('문화생활 목록을 불러오지 못했습니다.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -123,7 +130,13 @@ function CulturePage() {
       )}
 
       <div className="culture-grid">
-        {cultures.map(item => {
+        {loading && (
+          <div className="loading-grid">
+            <span className="spinner" />
+            <span>불러오는 중...</span>
+          </div>
+        )}
+        {!loading && cultures.map(item => {
           const categoryName = categories.find(c => c.code_id === item.category)?.code_name || item.category
           const displayImage = (item.image_urls && item.image_urls.length > 0) ? item.image_urls[0] : null
           return (
@@ -152,7 +165,7 @@ function CulturePage() {
             </div>
           )
         })}
-        {cultures.length === 0 && <div className="empty-message">검색 결과가 없습니다.</div>}
+        {!loading && cultures.length === 0 && <div className="empty-message">검색 결과가 없습니다.</div>}
       </div>
     </div>
   )

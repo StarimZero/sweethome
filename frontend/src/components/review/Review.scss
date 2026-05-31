@@ -1,10 +1,8 @@
-// 맛집 리뷰 스타일
+// 맛집 리뷰 스타일 — #105A88 토큰 기반 모던 리디자인
 
 // 공통
 .review-page, .review-insert-page, .review-detail-page {
-  h1 {
-    margin: 0;
-  }
+  h1 { margin: 0; color: var(--c-text); }
 }
 
 // === 목록 페이지 ===
@@ -13,36 +11,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     gap: 10px;
   }
 
   .header-info {
     .count-text {
-      margin: 5px 0 0;
-      color: #868e96;
+      margin: 6px 0 0;
+      color: var(--c-text-soft);
       font-size: 14px;
     }
   }
 
   .btn-add {
-    padding: 10px 20px;
-    background: #20c997;
-    color: white;
+    padding: 12px 22px;
+    background: var(--grad-primary);
+    color: #fff;
     border: none;
-    border-radius: 8px;
-    font-weight: bold;
+    border-radius: var(--r-md);
+    font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
+
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+    &:active { transform: translateY(0); }
   }
 
   // 검색 패널
   .search-panel {
-    background: #f8f9fa;
+    background: var(--c-surface);
     padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #e9ecef;
+    border-radius: var(--r-lg);
+    margin-bottom: 24px;
+    border: 1px solid var(--c-border);
+    box-shadow: var(--sh-sm);
   }
 
   .search-header {
@@ -50,20 +54,22 @@
     justify-content: space-between;
     margin-bottom: 15px;
 
-    h4 { margin: 0; color: #495057; }
+    h4 { margin: 0; color: var(--c-text); }
   }
 
   .btn-reset {
-    padding: 5px 10px;
-    background: #868e96;
-    color: white;
-    border: none;
-    border-radius: 4px;
+    padding: 6px 12px;
+    background: var(--c-surface-alt);
+    color: var(--c-text-soft);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
     cursor: pointer;
     font-size: 12px;
+    font-weight: 600;
+
+    &:hover { border-color: var(--c-primary); color: var(--c-primary); }
   }
 
-  // 텍스트 검색 행
   .search-row {
     display: flex;
     gap: 10px;
@@ -71,36 +77,35 @@
     margin-bottom: 15px;
   }
 
-  .search-input {
+  .search-input, .search-select {
     flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 11px 13px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
     box-sizing: border-box;
     font-size: 14px;
     min-width: 120px;
+    background: var(--c-surface);
+    color: var(--c-text);
+    transition: border-color 0.18s, box-shadow 0.18s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+    &::placeholder { color: var(--c-text-muted); }
   }
 
-  .search-select {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 14px;
-    min-width: 120px;
-  }
-
-  // 날짜+별점 행
   .filter-detail-row {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
     align-items: center;
-    background: white;
+    background: var(--c-surface-alt);
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
+    border-radius: var(--r-md);
+    border: 1px solid var(--c-border);
   }
 
   .filter-group {
@@ -112,37 +117,40 @@
     .group-label {
       font-weight: bold;
       white-space: nowrap;
+      color: var(--c-text-soft);
     }
 
-    &.husband .group-label { color: #1971c2; }
-    &.wife .group-label { color: #c2255c; }
+    &.husband .group-label { color: var(--c-primary); }
+    &.wife .group-label { color: var(--c-secondary); }
   }
 
-  .date-input {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  .date-input, .mini-input {
+    padding: 7px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    background: var(--c-surface);
+    color: var(--c-text);
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
   }
 
-  .mini-input {
-    width: 50px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-align: center;
-  }
+  .mini-input { width: 54px; text-align: center; }
 
   .divider {
     width: 1px;
     height: 20px;
-    background: #ddd;
+    background: var(--c-border);
   }
 
   // 카드 그리드
   .review-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px;
     min-height: 300px;
   }
 
@@ -153,65 +161,71 @@
   }
 
   .review-card {
-    border: 1px solid #eee;
-    border-radius: 12px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
     overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background: var(--c-surface);
+    box-shadow: var(--sh-sm);
     position: relative;
-    transition: transform 0.2s;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     height: 100%;
 
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      box-shadow: var(--sh-lg);
+      img { transform: scale(1.06); }
     }
 
     .category-badge {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.7);
+      top: 12px;
+      right: 12px;
+      background: rgba(30, 58, 58, 0.55);
+      backdrop-filter: blur(4px);
       color: white;
-      padding: 3px 6px;
-      border-radius: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 700;
+      z-index: 1;
     }
 
     img {
       width: 100%;
-      height: 150px;
+      height: 160px;
       object-fit: cover;
+      transition: transform 0.45s ease;
     }
 
     .card-body {
-      padding: 12px;
+      padding: 14px 16px;
 
       h3 {
         margin: 0 0 8px;
-        font-size: 16px;
+        font-size: 1.05rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         border-left: none;
         padding-left: 0;
+        color: var(--c-text);
       }
     }
 
     .card-ratings {
       display: flex;
-      gap: 5px;
+      gap: 6px;
       font-size: 12px;
       font-weight: bold;
       margin-bottom: 8px;
-      background: #f8f9fa;
-      padding: 5px;
-      border-radius: 5px;
+      background: var(--c-surface-alt);
+      padding: 6px 8px;
+      border-radius: var(--r-sm);
 
-      .husband { color: #1971c2; }
-      .wife { color: #c2255c; }
+      .husband { color: var(--c-primary); }
+      .wife { color: var(--c-secondary); }
       .avg {
-        color: #868e96;
+        color: var(--c-text-muted);
         font-weight: normal;
         margin-left: auto;
       }
@@ -221,7 +235,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: #888;
+      color: var(--c-text-soft);
 
       .location {
         white-space: nowrap;
@@ -236,47 +250,114 @@
     grid-column: 1 / -1;
     text-align: center;
     padding: 50px;
-    color: #adb5bd;
+    color: var(--c-text-muted);
+  }
+
+  .loading-grid {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 50px;
+    color: var(--c-text-soft);
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: reviewSpin 0.7s linear infinite;
+    }
   }
 
   // 페이지네이션
   .pagination {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
     margin-top: 30px;
     flex-wrap: wrap;
   }
 
   .page-btn {
-    width: 35px;
-    height: 35px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: white;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    background: var(--c-surface);
+    color: var(--c-text-soft);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
+    transition: all 0.15s;
+
+    &:hover:not(:disabled):not(.active) { border-color: var(--c-primary); color: var(--c-primary); }
 
     &.active {
-      background: #20c997;
+      background: var(--c-primary);
       color: white;
-      border-color: #20c997;
+      border-color: var(--c-primary);
     }
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: default;
+    &:disabled { opacity: 0.45; cursor: default; }
+  }
+}
+
+@keyframes reviewSpin { to { transform: rotate(360deg); } }
+
+// === 등록 / 수정 공통 폼 ===
+.review-insert-page, .review-detail-page .edit-form {
+  .form-row {
+    display: flex;
+    gap: 15px;
+
+    .form-col {
+      flex: 1;
+      &.col-2 { flex: 2; }
     }
   }
+
+  .form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--c-text-soft);
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-md);
+    box-sizing: border-box;
+    font-size: 15px;
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      background: var(--c-surface);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+    &::placeholder { color: var(--c-text-muted); }
+  }
+
+  .form-textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
 }
 
 // === 등록 페이지 ===
 .review-insert-page {
-  max-width: 700px;
+  max-width: 720px;
   margin: 0 auto;
+
+  h1 { margin-bottom: 22px; }
 
   .insert-form {
     display: flex;
@@ -284,63 +365,25 @@
     gap: 20px;
   }
 
-  .form-row {
-    display: flex;
-    gap: 15px;
-
-    .form-col {
-      flex: 1;
-
-      &.col-2 { flex: 2; }
-    }
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-    color: #343a40;
-  }
-
-  .form-input, .form-select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 15px;
-  }
-
-  .form-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 15px;
-    min-height: 80px;
-    resize: vertical;
-  }
-
   // 부부 평가 섹션
   .couple-section {
-    background: #f8f9fa;
-    padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #e9ecef;
+    background: var(--c-surface);
+    padding: 24px;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--c-border);
+    box-shadow: var(--sh-sm);
 
     h3 {
-      margin-top: 0;
-      margin-bottom: 20px;
+      margin: 0 0 20px;
       text-align: center;
+      color: var(--c-text);
       border-left: none;
       padding-left: 0;
     }
   }
 
   .person-block {
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 
     &:last-child { margin-bottom: 0; }
 
@@ -354,21 +397,26 @@
     .person-label {
       font-weight: bold;
 
-      &.husband { color: #1971c2; }
-      &.wife { color: #c2255c; }
+      &.husband { color: var(--c-primary); }
+      &.wife { color: var(--c-secondary); }
     }
 
     .rating-input-group {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      color: var(--c-text-soft);
 
       input {
-        width: 60px;
-        padding: 5px;
+        width: 64px;
+        padding: 7px;
         text-align: center;
-        border-radius: 5px;
-        border: 1px solid #ddd;
+        border-radius: var(--r-sm);
+        border: 1.5px solid var(--c-border);
+        background: var(--c-surface-alt);
+        color: var(--c-text);
+
+        &:focus { outline: none; border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14); }
       }
     }
   }
@@ -378,103 +426,109 @@
     .image-item { margin-bottom: 8px; }
 
     .btn-add-image {
-      background: #e9ecef;
-      color: #495057;
+      background: var(--c-surface-alt);
+      color: var(--c-text-soft);
       font-size: 13px;
       width: 100%;
-      margin-top: 5px;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
+      margin-top: 6px;
+      padding: 13px;
+      border: 1px dashed var(--c-border);
+      border-radius: var(--r-md);
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+
+      &:hover { border-color: var(--c-primary); color: var(--c-primary); }
     }
   }
 
   .form-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
+    gap: 12px;
+    margin-top: 4px;
   }
 
   .btn {
     padding: 14px;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: transform 0.18s, box-shadow 0.2s, border-color 0.15s, color 0.15s;
 
-    &.cancel { background: #f1f3f5; color: #495057; flex: 1; }
-    &.submit { background: #20c997; color: white; flex: 2; }
+    &.cancel {
+      background: var(--c-surface);
+      color: var(--c-text-soft);
+      border: 1px solid var(--c-border);
+      flex: 1;
+      &:hover:not(:disabled) { border-color: var(--c-primary); color: var(--c-primary); }
+    }
+    &.submit {
+      background: var(--grad-primary);
+      color: white;
+      flex: 2;
+      box-shadow: var(--sh-primary);
+      &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+    }
+    &:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none; }
   }
 }
 
 // === 상세 페이지 ===
 .review-detail-page {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
 
   // 수정 모드
   .edit-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-  }
+    gap: 16px;
 
-  .form-row {
-    display: flex;
-    gap: 10px;
-
-    .form-col { flex: 1; }
-    .form-col.col-2 { flex: 2; }
-  }
-
-  .form-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-    color: #343a40;
-  }
-
-  .form-input, .form-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-
-  .form-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    min-height: 80px;
+    h2 { margin: 0 0 4px; color: var(--c-text); }
   }
 
   .rating-edit-row {
-    background: #f1f3f5;
-    padding: 15px;
-    border-radius: 8px;
+    background: var(--c-surface-alt);
+    padding: 16px;
+    border-radius: var(--r-md);
     display: flex;
     gap: 20px;
+    border: 1px solid var(--c-border);
 
     label {
       flex: 1;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--c-text-soft);
 
-      input { margin-top: 5px; }
+      input { margin-top: 6px; }
     }
   }
 
   .edit-actions {
     display: flex;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 12px;
+  }
+
+  .detail-loading,
+  .detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 56px;
+    color: var(--c-text-soft);
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: reviewSpin 0.7s linear infinite;
+    }
   }
 
   // 조회 모드
@@ -489,31 +543,31 @@
     flex: 1;
 
     .category-tag {
-      background: #e7f5ff;
-      color: #1971c2;
-      padding: 4px 8px;
-      border-radius: 4px;
+      background: var(--c-secondary-soft);
+      color: var(--c-secondary);
+      padding: 4px 10px;
+      border-radius: 999px;
       font-size: 13px;
-      font-weight: bold;
+      font-weight: 700;
       margin-right: 8px;
     }
 
     h1 {
-      margin: 5px 0 10px;
+      margin: 8px 0 10px;
       display: inline-block;
     }
 
     .meta {
-      color: #888;
+      color: var(--c-text-soft);
       font-size: 15px;
     }
   }
 
   .naver-link {
     padding: 8px 15px;
-    background: #03C75A;
+    background: #03C75A; /* 네이버 브랜드 컬러 유지 */
     color: white;
-    border-radius: 20px;
+    border-radius: 999px;
     font-size: 14px;
     font-weight: bold;
     text-decoration: none;
@@ -524,7 +578,7 @@
   .divider {
     margin: 20px 0;
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--c-border);
   }
 
   // 부부 코멘트
@@ -537,20 +591,18 @@
   .comment-card {
     flex: 1;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: var(--r-lg);
 
     &.husband {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-
-      h3 { color: #495057; }
+      background: var(--c-surface-alt);
+      border: 1px solid var(--c-border);
+      h3 { color: var(--c-primary); }
     }
 
     &.wife {
-      background: #fff0f6;
-      border: 1px solid #ffdeeb;
-
-      h3 { color: #c2255c; }
+      background: var(--c-secondary-soft);
+      border: 1px solid var(--c-border);
+      h3 { color: var(--c-secondary); }
     }
 
     h3 {
@@ -568,6 +620,7 @@
       margin: 0;
       line-height: 1.6;
       font-size: 1rem;
+      color: var(--c-text);
     }
   }
 
@@ -575,19 +628,20 @@
   .gallery-title {
     border-left: none;
     padding-left: 0;
+    color: var(--c-text);
   }
 
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
+    gap: 12px;
 
     img {
       width: 100%;
       height: 200px;
       object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid #eee;
+      border-radius: var(--r-md);
+      border: 1px solid var(--c-border);
     }
   }
 
@@ -600,62 +654,53 @@
   }
 
   .btn {
-    padding: 10px 20px;
+    padding: 11px 22px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    transition: transform 0.15s, filter 0.15s, border-color 0.15s, color 0.15s;
 
-    &.edit { background: #fab005; color: white; }
-    &.delete { background: #ff6b6b; color: white; }
-    &.back { background: #f1f3f5; color: #333; }
-    &.save { background: #4dabf7; color: white; }
-    &.cancel { background: #ccc; }
-    &.add-photo { background: #eee; color: #333; font-size: 12px; }
+    &:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(0.97); }
+
+    &.edit   { background: var(--c-secondary); color: white; }
+    &.delete { background: var(--c-danger); color: white; }
+    &.back   { background: var(--c-surface-alt); color: var(--c-text-soft); }
+    &.save   { background: var(--c-primary); color: white; }
+    &.cancel { background: var(--c-surface-alt); color: var(--c-text-soft); }
+    &.add-photo {
+      background: var(--c-surface-alt); color: var(--c-text-soft); font-size: 13px; font-weight: 600;
+      border: 1px dashed var(--c-border);
+      &:hover { border-color: var(--c-primary); color: var(--c-primary); filter: none; transform: none; }
+    }
+
+    &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; filter: none; }
   }
 }
 
 // === 반응형 ===
 @media (max-width: 768px) {
-  // 목록
   .review-page {
     .page-header {
       flex-direction: column;
       align-items: stretch;
     }
-
-    .btn-add {
-      text-align: center;
-    }
-
-    .search-row {
-      flex-direction: column;
-    }
-
+    .btn-add { text-align: center; }
+    .search-row { flex-direction: column; }
     .filter-detail-row {
       flex-direction: column;
       gap: 15px;
-
       .divider { display: none; }
-
-      .filter-group {
-        width: 100%;
-      }
+      .filter-group { width: 100%; }
     }
-
     .review-grid {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
   }
 
-  // 등록
   .review-insert-page {
-    .form-row {
-      flex-direction: column;
-      gap: 0;
-    }
-
+    .form-row { flex-direction: column; gap: 0; }
     .person-header {
       flex-direction: column;
       align-items: flex-start !important;
@@ -663,42 +708,16 @@
     }
   }
 
-  // 상세
   .review-detail-page {
-    .detail-top {
-      flex-direction: column;
-    }
-
-    .naver-link {
-      align-self: flex-start;
-    }
-
-    .couple-comments {
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .form-row {
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .rating-edit-row {
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .gallery-grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-
+    .detail-top { flex-direction: column; }
+    .naver-link { align-self: flex-start; }
+    .couple-comments { flex-direction: column; gap: 15px; }
+    .form-row { flex-direction: column; gap: 0; }
+    .rating-edit-row { flex-direction: column; gap: 10px; }
+    .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .detail-actions {
       justify-content: stretch;
-
-      .btn {
-        flex: 1;
-        text-align: center;
-      }
+      .btn { flex: 1; text-align: center; }
     }
   }
 }
@@ -709,10 +728,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
     .review-card {
       img { height: 120px; }
-
       .card-body h3 { font-size: 14px; }
       .card-ratings { font-size: 11px; }
       .card-footer { font-size: 11px; }
@@ -722,7 +739,6 @@
   .review-detail-page {
     .gallery-grid {
       grid-template-columns: 1fr 1fr;
-
       img { height: 150px; }
     }
   }

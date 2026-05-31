@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import apiClient from '../../api'; 
+import apiClient from '../../api';
+import { useToast } from '../common/Toast'
 
 function TravelInsertPage() {
   const navigate = useNavigate()
-  
+  const toast = useToast()
+  const [submitting, setSubmitting] = useState(false)
+
   const [info, setInfo] = useState({ 
     title: '', destination: '', startDate: '', days: 1, thumbnail: '', titleColor: '#ffffff'
   })
@@ -55,9 +57,10 @@ function TravelInsertPage() {
 
   const handleSubmit = async () => {
     if (!info.title || !info.startDate) {
-      alert('여행 제목과 출발일은 필수입니다!')
+      toast.error('여행 제목과 출발일은 필수입니다.')
       return
     }
+    if (submitting) return
     // 데이터 전송 로직 (이전과 동일)
     const travelData = {
       title: info.title,
@@ -74,13 +77,15 @@ function TravelInsertPage() {
       }))
     }
 
+    setSubmitting(true)
     try {
       await apiClient.post('/travel/', travelData)
-      alert('여행이 성공적으로 등록되었습니다! ✈️')
+      toast.success('여행이 등록되었습니다! ✈️')
       navigate('/travel')
     } catch (error) {
       console.error(error)
-      alert('저장 중 오류가 발생했습니다.')
+      toast.error('저장 중 오류가 발생했습니다.')
+      setSubmitting(false)
     }
   }
 
@@ -117,7 +122,7 @@ function TravelInsertPage() {
           padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; 
           white-space: nowrap; border: 1px solid #ddd; background: white; 
         }
-        .day-tab.active { background: #26DCD6; color: white; border-color: #26DCD6; font-weight: bold; }
+        .day-tab.active { background: #105A88; color: white; border-color: #105A88; font-weight: bold; }
 
         .input-place-area { 
           padding: 15px 20px; background: #fff; border-bottom: 1px solid #eee; 
@@ -125,7 +130,7 @@ function TravelInsertPage() {
         }
         .time-input { width: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
         .btn-add { 
-          width: 40px; height: 40px; border: none; background: #26DCD6; 
+          width: 40px; height: 40px; border: none; background: #105A88; 
           color: white; border-radius: 8px; font-size: 20px; cursor: pointer;
         }
 
@@ -135,7 +140,7 @@ function TravelInsertPage() {
           background: white; padding: 16px; border-radius: 12px; 
           border: 1px solid #eee; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .place-time { font-size: 13px; font-weight: bold; color: #26DCD6; margin-right: 12px; width: 45px; text-align: center; }
+        .place-time { font-size: 13px; font-weight: bold; color: #105A88; margin-right: 12px; width: 45px; text-align: center; }
         
         /* ★ 삭제 버튼 스타일 */
         .btn-del-item {
@@ -143,7 +148,7 @@ function TravelInsertPage() {
         }
         .btn-del-item:hover { color: #ff4d4f; }
 
-        .btn-submit { width: 100%; padding: 18px; background: #333; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .btn-submit { width: 100%; padding: 18px; background: #105A88; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
       `}</style>
 
       <div className="panel-left">
@@ -188,7 +193,9 @@ function TravelInsertPage() {
           )}
         </div>
 
-        <button className="btn-submit" onClick={handleSubmit}>일정 저장하기</button>
+        <button className="btn-submit" onClick={handleSubmit} disabled={submitting}>
+          {submitting ? '저장 중...' : '일정 저장하기'}
+        </button>
       </div>
 
       <div style={{flex:1, background:'#e8e8e8', display:'flex', alignItems:'center', justifyContent:'center'}}>

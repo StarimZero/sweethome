@@ -143,6 +143,10 @@ temp/
 # ESLint
 .eslintcache
 
+# 프로젝트 검토/디자인 노트 (GitHub 비공개, 로컬 전용)
+REVIEW_NOTES.md
+design.md
+
 # 필수 파일은 강제 포함
 !README.md
 !requirements.txt

@@ -1,10 +1,11 @@
 // 버킷리스트 스타일
 
 // 변수
-$primary-color: #ff6b6b;
-$success-color: #28a745;
-$gray-light: #f8f9fa;
-$gray-border: #ddd;
+// 전역 토큰(#105A88)에 매핑 — 색 통일
+$primary-color: var(--c-primary);
+$success-color: var(--c-success);
+$gray-light: var(--c-surface-alt);
+$gray-border: var(--c-border);
 
 // 공통
 .bucket-page, .bucket-insert-page, .bucket-detail-page {
@@ -114,13 +115,17 @@ $gray-border: #ddd;
   }
 
   .add-btn {
-    padding: 10px 20px;
-    background: $primary-color;
+    padding: 10px 22px;
+    background: var(--grad-primary);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
+
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
   }
 }
 
@@ -390,7 +395,7 @@ $gray-border: #ddd;
         font-size: 0.9rem;
       }
 
-      .edit-btn { background: #007bff; color: white; }
+      .edit-btn { background: var(--c-secondary); color: white; }
       .delete-btn { background: #dc3545; color: white; }
       .save-btn { background: $success-color; color: white; }
       .cancel-btn { background: #e9ecef; color: #333; }
@@ -469,7 +474,7 @@ $gray-border: #ddd;
 
       .progress-fill-large {
         height: 100%;
-        background: linear-gradient(90deg, $primary-color, #ffa500);
+        background: linear-gradient(90deg, var(--c-primary), var(--c-secondary));
       }
     }
   }
@@ -520,7 +525,7 @@ $gray-border: #ddd;
         flex-shrink: 0;
 
         &.wife {
-          background: #a855f7;
+          background: var(--c-secondary);
         }
       }
 

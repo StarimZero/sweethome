@@ -3,6 +3,8 @@ import Header from './components/Header'
 import Home from './components/Home'
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ToastProvider } from './components/common/Toast';
+import { ConfirmProvider } from './components/common/ConfirmDialog';
 // 요리 관련 3총사
 import CookingPage from './components/cooking/CookingPage'
 import CookingInsertPage from './components/cooking/CookingInsertPage'
@@ -61,6 +63,8 @@ import SystemLayout from './components/system/SystemLayout';
 
 function App() {
   return (
+    <ToastProvider>
+    <ConfirmProvider>
     <AuthProvider>
       <Header />
       <div className="container">
@@ -139,6 +143,8 @@ function App() {
         </Routes>
       </div>
     </AuthProvider>
+    </ConfirmProvider>
+    </ToastProvider>
   );
 }
 

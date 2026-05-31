@@ -1,9 +1,11 @@
-// 요리 스타일
+// 요리 스타일 — blue/green 파스텔 토큰 기반 모던 리디자인
 
 // 공통
 .cooking-page, .cooking-insert-page, .cooking-detail-page {
   h1 {
     margin: 0;
+    color: var(--c-text);
+    letter-spacing: -0.5px;
   }
 }
 
@@ -13,28 +15,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
+    margin-bottom: 24px;
+    gap: 12px;
   }
 
   .btn-add {
-    padding: 10px 20px;
-    background: #20c997;
-    color: white;
+    padding: 12px 22px;
+    background: var(--grad-primary);
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     white-space: nowrap;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
+
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+    &:active { transform: translateY(0); }
   }
 
   // 필터
   .filter-box {
-    background: #f8f9fa;
+    background: var(--c-surface);
     padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #eee;
+    border-radius: var(--r-lg);
+    margin-bottom: 24px;
+    border: 1px solid var(--c-border);
+    box-shadow: var(--sh-sm);
   }
 
   .filter-top {
@@ -47,35 +55,52 @@
 
   .tab-group {
     display: flex;
-    gap: 5px;
+    gap: 6px;
+    flex-wrap: wrap;
   }
 
   .tab-btn {
-    padding: 8px 15px;
-    border-radius: 5px;
+    padding: 8px 16px;
+    border-radius: 999px;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.18s;
 
     &.active {
-      background: #4dabf7;
-      color: white;
-      border: none;
+      background: var(--c-primary);
+      color: #fff;
+      border: 1px solid var(--c-primary);
+      box-shadow: var(--sh-sm);
     }
 
     &:not(.active) {
-      background: #fff;
-      color: #495057;
-      border: 1px solid #ced4da;
+      background: var(--c-surface);
+      color: var(--c-text-soft);
+      border: 1px solid var(--c-border);
+      &:hover { border-color: var(--c-primary); color: var(--c-primary); }
     }
   }
 
-  .filter-select {
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    min-width: 120px;
+  .filter-select,
+  .filter-input {
+    padding: 11px 14px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    background: var(--c-surface);
+    color: var(--c-text);
+    transition: border-color 0.18s, box-shadow 0.18s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+
+    &::placeholder { color: var(--c-text-muted); }
   }
+
+  .filter-select { min-width: 130px; }
 
   .filter-bottom {
     display: flex;
@@ -83,50 +108,50 @@
     align-items: center;
   }
 
-  .filter-input {
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    flex: 1;
-    min-width: 0;
-  }
+  .filter-input { flex: 1; min-width: 0; }
 
   .btn-search {
-    padding: 10px 20px;
-    background: #343a40;
-    color: white;
+    padding: 11px 22px;
+    background: var(--c-primary);
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--r-sm);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     white-space: nowrap;
+    transition: background 0.18s;
+
+    &:hover { background: var(--c-primary-strong); }
   }
 
   // 카드 그리드
   .recipe-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 22px;
   }
 
   .recipe-card {
-    border: 1px solid #eee;
-    border-radius: 12px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
     cursor: pointer;
     overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
+    background: var(--c-surface);
+    box-shadow: var(--sh-sm);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 
     &:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      box-shadow: var(--sh-lg);
+
+      .card-image img { transform: scale(1.06); }
     }
   }
 
   .card-image {
-    height: 160px;
+    height: 170px;
     overflow: hidden;
-    background: #f1f3f5;
+    background: var(--c-primary-soft);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,49 +161,53 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.45s ease;
     }
 
-    .placeholder {
-      font-size: 40px;
-    }
+    .placeholder { font-size: 44px; opacity: 0.7; }
 
     .chef-badge {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
+      top: 12px;
+      right: 12px;
+      background: rgba(30, 58, 58, 0.55);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 999px;
       font-size: 12px;
+      font-weight: 600;
     }
   }
 
   .card-body {
-    padding: 15px;
+    padding: 16px 18px 18px;
 
     h3 {
-      margin: 0 0 5px;
-      font-size: 18px;
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      color: var(--c-text);
       border-left: none;
       padding-left: 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .type-badge {
       font-size: 12px;
-      margin-left: 8px;
-      padding: 2px 6px;
-      background: #e7f5ff;
-      color: #1c7ed6;
-      border-radius: 4px;
-      vertical-align: middle;
-      font-weight: normal;
+      padding: 3px 9px;
+      background: var(--c-secondary-soft);
+      color: var(--c-secondary);
+      border-radius: 999px;
+      font-weight: 600;
     }
 
     p {
       margin: 0;
-      color: #868e96;
-      font-size: 14px;
+      color: var(--c-text-soft);
+      font-size: 0.9rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -188,106 +217,304 @@
   .empty-message {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 40px;
-    color: #adb5bd;
+    padding: 56px;
+    color: var(--c-text-muted);
+  }
+
+  // 로딩 상태
+  .loading-grid {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 56px;
+    color: var(--c-text-soft);
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: cookingSpin 0.7s linear infinite;
+    }
   }
 }
 
+@keyframes cookingSpin { to { transform: rotate(360deg); } }
+
 // === 등록 페이지 ===
 .cooking-insert-page {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
+
+  .form-head {
+    margin-bottom: 22px;
+
+    h1 { margin: 0 0 6px; }
+    p { margin: 0; color: var(--c-text-soft); font-size: 0.95rem; }
+  }
 
   .insert-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
   }
 
-  .form-input, .form-select {
+  .form-section {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-sm);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    > label {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--c-text-soft);
+    }
+  }
+
+  .req { color: var(--c-danger); }
+
+  .form-input, .form-select, .form-textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-md);
     box-sizing: border-box;
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+    font-size: 1rem;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      background: var(--c-surface);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+
+    &::placeholder { color: var(--c-text-muted); }
   }
 
-  .form-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    min-height: 80px;
+  .form-textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+
+  .image-preview {
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--c-border);
+    background: var(--c-primary-soft);
+
+    img { display: block; width: 100%; max-height: 280px; object-fit: cover; }
   }
 
-  .btn-submit {
-    padding: 15px;
-    background: #20c997;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+
+    .btn-cancel {
+      padding: 14px 24px;
+      border: 1px solid var(--c-border);
+      background: var(--c-surface);
+      color: var(--c-text-soft);
+      border-radius: var(--r-md);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+
+      &:hover:not(:disabled) { border-color: var(--c-primary); color: var(--c-primary); }
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
+    }
+
+    .btn-submit {
+      flex: 1;
+      max-width: 240px;
+      padding: 14px;
+      background: var(--grad-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      box-shadow: var(--sh-primary);
+      transition: transform 0.18s, box-shadow 0.2s, opacity 0.2s;
+
+      &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+      &:active:not(:disabled) { transform: translateY(0); }
+      &:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+    }
   }
 }
 
 // === 상세 페이지 ===
 .cooking-detail-page {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
 
   .edit-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
+
+    .form-head h1 { margin: 0; }
+
+    .form-section {
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--sh-sm);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+
+      > label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--c-text-soft);
+      }
+    }
+
+    .req { color: var(--c-danger); }
+
+    .image-preview {
+      border-radius: var(--r-md);
+      overflow: hidden;
+      border: 1px solid var(--c-border);
+      background: var(--c-primary-soft);
+
+      img { display: block; width: 100%; max-height: 280px; object-fit: cover; }
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+
+      .btn-cancel {
+        padding: 14px 24px;
+        border: 1px solid var(--c-border);
+        background: var(--c-surface);
+        color: var(--c-text-soft);
+        border-radius: var(--r-md);
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.15s;
+
+        &:hover:not(:disabled) { border-color: var(--c-primary); color: var(--c-primary); }
+        &:disabled { opacity: 0.6; cursor: not-allowed; }
+      }
+
+      .btn-submit {
+        flex: 1;
+        max-width: 240px;
+        padding: 14px;
+        background: var(--grad-primary);
+        color: #fff;
+        border: none;
+        border-radius: var(--r-md);
+        cursor: pointer;
+        font-size: 1.05rem;
+        font-weight: 700;
+        box-shadow: var(--sh-primary);
+        transition: transform 0.18s, box-shadow 0.2s, opacity 0.2s;
+
+        &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+        &:active:not(:disabled) { transform: translateY(0); }
+        &:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+      }
+    }
   }
 
-  .form-input, .form-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
+  .detail-loading,
+  .detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 56px;
+    color: var(--c-text-soft);
   }
 
-  .form-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    min-height: 100px;
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--c-border);
+    border-top-color: var(--c-primary);
+    border-radius: 50%;
+    animation: cookingSpin 0.7s linear infinite;
   }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-md);
+    box-sizing: border-box;
+    background: var(--c-surface-alt);
+    color: var(--c-text);
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary);
+      background: var(--c-surface);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+  }
+
+  .form-textarea { min-height: 120px; resize: vertical; }
 
   .detail-image {
     width: 100%;
-    max-height: 400px;
+    max-height: 420px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: var(--r-lg);
+
+    &.placeholder {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      background: var(--c-primary-soft);
+    }
   }
 
   .detail-title {
-    font-size: 32px;
-    margin: 20px 0 10px;
+    font-size: 2rem;
+    margin: 22px 0 10px;
+    color: var(--c-text);
     border-left: none;
     padding-left: 0;
   }
 
   .detail-meta {
-    color: #888;
+    color: var(--c-text-soft);
     margin-bottom: 20px;
   }
 
   .detail-description {
-    font-size: 18px;
+    font-size: 1.05rem;
     line-height: 1.8;
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
+    color: var(--c-text);
+    background: var(--c-primary-soft);
+    padding: 22px;
+    border-radius: var(--r-lg);
     white-space: pre-wrap;
     margin: 0;
   }
@@ -307,17 +534,22 @@
   }
 
   .btn {
-    padding: 10px 20px;
+    padding: 11px 22px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    transition: transform 0.15s, filter 0.15s;
 
-    &.edit { background: #fab005; color: white; }
-    &.delete { background: #ff6b6b; color: white; }
-    &.back { background: #f1f3f5; }
-    &.save { background: #4dabf7; color: white; }
-    &.cancel { background: #ccc; }
+    &:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(0.97); }
+
+    &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; filter: none; }
+
+    &.edit   { background: var(--c-secondary); color: #fff; }
+    &.delete { background: var(--c-danger); color: #fff; }
+    &.back   { background: var(--c-surface-alt); color: var(--c-text-soft); }
+    &.save   { background: var(--c-primary); color: #fff; }
+    &.cancel { background: var(--c-surface-alt); color: var(--c-text-soft); }
   }
 }
 
@@ -328,86 +560,45 @@
       flex-direction: column;
       align-items: stretch;
     }
-
-    .btn-add {
-      text-align: center;
-    }
-
-    .filter-top {
-      flex-direction: column;
-    }
-
-    .tab-group {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    .filter-select {
-      width: 100%;
-    }
-
+    .btn-add { text-align: center; }
+    .filter-top { flex-direction: column; align-items: stretch; }
+    .tab-group { width: 100%; overflow-x: auto; }
+    .filter-select { width: 100%; }
     .filter-bottom {
       flex-direction: column;
-
-      .btn-search {
-        width: 100%;
-      }
+      .btn-search { width: 100%; }
     }
-
     .recipe-grid {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
   }
 
   .cooking-detail-page {
-    .detail-title {
-      font-size: 24px;
-    }
-
-    .detail-description {
-      font-size: 16px;
-      padding: 15px;
-    }
-
+    .detail-title { font-size: 1.5rem; }
+    .detail-description { font-size: 1rem; padding: 16px; }
     .detail-actions {
       justify-content: stretch;
       flex-direction: row;
-
-      .btn {
-        flex: 1;
-        text-align: center;
-      }
+      .btn { flex: 1; text-align: center; }
     }
   }
 }
 
 @media (max-width: 480px) {
   .cooking-page {
-    .tab-btn {
-      padding: 6px 10px;
-      font-size: 13px;
-    }
-
-    .recipe-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .card-image {
-      height: 120px;
-    }
-
+    .tab-btn { padding: 6px 12px; font-size: 0.82rem; }
+    .recipe-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card-image { height: 130px; }
     .card-body {
-      padding: 10px;
-
-      h3 { font-size: 14px; }
-      p { font-size: 12px; }
+      padding: 12px;
+      h3 { font-size: 0.95rem; }
+      p { font-size: 0.8rem; }
     }
   }
 
   .cooking-insert-page,
   .cooking-detail-page {
-    .detail-title { font-size: 20px; }
+    .detail-title { font-size: 1.3rem; }
   }
 }

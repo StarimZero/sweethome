@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api'
+import { useToast } from '../common/Toast'
 import './Liquor.scss'
 
 function LiquorPage() {
   const [liquors, setLiquors] = useState([])
   const [categories, setCategories] = useState([])
   const [wineTypes, setWineTypes] = useState([])
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
+  const toast = useToast()
 
   const [filters, setFilters] = useState({
     name: '', category: '', wine_type: '', purchase_place: '', pairing_food: '', comment: '',
@@ -34,6 +37,7 @@ function LiquorPage() {
   }
 
   const fetchLiquors = async (overrideFilters = null) => {
+    setLoading(true)
     try {
       const current = overrideFilters || filters
       const params = {}
@@ -45,6 +49,9 @@ function LiquorPage() {
     } catch (err) {
       console.error(err)
       setLiquors([])
+      toast.error('주류 목록을 불러오지 못했습니다.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -155,7 +162,13 @@ function LiquorPage() {
 
       {/* 리스트 그리드 */}
       <div className="liquor-grid">
-        {liquors.map(liq => {
+        {loading && (
+          <div className="loading-grid">
+            <span className="spinner" />
+            <span>불러오는 중...</span>
+          </div>
+        )}
+        {!loading && liquors.map(liq => {
           const categoryName = categories.find(c => c.code_id === liq.category)?.code_name || liq.category
           const displayImage = (liq.image_urls && liq.image_urls.length > 0) ? liq.image_urls[0] : liq.image_url
           return (
@@ -187,7 +200,7 @@ function LiquorPage() {
             </div>
           )
         })}
-        {liquors.length === 0 && <div className="empty-message">검색 결과가 없습니다.</div>}
+        {!loading && liquors.length === 0 && <div className="empty-message">검색 결과가 없습니다.</div>}
       </div>
     </div>
   )

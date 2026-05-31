@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom' // <--- 추가
+import './styles/tokens.scss' // 전역 디자인 토큰(색/그림자/radius) — App보다 먼저 로드
 import App from './App.jsx'
-// import './index.css' <-- 아까 지우라고 했던 부분 (없어야 함)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

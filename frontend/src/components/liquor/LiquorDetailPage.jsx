@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import apiClient from '../../api'
+import { useToast } from '../common/Toast'
+import { useConfirm } from '../common/ConfirmDialog'
 import './Liquor.scss'
 
 function LiquorDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const toast = useToast()
+  const confirm = useConfirm()
 
   const [liquor, setLiquor] = useState(null)
   const [categories, setCategories] = useState([])
@@ -14,6 +18,9 @@ function LiquorDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [editData, setEditData] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     fetchCategories()
@@ -44,8 +51,13 @@ function LiquorDetailPage() {
       if (data.pairing_foods.length === 0 && data.pairing_food) data.pairing_foods = [data.pairing_food]
       if (!data.wine_type) data.wine_type = ''
       setLiquor(data)
-      if (!silent) setEditData(data)
-    } catch (err) { console.error(err) }
+      if (!silent) { setEditData(data); setLoadError(false) }
+    } catch (err) {
+      console.error(err)
+      if (!silent) setLoadError(true)
+    } finally {
+      if (!silent) setLoading(false)
+    }
   }
 
   const handleEdit = () => setIsEditing(true)
@@ -61,34 +73,74 @@ function LiquorDetailPage() {
   const isEditingWine = editData.category === 'SUL_W';
 
   const handleSave = async () => {
+    if (submitting) return
+    if (!editData.name?.trim()) { toast.error('주류명을 입력하세요.'); return }
+
     const cleanData = {
       ...editData,
       wine_type: isEditingWine ? editData.wine_type : null,
       image_urls: editData.image_urls.filter(s => s.trim() !== ''),
       pairing_foods: editData.pairing_foods.filter(s => s.trim() !== '')
     }
+    setSubmitting(true)
     try {
       const res = await apiClient.put(`/liquor/${id}`, cleanData)
-      alert('수정되었습니다')
+      toast.success('수정되었습니다.')
       let data = res.data
       if (!data.image_urls) data.image_urls = []
       if (!data.pairing_foods) data.pairing_foods = []
       if (!data.wine_type) data.wine_type = ''
       setLiquor(data); setEditData(data); setIsEditing(false); setCurrentImageIndex(0)
-    } catch (err) { console.error(err) }
+    } catch (err) {
+      console.error(err)
+      toast.error('수정에 실패했습니다.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleDelete = async () => {
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      try { await apiClient.delete(`/liquor/${id}`); navigate('/liquor') }
-      catch (err) { console.error(err) }
+    const ok = await confirm({
+      title: '주류 삭제',
+      message: '이 주류 리뷰를 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    })
+    if (!ok || submitting) return
+
+    setSubmitting(true)
+    try {
+      await apiClient.delete(`/liquor/${id}`)
+      toast.success('삭제되었습니다.')
+      navigate('/liquor')
+    } catch (err) {
+      console.error(err)
+      toast.error('삭제에 실패했습니다.')
+      setSubmitting(false)
     }
   }
 
   const nextImage = () => { if (liquor.image_urls.length > 1) setCurrentImageIndex((prev) => (prev + 1) % liquor.image_urls.length) }
   const prevImage = () => { if (liquor.image_urls.length > 1) setCurrentImageIndex((prev) => (prev - 1 + liquor.image_urls.length) % liquor.image_urls.length) }
 
-  if (!liquor) return <div>Loading...</div>
+  if (loading) {
+    return (
+      <div className="content-box liquor-detail-page">
+        <div className="detail-loading"><span className="spinner" /><span>불러오는 중...</span></div>
+      </div>
+    )
+  }
+
+  if (loadError || !liquor) {
+    return (
+      <div className="content-box liquor-detail-page">
+        <div className="detail-error">
+          <p>주류 정보를 불러오지 못했습니다.</p>
+          <button className="btn" onClick={() => navigate('/liquor')}>← 목록</button>
+        </div>
+      </div>
+    )
+  }
 
   const categoryName = categories.find(c => c.code_id === liquor.category)?.code_name || liquor.category
   const wineTypeName = wineTypes.find(c => c.code_id === liquor.wine_type)?.code_name || liquor.wine_type
@@ -101,13 +153,15 @@ function LiquorDetailPage() {
         <div>
           {isEditing ? (
             <>
-              <button className="btn primary" onClick={handleSave}>저장</button>
-              <button className="btn" onClick={handleCancel}>취소</button>
+              <button className="btn primary" onClick={handleSave} disabled={submitting}>
+                {submitting ? '저장 중...' : '저장'}
+              </button>
+              <button className="btn" onClick={handleCancel} disabled={submitting}>취소</button>
             </>
           ) : (
             <>
               <button className="btn" onClick={handleEdit}>수정</button>
-              <button className="btn danger" onClick={handleDelete}>삭제</button>
+              <button className="btn danger" onClick={handleDelete} disabled={submitting}>삭제</button>
             </>
           )}
         </div>
@@ -196,13 +250,15 @@ function LiquorDetailPage() {
             <span className="label">🍽️ 함께한 음식</span>
             {isEditing ? (
               <div className="value">
-                {editData.pairing_foods.map((food, i) => (
-                  <div key={i} className="input-row">
-                    <input value={food} onChange={e => handleFoodChange(i, e.target.value)} />
-                    <button className="btn danger" style={{padding:'0 10px'}} onClick={() => removeFoodField(i)}>X</button>
-                  </div>
-                ))}
-                <button className="btn" onClick={addFoodField}>+ 추가</button>
+                <div className="edit-list">
+                  {editData.pairing_foods.map((food, i) => (
+                    <div key={i} className="edit-row">
+                      <input value={food} onChange={e => handleFoodChange(i, e.target.value)} placeholder={`음식 #${i + 1}`} />
+                      <button type="button" className="btn-row-del" onClick={() => removeFoodField(i)} aria-label="삭제">✕</button>
+                    </div>
+                  ))}
+                  <button type="button" className="btn-row-add" onClick={addFoodField}>+ 음식 추가</button>
+                </div>
               </div>
             ) : (
               <div className="value">
@@ -244,15 +300,22 @@ function LiquorDetailPage() {
           </div>
 
           {isEditing && (
-            <div className="info-row" style={{marginTop:'20px'}}>
-              <span className="label">이미지 URL 관리</span>
-              {editData.image_urls.map((url, i) => (
-                <div key={i} className="input-row">
-                  <input value={url} onChange={e => handleImageChange(i, e.target.value)} placeholder="URL" />
-                  <button className="btn danger" onClick={() => removeImageField(i)}>X</button>
-                </div>
-              ))}
-              <button className="btn" onClick={addImageField}>+ 이미지 추가</button>
+            <div className="info-row image-manage">
+              <span className="label">이미지 URL 관리 <span className="hint">※ 첫 번째가 대표 이미지</span></span>
+              <div className="edit-list">
+                {editData.image_urls.map((url, i) => (
+                  <div key={i} className="edit-row image-row">
+                    <div className="thumb-box">
+                      {url
+                        ? <img src={url} alt="" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
+                        : <span>🍷</span>}
+                    </div>
+                    <input value={url} onChange={e => handleImageChange(i, e.target.value)} placeholder={`이미지 URL #${i + 1}`} />
+                    <button type="button" className="btn-row-del" onClick={() => removeImageField(i)} aria-label="삭제">✕</button>
+                  </div>
+                ))}
+                <button type="button" className="btn-row-add" onClick={addImageField}>+ 이미지 추가</button>
+              </div>
             </div>
           )}
         </div>

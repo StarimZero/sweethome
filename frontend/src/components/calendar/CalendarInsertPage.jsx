@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
 import './Calendar.scss';
 
 const CalendarInsertPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
+  const [submitting, setSubmitting] = useState(false);
   const [searchParams] = useSearchParams();
   const dateFromUrl = searchParams.get('date');
   const today = new Date().toISOString().slice(0, 10);
@@ -17,12 +20,12 @@ const CalendarInsertPage = () => {
     is_yearly: false,
     is_lunar: false,
     is_range: false,
-    color: '#6c5ce7'
+    color: '#105A88'
   });
 
   const colors = [
-    '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3',
-    '#54a0ff', '#5f27cd', '#00d2d3', '#1dd1a1'
+    '#105A88', '#4dabf7', '#ff6b6b', '#feca57',
+    '#48dbfb', '#1dd1a1', '#ff9ff3', '#5f27cd'
   ];
 
   const handleChange = (e) => {
@@ -45,21 +48,25 @@ const CalendarInsertPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
-      alert('제목을 입력하세요.');
+      toast.error('제목을 입력하세요.');
       return;
     }
+    if (submitting) return;
 
     const submitData = {
       ...form,
       end_date: form.is_range ? (form.end_date || null) : null
     };
 
+    setSubmitting(true);
     try {
       await apiClient.post('/calendar', submitData);
+      toast.success('일정이 등록되었습니다!');
       navigate('/calendar');
     } catch (err) {
       console.error(err);
-      alert('등록 실패');
+      toast.error('등록에 실패했습니다.');
+      setSubmitting(false);
     }
   };
 
@@ -173,10 +180,12 @@ const CalendarInsertPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-btn" onClick={() => navigate('/calendar')}>
+          <button type="button" className="cancel-btn" onClick={() => navigate('/calendar')} disabled={submitting}>
             취소
           </button>
-          <button type="submit" className="submit-btn">저장</button>
+          <button type="submit" className="submit-btn" disabled={submitting}>
+            {submitting ? '저장 중...' : '저장'}
+          </button>
         </div>
       </form>
     </div>

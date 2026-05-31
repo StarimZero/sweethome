@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
 import './Calendar.scss';
 
 const CalendarPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
@@ -46,6 +48,7 @@ const CalendarPage = () => {
       setEvents(res.data);
     } catch (err) {
       console.error(err);
+      toast.error('일정을 불러오지 못했습니다.');
     }
   };
 
@@ -223,7 +226,7 @@ const CalendarPage = () => {
                   <div
                     className={`range-bar ${event.isOpenEnd ? 'open-end' : ''}`}
                     style={{
-                      backgroundColor: event.color || '#6c5ce7',
+                      backgroundColor: event.color || '#105A88',
                       left: `${startPercent}%`,
                       width: `${widthPercent}%`
                     }}
@@ -299,7 +302,7 @@ const CalendarPage = () => {
                           <div
                             key={ev.id || i}
                             className="range-marker"
-                            style={{ backgroundColor: ev.color || '#6c5ce7' }}
+                            style={{ backgroundColor: ev.color || '#105A88' }}
                             title={ev.title}
                           />
                         ))}
@@ -313,7 +316,7 @@ const CalendarPage = () => {
                           <div
                             key={ev.id}
                             className="event-item"
-                            style={{ backgroundColor: ev.color || '#6c5ce7' }}
+                            style={{ backgroundColor: ev.color || '#105A88' }}
                           >
                             {ev.is_yearly && <span className="badge-icon">🔄</span>}
                             {ev.is_lunar && <span className="badge-icon">🌙</span>}
@@ -349,7 +352,7 @@ const CalendarPage = () => {
                 >
                   <span
                     className="color-dot"
-                    style={{ backgroundColor: ev.color || '#6c5ce7' }}
+                    style={{ backgroundColor: ev.color || '#105A88' }}
                   />
                   <span className="event-title">
                     {ev.is_yearly && '🔄 '}

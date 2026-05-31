@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api'
+import { useToast } from '../common/Toast'
 import './Culture.scss'
 
 function CultureInsertPage() {
   const navigate = useNavigate()
+  const toast = useToast()
 
   const [categories, setCategories] = useState([])
+  const [submitting, setSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '', category: '', visit_date: '', location: '',
@@ -51,15 +54,18 @@ function CultureInsertPage() {
       image_urls: formData.image_urls.filter(s => s.trim() !== '')
     }
 
-    if (!cleanData.title) { alert('제목을 입력하세요'); return }
+    if (!cleanData.title) { toast.error('제목을 입력하세요.'); return }
+    if (submitting) return
 
+    setSubmitting(true)
     try {
       await apiClient.post('/culture', cleanData)
-      alert('등록되었습니다!')
+      toast.success('등록되었습니다!')
       navigate('/culture')
     } catch (err) {
       console.error(err)
-      alert('등록 실패')
+      toast.error('등록에 실패했습니다.')
+      setSubmitting(false)
     }
   }
 
@@ -68,8 +74,10 @@ function CultureInsertPage() {
       <div className="form-header">
         <h1>🎨 문화생활 등록</h1>
         <div className="btn-group">
-          <button className="btn primary" onClick={handleSubmit}>저장</button>
-          <button className="btn" onClick={() => navigate('/culture')}>취소</button>
+          <button className="btn primary" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? '저장 중...' : '저장'}
+          </button>
+          <button className="btn" onClick={() => navigate('/culture')} disabled={submitting}>취소</button>
         </div>
       </div>
 

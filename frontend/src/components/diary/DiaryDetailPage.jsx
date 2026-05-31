@@ -2,16 +2,21 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../common/Toast';
+import { useConfirm } from '../common/ConfirmDialog';
 import './Diary.scss';
 
 const DiaryDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getAuthorName } = useAuth();
+  const toast = useToast();
+  const confirm = useConfirm();
   const [diary, setDiary] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({});
   const [newComment, setNewComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const moods = [
     { id: 'happy', emoji: '😊', label: '행복' },
@@ -50,22 +55,39 @@ const DiaryDetailPage = () => {
   };
 
   const handleSave = async () => {
+    if (submitting) return;
+    if (!form.title?.trim()) { toast.error('제목을 입력해주세요.'); return; }
+    setSubmitting(true);
     try {
       await apiClient.put(`/diary/${id}`, form);
       setIsEditing(false);
-      fetchDiary();
+      await fetchDiary();
+      toast.success('수정되었습니다.');
     } catch (err) {
-      alert('수정 실패');
+      console.error(err);
+      toast.error('수정에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) return;
+    const ok = await confirm({
+      title: '글 삭제',
+      message: '이 글을 정말 삭제할까요?\n삭제하면 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      danger: true,
+    });
+    if (!ok || submitting) return;
+    setSubmitting(true);
     try {
       await apiClient.delete(`/diary/${id}`);
+      toast.success('삭제되었습니다.');
       navigate('/diary');
     } catch (err) {
-      alert('삭제 실패');
+      console.error(err);
+      toast.error('삭제에 실패했습니다.');
+      setSubmitting(false);
     }
   };
 
@@ -78,17 +100,20 @@ const DiaryDetailPage = () => {
       setNewComment('');
       fetchDiary();
     } catch (err) {
-      alert('코멘트 등록 실패');
+      console.error(err);
+      toast.error('코멘트 등록에 실패했습니다.');
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    if (!window.confirm('코멘트를 삭제하시겠습니까?')) return;
+    const ok = await confirm({ title: '코멘트 삭제', message: '이 코멘트를 삭제할까요?', confirmText: '삭제', danger: true });
+    if (!ok) return;
     try {
       await apiClient.delete(`/diary/${id}/comments/${commentId}`);
       fetchDiary();
     } catch (err) {
-      alert('삭제 실패');
+      console.error(err);
+      toast.error('삭제에 실패했습니다.');
     }
   };
 
@@ -114,13 +139,13 @@ const DiaryDetailPage = () => {
         <div className="header-actions">
           {isEditing ? (
             <>
-              <button className="save-btn" onClick={handleSave}>저장</button>
-              <button className="cancel-btn" onClick={() => setIsEditing(false)}>취소</button>
+              <button className="save-btn" onClick={handleSave} disabled={submitting}>{submitting ? '저장 중...' : '저장'}</button>
+              <button className="cancel-btn" onClick={() => { setForm(diary); setIsEditing(false); }} disabled={submitting}>취소</button>
             </>
           ) : (
             <>
               <button className="edit-btn" onClick={() => setIsEditing(true)}>수정</button>
-              <button className="delete-btn" onClick={handleDelete}>삭제</button>
+              <button className="delete-btn" onClick={handleDelete} disabled={submitting}>삭제</button>
             </>
           )}
         </div>

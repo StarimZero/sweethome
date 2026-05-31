@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useToast } from '../common/Toast';
 import './Review.scss';
 
 function ReviewInsertPage() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [categories, setCategories] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     restaurant_name: '', location: '',
@@ -39,18 +42,21 @@ function ReviewInsertPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
     const cleanData = {
       ...formData,
       image_urls: formData.image_urls.filter(url => url.trim() !== "")
     };
 
+    setSubmitting(true);
     try {
       await apiClient.post('/review', cleanData);
-      alert("리뷰 등록 완료!");
+      toast.success('리뷰가 등록되었습니다!');
       navigate('/review');
     } catch (err) {
       console.error(err);
-      alert("오류 발생");
+      toast.error('등록에 실패했습니다. 다시 시도해주세요.');
+      setSubmitting(false);
     }
   };
 
@@ -131,8 +137,10 @@ function ReviewInsertPage() {
         </div>
 
         <div className="form-actions">
-          <button type="button" onClick={() => navigate('/review')} className="btn cancel">취소</button>
-          <button type="submit" className="btn submit">등록하기</button>
+          <button type="button" onClick={() => navigate('/review')} className="btn cancel" disabled={submitting}>취소</button>
+          <button type="submit" className="btn submit" disabled={submitting}>
+            {submitting ? '등록 중...' : '등록하기'}
+          </button>
         </div>
       </form>
     </div>

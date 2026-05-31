@@ -2,10 +2,15 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  background-color: #f8f9fa; /* 아주 연한 회색 (눈이 편함) */
+  font-family: 'Paperlogy', -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  background-color: var(--c-bg); /* 블루빛 화이트(토큰) */
   color: #333;
   line-height: 1.6;
+}
+
+/* 폼 컨트롤도 동일 폰트 상속 (기본값은 브라우저 글꼴이라 명시 필요) */
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 /* 2. 헤더 스타일 */
@@ -28,7 +33,7 @@ a {
 }
 
 a:hover {
-  color: #ff6b6b; /* 마우스 올리면 핑크색 */
+  color: var(--c-primary); /* 포인트 블루 */
 }
 
 /* 3. 메인 컨텐츠 영역 */
@@ -52,7 +57,7 @@ h3 {
   margin-top: 40px;
   margin-bottom: 20px;
   color: #495057;
-  border-left: 5px solid #ff6b6b; /* 왼쪽에 포인트 컬러 줄 */
+  border-left: 5px solid var(--c-primary); /* 왼쪽에 포인트 컬러 줄 */
   padding-left: 15px;
 }
 
@@ -72,7 +77,7 @@ p {
 
 /* 6. 강조 텍스트 */
 strong {
-  color: #ff6b6b; /* 핑크색 강조 */
+  color: var(--c-primary); /* 포인트 블루 강조 */
   font-weight: 700;
 }
 
@@ -89,17 +94,32 @@ strong {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #f8f9fa; /* 밝은 회색 배경 */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: var(--c-surface);
+  box-shadow: var(--sh-sm);
+  border-bottom: 1px solid var(--c-border);
   margin-bottom: 20px;
 }
 
 .logo a {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--c-text);
   text-decoration: none;
+  letter-spacing: -0.5px;
 }
+
+.logo-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.logo-text { line-height: 1; }
 
 .nav-menu {
   display: flex;
@@ -109,13 +129,18 @@ strong {
 
 .nav-item {
   text-decoration: none;
-  color: #555;
+  color: var(--c-text-soft);
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .nav-item:hover {
-  color: #007bff; /* 호버 시 파란색 */
+  color: var(--c-primary);
+}
+
+.nav-item.active {
+  color: var(--c-primary);
+  font-weight: 700;
 }
 
 .user-info {
@@ -128,25 +153,37 @@ strong {
 }
 
 .logout-btn {
-  padding: 5px 12px;
-  background-color: #dc3545; /* 빨간색 */
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: 6px 14px;
+  background-color: transparent;
+  color: var(--c-text-soft);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
   cursor: pointer;
   font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.18s;
 }
 
 .logout-btn:hover {
-  background-color: #c82333;
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+  background-color: #fff5f5;
 }
 
 .login-btn {
-  padding: 8px 16px;
-  background-color: #28a745; /* 초록색 */
+  padding: 8px 18px;
+  background-color: var(--c-primary); /* 포인트 블루 */
   color: white;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  box-shadow: var(--sh-sm);
+  transition: background-color 0.18s;
+}
+
+.login-btn:hover {
+  background-color: var(--c-primary-strong);
+  color: white;
 }
 
 /* 햄버거 메뉴 버튼 (기본: 숨김) */

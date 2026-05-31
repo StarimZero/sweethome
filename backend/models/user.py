@@ -19,6 +19,7 @@ class User(Document):
 class UserLogin(BaseModel):
     username: str
     password: str
+    remember: bool = False              # 로그인 상태 유지(체크 시 토큰 30일)
 
 
 class Token(BaseModel):

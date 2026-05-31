@@ -2,11 +2,12 @@
 @use 'sass:color';
 
 // 변수
-$primary-color: #6c5ce7;
-$husband-color: #74b9ff;
-$wife-color: #fd79a8;
-$gray-light: #f8f9fa;
-$gray-border: #ddd;
+// #105A88 블루 팔레트로 통일 (Sass 색 함수 호환 위해 hex 유지)
+$primary-color: #105A88;
+$husband-color: #105A88;
+$wife-color: #2E86B8;
+$gray-light: #F0F6FA;
+$gray-border: #D5E3EC;
 
 // 공통
 .diary-page, .diary-insert-page, .diary-detail-page {
@@ -138,13 +139,17 @@ $gray-border: #ddd;
   margin-bottom: 20px;
 
   .add-btn {
-    padding: 10px 20px;
-    background: $primary-color;
+    padding: 10px 22px;
+    background: var(--grad-primary);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--r-md);
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
+
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
   }
 }
 
@@ -445,9 +450,9 @@ $gray-border: #ddd;
         font-weight: 600;
       }
 
-      .edit-btn { background: #007bff; color: white; }
+      .edit-btn { background: var(--c-secondary); color: white; }
       .delete-btn { background: #dc3545; color: white; }
-      .save-btn { background: #28a745; color: white; }
+      .save-btn { background: var(--c-primary); color: white; }
       .cancel-btn { background: #e9ecef; color: #333; }
     }
   }
