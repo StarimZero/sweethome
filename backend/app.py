@@ -72,6 +72,10 @@ if os.path.exists(static_dir):
         # API나 문서 관련 경로는 제외
         if full_path.startswith("api") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
             return {"error": "Not Found"}
+        # public 폴더에서 복사된 파일(LOGO.png 등)은 그대로 내려줌. static 밖 경로는 막음
+        file_path = os.path.realpath(os.path.join(static_dir, full_path))
+        if file_path.startswith(os.path.realpath(static_dir) + os.sep) and os.path.isfile(file_path):
+            return FileResponse(file_path)
         return FileResponse(os.path.join(static_dir, "index.html"))
     
     # 루트 경로 접속 처리

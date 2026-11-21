@@ -4,7 +4,14 @@
 
 ## 프로젝트 개요
 
-Holango는 부부 라이프로그 웹 애플리케이션입니다. React 프론트엔드와 FastAPI 백엔드로 구성되어 있으며, MongoDB를 Beanie ODM으로 사용합니다. 요리 레시피, 리뷰, 여행 기록, 주류 리뷰를 관리하고 Google Gemini 기반 AI 소믈리에 기능을 제공합니다.
+Holango는 부부 라이프로그 웹 애플리케이션입니다. React 프론트엔드와 FastAPI 백엔드로 구성되어 있으며, MongoDB를 Beanie ODM으로 사용합니다. 요리 레시피, 리뷰, 여행, 주류 리뷰, 버킷리스트, 일기, 캘린더, 가계도, 문화생활, 뜨개록 등 11개 영역의 기록을 관리하고 Google Gemini 기반 AI 소믈리에 기능을 제공합니다.
+
+## 참고 문서 (로컬 전용, .gitignore 등록)
+
+작업 전에 아래 문서를 먼저 확인하세요. GitHub에 올라가지 않는 로컬 문서입니다.
+
+- `design.md` - UI 디자인 통일 작업 노트. 디자인 토큰(`#105A88` 포인트색), 폰트(Paperlogy), 적용 레시피, 메뉴별 진행상황. **UI/디자인 작업 전 필독.**
+- `REVIEW_NOTES.md` - 검토·진단 노트. 검증된 보안 구조와 위험도 판단 기준. **보안/구조 진단 전 필독** (일반 체크리스트를 그대로 적용해 위험도를 과장하지 말 것).
 
 ## 개발 명령어
 
@@ -38,34 +45,66 @@ npm run preview  # 프로덕션 빌드 미리보기
 - 백엔드: `http://127.0.0.1:8000` (API + Swagger 문서는 /docs)
 - 프론트엔드: `http://localhost:5173` (API 호출을 백엔드로 프록시)
 
+## 기능 영역
+
+각 기능은 프론트엔드 3종 세트(Page, InsertPage, DetailPage)와 백엔드 라우터/모델을 하나씩 가집니다.
+
+| 기능 | 프론트 경로 | API prefix | 모델 | 컬렉션 |
+|------|------------|-----------|------|--------|
+| 요리 | `/cooking` | `/api/cooking` | `Recipe` | `recipes` |
+| 리뷰 | `/review` | `/api/review` | `Review` | `reviews` |
+| 여행 | `/travel` | `/api/travel` | `Travel`, `Place` | `travels`, `places` |
+| 주류 | `/liquor` | `/api/liquor` | `LiquorReview` | `liquor_reviews` |
+| 버킷리스트 | `/bucket` | `/api/bucket` | `BucketList` | `bucketlist` |
+| 일기 | `/diary` | `/api/diary` | `Diary` | `diaries` |
+| 캘린더 | `/calendar` | `/api/calendar` | `CalendarEvent` | `calendar_events` |
+| 가계도 | `/family` | `/api/family` | `FamilyMember` | `family_members` |
+| 문화생활 | `/culture` | `/api/culture` | `CultureReview` | `culture_reviews` |
+| 뜨개록 | `/knitting` | `/api/knitting` | `KnittingRecord` | `knitting_records` |
+| 공통코드 | `/system/code` | `/api/code` | `CommonCode` | `common_codes` |
+| 사용자관리 | `/system/users` | `/api/users` | `User` | `users` |
+
+그 외 API: `/api/auth`(로그인/회원가입), `/api/couple`(홈 대시보드, `routers/dashboard.py`)
+
 ## 아키텍처
 
 ### 백엔드 구조 (`backend/`)
-- `app.py` - FastAPI 앱 진입점, lifespan 이벤트, 라우터 등록, SPA 서빙
+- `app.py` - FastAPI 앱 진입점, lifespan 이벤트(.env 로드 → DB 초기화), 라우터 등록, SPA 서빙
 - `database.py` - Motor 비동기 클라이언트로 MongoDB/Beanie 초기화
 - `models/` - Beanie Document 모델 (MongoDB 컬렉션)
   - `__init__.py` - Beanie 초기화용 `__all_models__` 리스트 내보내기
-  - 각 모델 파일(cooking.py, review.py, travel.py, liquor.py, user.py)에서 Beanie Document 정의
+  - 기능별 모델 파일 + `system/common_code.py`
 - `routers/` - `/api` 접두사를 가진 FastAPI 라우터
   - 표준 CRUD 패턴: 목록, 생성, ID로 조회, 수정, 삭제
   - `liquor.py`에 Gemini API를 이용한 백그라운드 AI 분석 포함
   - `auth.py` - JWT 기반 인증 (회원가입/로그인)
+  - `dashboard.py` - 홈 화면 요약 데이터 (`/api/couple`)
+  - `ai.py` - 독립 AI 분석 엔드포인트. **현재 `app.py`에 등록되어 있지 않음(미사용)**
+  - `system/common_code.py` - 공통코드 관리
 - `auth/security.py` - 비밀번호 해싱 및 JWT 토큰 유틸리티
+- `seeds/` - 초기 데이터 스크립트 (뜨개록 공통코드, 사용자 초기화 mongosh 스크립트)
+- `static/` - 배포 시 프론트엔드 빌드 결과물이 복사되는 위치 (있을 때만 SPA 서빙)
 
 ### 프론트엔드 구조 (`frontend/src/`)
-- `App.jsx` - 공개/보호 라우트가 있는 React Router 설정
-- `api.js` - `/api` baseURL을 가진 Axios 클라이언트
+- `App.jsx` - React Router 설정. `ToastProvider` > `ConfirmProvider` > `AuthProvider` 순으로 감쌈
+- `api.js` - `/api` baseURL을 가진 Axios 클라이언트 (JWT를 Authorization 헤더로 전송, 쿠키 미사용)
 - `context/AuthContext.jsx` - localStorage에 JWT 토큰을 저장하는 인증 상태 관리
-- `components/` - 기능별 구성
-  - 각 기능(cooking, review, travel, liquor)은 Page, InsertPage, DetailPage 컴포넌트 보유
+- `styles/tokens.scss` - 전역 CSS 변수(디자인 토큰). `main.jsx`에서 App보다 먼저 로드
+- `hooks/` - 커스텀 훅 (`useBucketCodes.js` 등)
+- `components/` - 기능별 폴더 구성
+  - 각 기능 폴더(cooking, review, travel, liquor, bucket, diary, calendar, family, culture, knitting)는 Page, InsertPage, DetailPage 컴포넌트 보유
+  - `common/` - 전역 UI 토대: `Toast.jsx`(알림), `ConfirmDialog.jsx`(확인 모달). **alert/confirm 대신 이것들을 사용**
   - `ProtectedRoute.jsx` - 인증된 라우트용 가드
-  - `system/` - 시스템 관리 컴포넌트 (공통코드)
+  - `system/` - 시스템 관리 (`SystemLayout` 하위에 공통코드, 사용자관리)
 
 ### 주요 패턴
 - **API 라우트**: 모든 백엔드 라우트는 `/api` 접두사 사용 (예: `/api/cooking`, `/api/liquor`)
 - **모델**: Settings.name으로 MongoDB 컬렉션명을 정의하는 Beanie Document
-- **인증**: localStorage에 JWT 토큰 저장, Authorization 헤더로 전송
-- **AI 연동**: 주류 리뷰 등록 시 Gemini API로 백그라운드 분석 수행
+- **인증**: localStorage에 JWT 토큰 저장, Authorization 헤더로 전송 (쿠키 미사용)
+- **라우팅**: 공개 라우트는 `/`, `/login`뿐이고 나머지는 모두 `ProtectedRoute` 하위
+- **AI 연동**: 주류 리뷰 등록/수정 시 `BackgroundTasks`로 Gemini(`gemini-2.5-flash`) 분석을 실행해 DB 업데이트
+- **디자인**: 색상·간격은 하드코딩하지 말고 `tokens.scss`의 `var(--...)` 사용 (자세한 내용은 `design.md`)
+- **공통코드**: 셀렉트 박스 등 코드성 데이터는 `common_codes` 컬렉션 기반
 
 ## 환경변수
 
@@ -79,4 +118,8 @@ npm run preview  # 프로덕션 빌드 미리보기
 
 Beanie ODM을 사용하는 MongoDB. 모든 모델은 Beanie 초기화를 위해 `models/__init__.py`의 `__all_models__` 리스트에 등록해야 합니다.
 
-컬렉션: recipes, reviews, travels, places, liquor_reviews, users, common_codes
+컬렉션: `recipes`, `reviews`, `travels`, `places`, `liquor_reviews`, `users`, `common_codes`, `bucketlist`, `diaries`, `calendar_events`, `family_members`, `culture_reviews`, `knitting_records`
+
+## 배포
+
+Render에 단일 서버로 배포됩니다. 프론트엔드 빌드 결과물을 `backend/static`으로 복사하면 `app.py`가 SPA를 직접 서빙하므로, 운영 환경에서 프론트와 API는 **동일 출처(same-origin)** 입니다. 로컬 개발도 Vite 프록시로 같은 구조입니다.

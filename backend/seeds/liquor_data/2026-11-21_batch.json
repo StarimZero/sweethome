@@ -1,0 +1,49 @@
+[
+  {
+    "name": "도한 청명주 375ml",
+    "category": "전통주",
+    "purchase_place": "",
+    "price": 0,
+    "visit_date": "2026-11-14",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://i.ibb.co/4gdyXB30/20261114-375ml-F.jpg",
+      "https://i.ibb.co/mVNGZXCk/20261114-375ml-B.jpg"
+    ],
+    "rating_husband": 0,
+    "rating_wife": 0,
+    "comment_husband": "",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "전북 정읍 농업회사법인 (주)한영석의발효연구소의 약주(청명주). 쌀(국내산)·한영석 누룩으로 빚음. 13.8%, 375ml, 2026-09-23 병입. 냉장보관.",
+      "taste": "",
+      "aroma": "",
+      "variety": "쌀, 누룩",
+      "pairing": "한식, 회, 전"
+    }
+  },
+  {
+    "name": "세이크리드 트리 그란 리제르바 까르메네르 2023 (Sacred Tree Gran Reserva Carmenere)",
+    "category": "와인",
+    "wine_type": "칠레",
+    "purchase_place": "",
+    "price": 0,
+    "visit_date": "2026-11-15",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://i.ibb.co/sJW8cWxY/20261115-F.jpg",
+      "https://i.ibb.co/8D4ZNT0M/20261115-B.jpg"
+    ],
+    "rating_husband": 0,
+    "rating_wife": 0,
+    "comment_husband": "",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "칠레 D.O. 마울레 밸리 레드. Bodegas y Viñedos de Aguirre 생산, 오크 18개월 숙성. 2023 빈티지, 13.5%, 750ml. 수입 리커벨리.",
+      "taste": "잘 익은 검붉은 과일, 부드러운 탄닌, 오크에서 온 바닐라·스모키함",
+      "aroma": "블랙베리, 자두, 피망·후추 같은 허브 스파이스",
+      "variety": "까르메네르",
+      "pairing": "소고기·돼지고기 구이, 바비큐, 매콤한 고기 요리"
+    }
+  }
+]
