@@ -158,3 +158,4 @@ design.md
 메뉴이미지백업.txt
 이미지백업.txt
 prototype_knitting.html
+backend/seeds/init_users_and_created_by.mongosh.js
