@@ -305,7 +305,7 @@ function TravelDetailPage() {
     }
   }
 
-  if (loading) return <div>로딩중...</div>
+  if (loading) return <div>불러오는 중...</div>
   if (!travel) return <div>정보 없음</div>
 
   const targetTravel = isEditing ? editedTravel : travel;
@@ -375,7 +375,7 @@ function TravelDetailPage() {
           
           {isEditing ? (
             <div style={{marginTop:'10px'}}>
-              <label style={{fontSize:'12px', color:'#888'}}>제목 & 색상</label>
+              <label style={{fontSize:'12px', color:'#888'}}>제목과 색상</label>
               <div style={{display:'flex', gap:'8px', marginBottom:'6px'}}>
                 <input name="title" value={editedTravel.title} onChange={handleEditChange} className="input-edit" style={{flex:1}} />
                 {/* ★ 색상 수정용 Color Picker */}
@@ -467,7 +467,7 @@ function TravelDetailPage() {
           )}
           {isEditing && !isLoaded && (
             <div className="edit-add-area">
-              <span>지도 로딩중...</span>
+              <span>지도를 불러오는 중...</span>
             </div>
           )}
 
@@ -594,7 +594,7 @@ function TravelDetailPage() {
           <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'100%', background:'#e8e8e8'}}>
             <div style={{textAlign:'center', color:'#888'}}>
               <span style={{fontSize:'48px'}}>🗺️</span>
-              <h3>지도 로딩중...</h3>
+              <h3>지도를 불러오는 중...</h3>
             </div>
           </div>
         )}

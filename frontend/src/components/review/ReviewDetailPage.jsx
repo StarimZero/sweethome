@@ -151,8 +151,8 @@ function ReviewDetailPage() {
             <label>👩‍💼 아내 점수 <input type="number" name="wife_rating" step="0.1" value={editData.wife_rating} onChange={handleChange} className="form-input" /></label>
           </div>
 
-          <textarea name="husbandcomment" value={editData.husbandcomment} onChange={handleChange} placeholder="남편 코멘트" className="form-textarea" />
-          <textarea name="wifecomment" value={editData.wifecomment} onChange={handleChange} placeholder="아내 코멘트" className="form-textarea" />
+          <textarea name="husbandcomment" value={editData.husbandcomment} onChange={handleChange} placeholder="남편 한줄평" className="form-textarea" />
+          <textarea name="wifecomment" value={editData.wifecomment} onChange={handleChange} placeholder="아내 한줄평" className="form-textarea" />
 
           <label className="form-label">사진 편집</label>
           {(editData.image_urls || []).map((url, index) => (
@@ -190,14 +190,14 @@ function ReviewDetailPage() {
                 👨‍💼 남편의 한마디
                 <span className="rating">★ {review.husband_rating}</span>
               </h3>
-              <p>{review.husbandcomment || "코멘트가 없습니다."}</p>
+              <p>{review.husbandcomment || "한줄평이 없습니다."}</p>
             </div>
             <div className="comment-card wife">
               <h3>
                 👩‍💼 아내의 한마디
                 <span className="rating">★ {review.wife_rating}</span>
               </h3>
-              <p>{review.wifecomment || "코멘트가 없습니다."}</p>
+              <p>{review.wifecomment || "한줄평이 없습니다."}</p>
             </div>
           </div>
 

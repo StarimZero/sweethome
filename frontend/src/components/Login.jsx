@@ -38,7 +38,7 @@ const Login = () => {
         <div className="login-brand">
           <img src="/LOGO.png" alt="SweetHome" className="login-logo" />
           <h1>SweetHome</h1>
-          <p>우리의 기록, 다시 만나기</p>
+          <p>우리 둘의 기록을 이어가요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form" noValidate>

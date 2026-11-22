@@ -44,7 +44,7 @@ const BucketInsertPage = () => {
     }
   };
 
-  if (loading) return <div>로딩중...</div>;
+  if (loading) return <div>불러오는 중...</div>;
 
   return (
     <div className="bucket-insert-page">

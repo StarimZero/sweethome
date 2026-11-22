@@ -101,12 +101,12 @@ const DiaryDetailPage = () => {
       fetchDiary();
     } catch (err) {
       console.error(err);
-      toast.error('코멘트 등록에 실패했습니다.');
+      toast.error('댓글 등록에 실패했습니다.');
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    const ok = await confirm({ title: '코멘트 삭제', message: '이 코멘트를 삭제할까요?', confirmText: '삭제', danger: true });
+    const ok = await confirm({ title: '댓글 삭제', message: '이 댓글을 삭제할까요?', confirmText: '삭제', danger: true });
     if (!ok) return;
     try {
       await apiClient.delete(`/diary/${id}/comments/${commentId}`);
@@ -127,7 +127,7 @@ const DiaryDetailPage = () => {
     return found ? `${found.emoji} ${found.label}` : '';
   };
 
-  if (!diary) return <div>로딩중...</div>;
+  if (!diary) return <div>불러오는 중...</div>;
 
   return (
     <div className="diary-detail-page">
@@ -223,7 +223,7 @@ const DiaryDetailPage = () => {
 
       {/* 코멘트 섹션 */}
       <div className="comments-section">
-        <h3>💬 코멘트 ({diary.comments?.length || 0})</h3>
+        <h3>💬 댓글 ({diary.comments?.length || 0})</h3>
 
         <div className="comment-list">
           {diary.comments?.map((comment) => (
@@ -247,7 +247,7 @@ const DiaryDetailPage = () => {
           <textarea
             className="comment-input"
             rows={2}
-            placeholder="코멘트를 입력하세요..."
+            placeholder="댓글을 입력하세요"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
           />

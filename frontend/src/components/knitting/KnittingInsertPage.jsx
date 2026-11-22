@@ -223,7 +223,7 @@ function KnittingInsertPage() {
       }
     } catch (err) {
       console.error(err);
-      alert('오류 발생');
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -305,7 +305,7 @@ function KnittingInsertPage() {
         </div>
 
         {/* === 바늘 & 게이지 === */}
-        <div className="section-title">바늘 & 게이지</div>
+        <div className="section-title">바늘과 게이지</div>
         <div className="form-grid">
           <div className="full">
             <h3>원작 바늘
@@ -319,7 +319,7 @@ function KnittingInsertPage() {
                   <div key={i} className="row needle">
                     <input type="text" value={n}
                            onChange={e => setArrayItem('orig_needles', i, e.target.value)}
-                           placeholder="예: 4.0mm 줄바늘 — 본체용" />
+                           placeholder="예: 4.0mm 줄바늘 (본체용)" />
                     <button type="button" className="btn-del"
                             onClick={() => removeArrayItem('orig_needles', i)}>삭제</button>
                   </div>
@@ -618,12 +618,12 @@ function KnittingInsertPage() {
             </div>
           </label>
 
-          <label className="full">아내 코멘트
+          <label className="full">아내 한줄평
             <textarea value={form.wife_comment}
                       onChange={e => setField('wife_comment', e.target.value)}
                       placeholder="만들면서 느낀 점, 어려웠던 부분 등..." />
           </label>
-          <label className="full">남편 코멘트
+          <label className="full">남편 한줄평
             <textarea value={form.husband_comment}
                       onChange={e => setField('husband_comment', e.target.value)}
                       placeholder="받았을 때 / 봤을 때의 감상..." />

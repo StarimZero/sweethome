@@ -118,7 +118,7 @@ function TravelPage() {
       `}</style>
 
       <div className="header-area">
-        <h1>✈️ 우리의 여행</h1>
+        <h1>✈️ 우리 여행</h1>
         <button className="btn-create" onClick={() => navigate('/travel/new')}>+ 여행 만들기</button>
       </div>
 

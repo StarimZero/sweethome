@@ -89,12 +89,12 @@ const BucketDetailPage = () => {
       fetchBucket();
     } catch (err) {
       console.error(err);
-      toast.error('코멘트 등록에 실패했습니다.');
+      toast.error('댓글 등록에 실패했습니다.');
     }
   };
 
   const handleDeleteComment = async (commentId) => {
-    const ok = await confirm({ title: '코멘트 삭제', message: '이 코멘트를 삭제할까요?', confirmText: '삭제', danger: true });
+    const ok = await confirm({ title: '댓글 삭제', message: '이 댓글을 삭제할까요?', confirmText: '삭제', danger: true });
     if (!ok) return;
     try {
       await apiClient.delete(`/bucket/${id}/comments/${commentId}`);
@@ -110,7 +110,7 @@ const BucketDetailPage = () => {
     return map[st] || '🎯';
   };
 
-  if (!bucket || codesLoading) return <div>로딩중...</div>;
+  if (!bucket || codesLoading) return <div>불러오는 중...</div>;
 
   return (
     <div className="bucket-detail-page">
@@ -227,7 +227,7 @@ const BucketDetailPage = () => {
 
       {/* 코멘트 섹션 */}
       <div className="comments-section">
-        <h3>💬 코멘트 ({bucket.comments?.length || 0})</h3>
+        <h3>💬 댓글 ({bucket.comments?.length || 0})</h3>
 
         <div className="comment-list">
           {bucket.comments?.map((comment) => (
@@ -251,7 +251,7 @@ const BucketDetailPage = () => {
           <textarea
             className="comment-input"
             rows={2}
-            placeholder="코멘트를 입력하세요..."
+            placeholder="댓글을 입력하세요"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
           />

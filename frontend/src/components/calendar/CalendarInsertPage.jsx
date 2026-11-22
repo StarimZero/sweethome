@@ -72,7 +72,7 @@ const CalendarInsertPage = () => {
 
   return (
     <div className="calendar-insert-page">
-      <h1>이벤트 등록</h1>
+      <h1>일정 등록</h1>
 
       <form onSubmit={handleSubmit} className="calendar-form">
         <div className="form-group">
@@ -95,9 +95,9 @@ const CalendarInsertPage = () => {
               checked={form.is_range}
               onChange={handleRangeToggle}
             />
-            <span>기간 이벤트</span>
+            <span>기간 일정</span>
           </label>
-          <p className="hint">시작일~종료일이 있는 이벤트 (예: 유행어 기간)</p>
+          <p className="hint">시작일과 종료일이 있는 일정 (예: 유행어 기간)</p>
         </div>
 
         {/* 날짜 입력 */}
@@ -161,7 +161,7 @@ const CalendarInsertPage = () => {
             />
             <span>매년 반복</span>
           </label>
-          <p className="hint">생일, 기념일 등 매년 반복되는 이벤트에 체크</p>
+          <p className="hint">생일, 기념일처럼 매년 돌아오는 일정이면 체크</p>
         </div>
 
         <div className="form-group">

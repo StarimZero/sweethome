@@ -25,7 +25,7 @@ function CodeDetailPage() {
       alert("수정되었습니다.");
       navigate('/system/code');
     } catch (err) {
-      alert("오류 발생");
+      alert("오류가 발생했습니다.");
     }
   };
 
@@ -36,7 +36,7 @@ function CodeDetailPage() {
     }
   };
 
-  if (!form) return <div>로딩 중...</div>;
+  if (!form) return <div>불러오는 중...</div>;
 
   return (
     <div style={{ maxWidth: '600px', background: 'white', padding: '40px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', margin:'0 auto' }}>

@@ -159,7 +159,7 @@ function LiquorInsertPage() {
       </div>
 
       <div className="form-section">
-        <div className="section-title">우리의 평가</div>
+        <div className="section-title">우리 평가</div>
         <div className="grid-2">
           <div>
             <div className="form-group">
@@ -167,7 +167,7 @@ function LiquorInsertPage() {
               <input type="number" name="rating_husband" value={formData.rating_husband} onChange={handleChange} step="0.5" min="0" max="5" />
             </div>
             <div className="form-group">
-              <label>👨 남편 코멘트</label>
+              <label>👨 남편 한줄평</label>
               <textarea name="comment_husband" value={formData.comment_husband} onChange={handleChange}></textarea>
             </div>
           </div>
@@ -177,7 +177,7 @@ function LiquorInsertPage() {
               <input type="number" name="rating_wife" value={formData.rating_wife} onChange={handleChange} step="0.5" min="0" max="5" />
             </div>
             <div className="form-group">
-              <label>👩 아내 코멘트</label>
+              <label>👩 아내 한줄평</label>
               <textarea name="comment_wife" value={formData.comment_wife} onChange={handleChange}></textarea>
             </div>
           </div>

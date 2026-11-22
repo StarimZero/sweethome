@@ -114,7 +114,7 @@ function CultureInsertPage() {
             <input type="number" name="rating_husband" value={formData.rating_husband} onChange={handleChange} step="0.5" min="0" max="5" />
           </div>
           <div className="form-group">
-            <label>👨 남편 코멘트</label>
+            <label>👨 남편 한줄평</label>
             <textarea name="comment_husband" value={formData.comment_husband} onChange={handleChange} rows={3}></textarea>
           </div>
         </div>
@@ -124,7 +124,7 @@ function CultureInsertPage() {
             <input type="number" name="rating_wife" value={formData.rating_wife} onChange={handleChange} step="0.5" min="0" max="5" />
           </div>
           <div className="form-group">
-            <label>👩 아내 코멘트</label>
+            <label>👩 아내 한줄평</label>
             <textarea name="comment_wife" value={formData.comment_wife} onChange={handleChange} rows={3}></textarea>
           </div>
         </div>

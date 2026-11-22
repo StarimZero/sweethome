@@ -76,7 +76,7 @@ function FamilyInsertPage() {
       alert("등록 완료!");
       navigate('/family');
     } catch (err) {
-      alert("오류 발생");
+      alert("오류가 발생했습니다.");
       console.error(err);
     }
   };

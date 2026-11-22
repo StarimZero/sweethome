@@ -31,7 +31,7 @@ function SystemLayout() {
           <li><Link to="/system/code" style={linkStyle}>🏷️ 공통 코드 관리</Link></li>
           <li><Link to="/system/users" style={linkStyle}>👥 사용자 관리</Link></li>
           <li className="nav-back">
-            <Link to="/" style={{ ...linkStyle, color: '#868e96', fontSize: '14px' }}>← 메인으로 나가기</Link>
+            <Link to="/" style={{ ...linkStyle, color: '#868e96', fontSize: '14px' }}>← 홈으로</Link>
           </li>
         </ul>
       </aside>

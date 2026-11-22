@@ -50,7 +50,7 @@ const BucketPage = () => {
     return map[st] || '';
   };
 
-  if (codesLoading) return <div>로딩중...</div>;
+  if (codesLoading) return <div>불러오는 중...</div>;
 
   return (
     <div className="bucket-page">

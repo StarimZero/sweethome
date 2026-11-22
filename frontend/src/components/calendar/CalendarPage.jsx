@@ -213,7 +213,7 @@ const CalendarPage = () => {
       {rangeEventDisplays.length > 0 && (
         <div className="range-events-section">
           <div className="range-events-header">
-            <span className="range-label">기간 이벤트</span>
+            <span className="range-label">기간 일정</span>
           </div>
           <div className="range-events-bars">
             {rangeEventDisplays.map((event, idx) => {
@@ -370,7 +370,7 @@ const CalendarPage = () => {
               ))}
             </ul>
           ) : (
-            <p className="no-events">이벤트가 없습니다.</p>
+            <p className="no-events">일정이 없습니다.</p>
           )}
         </div>
       )}
@@ -378,7 +378,7 @@ const CalendarPage = () => {
       {/* 새 이벤트 추가 버튼 */}
       {!selectedDate && (
         <div className="toolbar">
-          <button className="add-btn" onClick={handleAddEvent}>+ 새 이벤트</button>
+          <button className="add-btn" onClick={handleAddEvent}>+ 새 일정</button>
         </div>
       )}
     </div>

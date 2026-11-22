@@ -188,7 +188,7 @@ function KnittingDetailPage() {
 
       {(record.size_before_wash || record.size_after_wash || record.wash_method) && (
         <>
-          <div className="section-title">완성 사이즈 & 세탁</div>
+          <div className="section-title">완성 사이즈와 세탁</div>
           {record.size_before_wash && <div className="detail-row"><div className="key">세탁 전 사이즈</div><div>{record.size_before_wash}</div></div>}
           {record.size_after_wash &&  <div className="detail-row"><div className="key">세탁 후 사이즈</div><div>{record.size_after_wash}</div></div>}
           {record.wash_method &&      <div className="detail-row"><div className="key">세탁 방법</div><div>{record.wash_method}</div></div>}
@@ -222,7 +222,7 @@ function KnittingDetailPage() {
 
       {(record.wife_comment || record.husband_comment || record.wife_rating || record.husband_rating) && (
         <>
-          <div className="section-title">코멘트 & 평점</div>
+          <div className="section-title">한줄평과 평점</div>
           {(record.wife_comment || record.wife_rating) && (
             <div className="comment-block">
               <div className="who">👩 아내 <StarPreview value={record.wife_rating} /></div>

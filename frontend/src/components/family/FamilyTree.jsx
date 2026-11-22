@@ -876,7 +876,7 @@ const FamilyTree = ({ members, onRefresh, husbandLineage = 'paternal', wifeLinea
     return (
       <div style={{ textAlign: 'center', padding: '40px' }}>
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>👨‍👩‍👧‍👦</div>
-        <p style={{ color: '#888', marginBottom: '20px' }}>가계도를 시작하세요</p>
+        <p style={{ color: '#888', marginBottom: '20px' }}>가족을 추가해서 가계도를 만들어 보세요</p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
           <button onClick={() => openModal('self', null, { side: 'husband', generation: 0 })}
             style={{ padding: '12px 20px', border: '2px solid #4a90d9', borderRadius: '8px', background: 'white', color: '#4a90d9', cursor: 'pointer', fontSize: '14px' }}>

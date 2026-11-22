@@ -53,7 +53,7 @@ const CalendarDetailPage = () => {
         });
       } catch (err) {
         console.error(err);
-        toast.error('이벤트를 찾을 수 없습니다.');
+        toast.error('일정을 찾을 수 없습니다.');
         navigate('/calendar');
       }
     };
@@ -144,14 +144,14 @@ const CalendarDetailPage = () => {
   };
 
   if (!event) {
-    return <div className="loading">로딩 중...</div>;
+    return <div className="loading">불러오는 중...</div>;
   }
 
   return (
     <div className="calendar-detail-page">
       {isEditing ? (
         <>
-          <h1>이벤트 수정</h1>
+          <h1>일정 수정</h1>
           <form className="calendar-form">
             <div className="form-group">
               <label>제목 *</label>
@@ -171,7 +171,7 @@ const CalendarDetailPage = () => {
                   checked={form.is_range}
                   onChange={handleRangeToggle}
                 />
-                <span>기간 이벤트</span>
+                <span>기간 일정</span>
               </label>
             </div>
 

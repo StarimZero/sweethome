@@ -148,7 +148,7 @@ function LiquorPage() {
               </div>
             </div>
             <div className="filter-item full-width">
-              <span className="filter-label">코멘트 내용</span>
+              <span className="filter-label">한줄평 내용</span>
               <input name="comment" value={filters.comment} onChange={handleChange} className="filter-input" placeholder="리뷰 내용 검색..." />
             </div>
           </div>

@@ -281,7 +281,7 @@ function LiquorDetailPage() {
               </div>
               {isEditing
                 ? <textarea name="comment_husband" value={editData.comment_husband} onChange={handleChange} rows={3} style={{width:'100%'}} />
-                : <p style={{color:'#555', lineHeight:'1.6', margin:0}}>{liquor.comment_husband || <span style={{color:'#ccc'}}>코멘트 없음</span>}</p>
+                : <p style={{color:'#555', lineHeight:'1.6', margin:0}}>{liquor.comment_husband || <span style={{color:'#ccc'}}>한줄평 없음</span>}</p>
               }
             </div>
             <div>
@@ -294,7 +294,7 @@ function LiquorDetailPage() {
               </div>
               {isEditing
                 ? <textarea name="comment_wife" value={editData.comment_wife} onChange={handleChange} rows={3} style={{width:'100%'}} />
-                : <p style={{color:'#555', lineHeight:'1.6', margin:0}}>{liquor.comment_wife || <span style={{color:'#ccc'}}>코멘트 없음</span>}</p>
+                : <p style={{color:'#555', lineHeight:'1.6', margin:0}}>{liquor.comment_wife || <span style={{color:'#ccc'}}>한줄평 없음</span>}</p>
               }
             </div>
           </div>

@@ -43,7 +43,7 @@ function UserDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`정말 [${user.username}] 사용자를 삭제하시겠습니까?\n복구 불가능합니다.`)) return;
+    if (!window.confirm(`정말 [${user.username}] 사용자를 삭제할까요?\n삭제하면 되돌릴 수 없습니다.`)) return;
     try {
       await apiClient.delete(`/users/${id}`);
       alert('삭제되었습니다.');
@@ -65,7 +65,7 @@ function UserDetailPage() {
     }
   };
 
-  if (!user) return <div>로딩 중...</div>;
+  if (!user) return <div>불러오는 중...</div>;
 
   const isSelf = me && me.username === user.username;
 

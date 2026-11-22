@@ -93,7 +93,7 @@ function FamilyDetailPage() {
     return existingMembers.find(m => m._id === member.parent_id);
   };
 
-  if (!member) return <div>로딩 중...</div>;
+  if (!member) return <div>불러오는 중...</div>;
 
   const spouse = getSpouseInfo();
   const parent = getParentInfo();
