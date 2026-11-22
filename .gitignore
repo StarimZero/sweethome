@@ -150,3 +150,11 @@ design.md
 # 필수 파일은 강제 포함
 !README.md
 !requirements.txt
+
+# 개인 메모·로컬 설정 (GitHub에 안 올림, 로컬에는 그대로 둠)
+.claude/settings.local.json
+.claude/launch.json
+개발일지 -.txt
+메뉴이미지백업.txt
+이미지백업.txt
+prototype_knitting.html
