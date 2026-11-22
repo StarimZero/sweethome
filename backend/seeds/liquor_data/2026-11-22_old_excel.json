@@ -1,0 +1,958 @@
+[
+  {
+    "name": "황금보리 소주",
+    "category": "전통주",
+    "purchase_place": "옥동식",
+    "price": 8100,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://image.homeplus.kr/rtd/8c6ed57f-8037-4a5d-bd0d-149a5cb549d5?w=750"
+    ],
+    "rating_husband": 3.2,
+    "rating_wife": 3.8,
+    "comment_husband": "이런술들이 한국의 기본이 되면 좋겠다.",
+    "comment_wife": "달달한 매실주의 맛이 나는 주류. 한병 뚝딱일 듯",
+    "ai_note": {
+      "description": "전북 김제 지평선 들녘의 보리로 빚은 증류식 보리소주.",
+      "taste": "",
+      "aroma": "구수한 보리향",
+      "variety": "보리",
+      "pairing": "수육, 국밥, 한식"
+    }
+  },
+  {
+    "name": "풍정사계 춘",
+    "category": "전통주",
+    "purchase_place": "예니우스",
+    "price": 34000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://www.hwayang.co/img/chun.png"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 3.2,
+    "comment_husband": "상위호완이 많고 비싸고재고도없는 술을 살필요가..",
+    "comment_wife": "티켓팅(?)까지 할 맛은 아닌데요. 경험은 귀했습니다.",
+    "ai_note": {
+      "description": "충북 청주 화양의 약주. 2017년 한미 정상회담 국빈 만찬 건배주.",
+      "taste": "단맛·신맛·쓴맛이 고르게 어우러진 맛",
+      "aroma": "과일향, 꽃향",
+      "variety": "쌀, 누룩",
+      "pairing": "한식, 전, 회"
+    }
+  },
+  {
+    "name": "지란지교 No.3",
+    "category": "전통주",
+    "purchase_place": "스시소라",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://soolbiz.com/wp-content/uploads/%EC%A7%80%EB%9E%80%EC%A7%80%EA%B5%90NO3-2000x2000.jpg"
+    ],
+    "rating_husband": 4.1,
+    "rating_wife": 4.2,
+    "comment_husband": "최애막걸리중하나지",
+    "comment_wife": "진짜 No3은 사시미에 제격!",
+    "ai_note": {
+      "description": "전북 순창 친구들의술 지란지교의 탁주.",
+      "taste": "",
+      "aroma": "",
+      "variety": "쌀, 누룩",
+      "pairing": "회, 스시"
+    }
+  },
+  {
+    "name": "플라잉 와인메이커 소비뇽 블랑 (The Flying Winemaker Sauvignon Blanc)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 22000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://images.vivino.com/thumbs/-XStUutsQXWo2_rkeFPmHw_pb_x600.png"
+    ],
+    "rating_husband": 3.6,
+    "rating_wife": 3.7,
+    "comment_husband": "소비뇽블랑은 맛있겠다는 생각이 들었다.",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "뉴질랜드 소비뇽 블랑 화이트.",
+      "taste": "상큼한 산미",
+      "aroma": "열대과일, 풀향",
+      "variety": "소비뇽 블랑",
+      "pairing": "해산물, 샐러드"
+    },
+    "wine_type": "뉴질랜드"
+  },
+  {
+    "name": "산 페드로 까스티요 데 몰리나 그란 레세르바 소비뇽 블랑 2022 (San Pedro Castillo de Molina Gran Reserva Sauvignon Blanc)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 20000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://images.alko.fi/images/cs_srgb,f_auto,t_medium/cdn/958027/castillo-de-molina-gran-reserva-sauvignon-blanc-2023.jpg"
+    ],
+    "rating_husband": 3.9,
+    "rating_wife": 3.6,
+    "comment_husband": "싱그러운과일향 단첫맛 깔끔한뒷맛",
+    "comment_wife": "아이스와인은 아닌데 아이스와인 같은.. 느낌",
+    "ai_note": {
+      "description": "칠레 비냐 산 페드로의 까스티요 데 몰리나 그란 레세르바 화이트.",
+      "taste": "",
+      "aroma": "",
+      "variety": "소비뇽 블랑",
+      "pairing": "해산물, 샐러드"
+    },
+    "wine_type": "칠레"
+  },
+  {
+    "name": "알라모스 토론테스 2022 (Alamos Torrontés)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://media.nicks.com.au/products/103709e4/2024-alamos-torrontes.jpg"
+    ],
+    "rating_husband": 3.5,
+    "rating_wife": 0.0,
+    "comment_husband": "향은 좋은데 남는맛이많이없다.",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "아르헨티나 카테나 그룹 알라모스의 토론테스 화이트.",
+      "taste": "",
+      "aroma": "꽃향, 복숭아",
+      "variety": "토론테스",
+      "pairing": "아시아 음식, 해산물"
+    }
+  },
+  {
+    "name": "머드 하우스 말보로 소비뇽 블랑 2022 (Mud House Marlborough Sauvignon Blanc)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 16900,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://www.bargainbooze.co.uk/wp-content/uploads/2023/02/Mud_House_Marlborough_Sauvignon_Blanc_750ml.png"
+    ],
+    "rating_husband": 3.7,
+    "rating_wife": 3.8,
+    "comment_husband": "뉴질랜드가 소비뇽블랑 명가구먼",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "뉴질랜드 말보로 소비뇽 블랑.",
+      "taste": "산뜻한 산미",
+      "aroma": "패션프루트, 자몽, 풀향",
+      "variety": "소비뇽 블랑",
+      "pairing": "해산물, 샐러드"
+    },
+    "wine_type": "뉴질랜드"
+  },
+  {
+    "name": "울프베르제 리저브 셀렉션 실바너 2018 (Wolfberger Réserve Sélection Sylvaner)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [
+      "냉파스타"
+    ],
+    "image_urls": [
+      "https://wine21.speedgabia.com/WINE_MST/TITLE/0165000/W0165499.jpg"
+    ],
+    "rating_husband": 2.8,
+    "rating_wife": 2.5,
+    "comment_husband": "할인을 많이 했는데도 별로 안사고싶다",
+    "comment_wife": "으악 이게 뭐야.. 칠링이 덜 되었나 맛",
+    "ai_note": {
+      "description": "프랑스 알자스 울프베르제의 실바너 화이트.",
+      "taste": "가볍고 드라이함",
+      "aroma": "",
+      "variety": "실바너",
+      "pairing": "파스타, 샐러드"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "스톤 베이 말보로 소비뇽 블랑 2023 (Stone Bay Marlborough Sauvignon Blanc)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 19000,
+    "visit_date": "",
+    "pairing_foods": [
+      "민어"
+    ],
+    "image_urls": [
+      "https://awine.kr/wp-content/uploads/vb_wine_img/11217.png"
+    ],
+    "rating_husband": 3.7,
+    "rating_wife": 0.0,
+    "comment_husband": "소비뇽블랑의 베이직이다. 쿰쿰해영",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "뉴질랜드 말보로 소비뇽 블랑.",
+      "taste": "",
+      "aroma": "",
+      "variety": "소비뇽 블랑",
+      "pairing": "회, 해산물"
+    },
+    "wine_type": "뉴질랜드"
+  },
+  {
+    "name": "핀카 바카라 예야 샤르도네 모스카텔 2020 (Finca Bacara Yeya Chardonnay Moscatel)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 14900,
+    "visit_date": "",
+    "pairing_foods": [
+      "민어"
+    ],
+    "image_urls": [
+      "https://bilder.vinmonopolet.no/cache/1500x1500-0/10807101-1.jpg"
+    ],
+    "rating_husband": 3.7,
+    "rating_wife": 0.0,
+    "comment_husband": "1.5에 정도면 매우 좋은 거같다.",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "스페인 후미야 핀카 바카라의 샤르도네·모스카텔 블렌드 화이트.",
+      "taste": "",
+      "aroma": "",
+      "variety": "샤르도네, 모스카텔",
+      "pairing": "회, 해산물"
+    },
+    "wine_type": "스페인"
+  },
+  {
+    "name": "무초 마스 블랑코 2021 (Mucho Más Blanco)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 21000,
+    "visit_date": "",
+    "pairing_foods": [
+      "줄전갱이"
+    ],
+    "image_urls": [
+      "https://muchomaswine.com/wp-content/uploads/2023/11/MUCHO-MAS-BLANCOET-1536x1429.jpg"
+    ],
+    "rating_husband": 3.5,
+    "rating_wife": 0.0,
+    "comment_husband": "굳이찾아서까지 먹을이유는 없는거같다",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "스페인 펠릭스 솔리스의 무초 마스 화이트 블렌드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "베르데호, 소비뇽 블랑, 샤르도네",
+      "pairing": "생선, 해산물"
+    },
+    "wine_type": "스페인"
+  },
+  {
+    "name": "아스코니 무스캇 아이스와인 (Asconi Muscat Ice Wine)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 22000,
+    "visit_date": "",
+    "pairing_foods": [
+      "메론"
+    ],
+    "image_urls": [
+      "https://images.vivino.com/thumbs/tC29hb7ZQoajR06HftGCAg_pl_375x500.png"
+    ],
+    "rating_husband": 3.4,
+    "rating_wife": 0.0,
+    "comment_husband": "지란지교맛이난다",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "몰도바 아스코니 와이너리의 무스캇 아이스와인(디저트 와인).",
+      "taste": "진한 단맛",
+      "aroma": "",
+      "variety": "무스캇",
+      "pairing": "과일, 디저트"
+    }
+  },
+  {
+    "name": "배비치 블랙 라벨 말보로 소비뇽 블랑 2023 (Babich Black Label Marlborough Sauvignon Blanc)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 19980,
+    "visit_date": "",
+    "pairing_foods": [
+      "깔따구"
+    ],
+    "image_urls": [
+      "https://winemore.com.au/cdn/shop/files/2025_Babich_Black_Label_Sauvignon_Blanc.jpg?v=1778670266"
+    ],
+    "rating_husband": 3.8,
+    "rating_wife": 0.0,
+    "comment_husband": "말보로에서 나오는 애들이 나뿌지않은듯?",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "뉴질랜드 배비치의 말보로 소비뇽 블랑.",
+      "taste": "",
+      "aroma": "",
+      "variety": "소비뇽 블랑",
+      "pairing": "해산물, 샐러드"
+    },
+    "wine_type": "뉴질랜드"
+  },
+  {
+    "name": "비냐 파디야 템프라니요 2016 (Viña Padilla Tempranillo)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 5000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://www.wadossi.com/images/wImages/202212/20221216105545.jpg"
+    ],
+    "rating_husband": 3.5,
+    "rating_wife": 3.7,
+    "comment_husband": "극강의 가성비 깔끔해따",
+    "comment_wife": "계속 할인가로 산다면 가볍게 구매해서 어디에나 마시기 괜찮을 와인",
+    "ai_note": {
+      "description": "스페인 템프라니요 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "템프라니요",
+      "pairing": "고기, 피자"
+    },
+    "wine_type": "스페인"
+  },
+  {
+    "name": "샤또 끌로 드 베르덩 메독 2019 (Château Clos de Verdun Médoc)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 16000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://images.vivino.com/thumbs/OlleTvJMT-m3aGVjW0b4Qw_pb_x600.png"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 0.0,
+    "comment_husband": "탄닌맛이 강했고 끝맛이 좀 별로였다. 더익으면좋겠다.",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "프랑스 보르도 메독 AOC 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "카베르네 소비뇽, 메를로",
+      "pairing": "소고기, 양고기"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "에밀리아나 노바스 그란 레세르바 피노 누아 2021 (Emiliana Novas Gran Reserva Pinot Noir)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 19000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://hedleywright.co.uk/cdn/shop/files/18DDD655-F3D2-4174-AE3B-9A05ED61DF7C.jpg?v=1776794518&width=1445"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 3.5,
+    "comment_husband": "향은좋은데 신맛이강하고 아직덜익은너낌이였다.",
+    "comment_wife": "탄닌감 적고 가벼운 느낌의 레드와인",
+    "ai_note": {
+      "description": "칠레 카사블랑카 밸리 에밀리아나의 유기농 피노 누아.",
+      "taste": "",
+      "aroma": "",
+      "variety": "피노 누아",
+      "pairing": "닭고기, 버섯 요리"
+    },
+    "wine_type": "칠레"
+  },
+  {
+    "name": "파머스 립 패더웨이 쉬라즈 2017 (Farmer's Leap Padthaway Shiraz)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://awine.kr/wp-content/uploads/vb_wine_img/4143.png"
+    ],
+    "rating_husband": 3.6,
+    "rating_wife": 3.7,
+    "comment_husband": "전형적인 레드와인 딱 이것이 레드와인의 바이블",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "호주 남호주 패더웨이 지역 쉬라즈.",
+      "taste": "",
+      "aroma": "",
+      "variety": "쉬라즈",
+      "pairing": "바비큐, 붉은 고기"
+    },
+    "wine_type": "호주"
+  },
+  {
+    "name": "부 샤르무아 피노 누아 2021 (Beau-Charmoir Pinot Noir)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [
+      "이눔이닭"
+    ],
+    "image_urls": [],
+    "rating_husband": 3.5,
+    "rating_wife": 3.8,
+    "comment_husband": "피노누아들은 기본을하는듯",
+    "comment_wife": "다양항 풍미를 느낄 수 있었는데요...! 잘 모루겠습니다ㅠㅠ",
+    "ai_note": {
+      "description": "프랑스 피노 누아 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "피노 누아",
+      "pairing": "닭고기"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "도피오 파소 프리미티보 2021 (Doppio Passo Primitivo)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 13000,
+    "visit_date": "",
+    "pairing_foods": [
+      "신전"
+    ],
+    "image_urls": [
+      "https://www.vinosymas.de/media/2c/c6/99/1637148282/Doppio_Passo_Primitivo.jpg"
+    ],
+    "rating_husband": 3.8,
+    "rating_wife": 4.0,
+    "comment_husband": "편의점에서 구할수 있는와인중에는 최고의 가성비",
+    "comment_wife": "오 나 이거 보이면 바로 살듯?",
+    "ai_note": {
+      "description": "이탈리아 풀리아 프리미티보 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "프리미티보",
+      "pairing": "고기, 매콤한 음식"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "라파우라 스프링스 말보로 피노 누아 2021 (Rapaura Springs Marlborough Pinot Noir)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 29000,
+    "visit_date": "",
+    "pairing_foods": [
+      "백숙"
+    ],
+    "image_urls": [
+      "https://media.nedigital.sg/fairprice/fpol/media/images/product/XL/13089289_XL1_20240404.jpg"
+    ],
+    "rating_husband": 3.8,
+    "rating_wife": 0.0,
+    "comment_husband": "약한탄닌에, 상큼하고 산미가좀있어따",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "뉴질랜드 말보로 피노 누아.",
+      "taste": "",
+      "aroma": "",
+      "variety": "피노 누아",
+      "pairing": "닭고기, 백숙"
+    },
+    "wine_type": "뉴질랜드"
+  },
+  {
+    "name": "샤또 라 플뢰르 푸레 생떼밀리옹 그랑 크뤼 2017 (Château La Fleur-Pourret Saint-Émilion Grand Cru)",
+    "category": "와인",
+    "purchase_place": "흠식당",
+    "price": 108000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://kentstreetcellars.com.au/cdn/shop/files/la-fleur-pourret-grand-cru_2048x2048.png?v=1683863424"
+    ],
+    "rating_husband": 4.2,
+    "rating_wife": 3.9,
+    "comment_husband": "다크초콜릿같은 피니쉬가 길었다. 역시돈이좋다.",
+    "comment_wife": "풍성한 맛? 뭔가 더 극강의 맛이 있을 것 같아 점수를 짜게 줘봤다!",
+    "ai_note": {
+      "description": "프랑스 보르도 생떼밀리옹 그랑 크뤼 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "메를로, 카베르네 프랑",
+      "pairing": "붉은 고기"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "토마시 아마로네 델라 발폴리첼라 클라시코 (Tommasi Amarone della Valpolicella Classico)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 77000,
+    "visit_date": "",
+    "pairing_foods": [
+      "소고기"
+    ],
+    "image_urls": [
+      "https://winesonline.com.sg/cdn/shop/products/Tommasi-Amarone-della-Valpolicella-Classico.jpg?v=1704380613&width=1200"
+    ],
+    "rating_husband": 3.7,
+    "rating_wife": 3.6,
+    "comment_husband": "오키향이 매우강하고, 값에비해서는 가벼운너낌",
+    "comment_wife": "에어레이터를 안거친게 더 나은 와인 가격에 비해 쪼꼼 아수움",
+    "ai_note": {
+      "description": "이탈리아 베네토 토마시의 아마로네. 말린 포도로 빚는 풀바디 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "코르비나, 론디넬라, 몰리나라",
+      "pairing": "소고기, 숙성 치즈"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "카니버 진판델 2020 (Carnivor Zinfandel)",
+    "category": "와인",
+    "purchase_place": "호랭이굴",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [
+      "양등심"
+    ],
+    "image_urls": [
+      "https://www.bargainbooze.co.uk/wp-content/uploads/2022/08/Carnivor_Zinfandel_Red_Wine_750ml.png"
+    ],
+    "rating_husband": 3.4,
+    "rating_wife": 0.0,
+    "comment_husband": "미국의품종, 오키한 묵직한 검은색너낌의 와인",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "미국 캘리포니아 진판델 레드.",
+      "taste": "",
+      "aroma": "",
+      "variety": "진판델",
+      "pairing": "양고기, 바비큐"
+    },
+    "wine_type": "미국"
+  },
+  {
+    "name": "바롱 드 레스탁 보르도 엘르베 앙 퓌 드 셴 2021 (Baron de Lestac Bordeaux Élevé en Fûts de Chêne)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 19000,
+    "visit_date": "",
+    "pairing_foods": [
+      "닭발"
+    ],
+    "image_urls": [
+      "https://images.vivino.com/thumbs/I_qmgJIjRmGWWSA1Fc20SQ_pl_375x500.png"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 3.4,
+    "comment_husband": "프랑스와인중에 싼거",
+    "comment_wife": "그래도 풍미는 프랑스",
+    "ai_note": {
+      "description": "프랑스 보르도 AOC 레드. 오크통 숙성.",
+      "taste": "",
+      "aroma": "",
+      "variety": "메를로, 카베르네 소비뇽",
+      "pairing": "고기"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "프루노토 모스카토 다스티 2022 (Prunotto Moscato d'Asti)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 25000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://static.millesima.com/s3/attachements/h1000px/J3955_2025NM_c.png"
+    ],
+    "rating_husband": 3.9,
+    "rating_wife": 4.0,
+    "comment_husband": "코르크 다스티 너무안달아서 좋았다",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "이탈리아 피에몬테 프루노토의 모스카토 다스티(약발포 디저트 와인).",
+      "taste": "달콤함",
+      "aroma": "청포도, 꽃향",
+      "variety": "모스카토 비앙코",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "반피 시안도르 모스카토 다스티 2022 (Banfi Sciandor Moscato d'Asti)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 17800,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://spades.com.mt/cdn/shop/files/45348B3F-2A13-4A1C-A73D-58DE538C0BB0_1024x.png?v=1724255689"
+    ],
+    "rating_husband": 3.8,
+    "rating_wife": 3.8,
+    "comment_husband": "비싼 다스티",
+    "comment_wife": "모스카토 다스티는 실패 없지. 조금 더 비싸서 더 단맛이 극대화된 포도를 씹는 맛?",
+    "ai_note": {
+      "description": "이탈리아 피에몬테 반피의 모스카토 다스티.",
+      "taste": "달콤함",
+      "aroma": "청포도, 꽃향",
+      "variety": "모스카토 비앙코",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "발비 소프라니 모스카토 다스티 2022 (Balbi Soprani Moscato d'Asti)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 13900,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://alepat.com.au/wp-content/uploads/2026/01/Balbi-MoscatoDAsti.png"
+    ],
+    "rating_husband": 3.1,
+    "rating_wife": 3.0,
+    "comment_husband": "흠…",
+    "comment_wife": "나도 흠냐리다.",
+    "ai_note": {
+      "description": "이탈리아 피에몬테 발비 소프라니의 모스카토 다스티.",
+      "taste": "달콤함",
+      "aroma": "",
+      "variety": "모스카토 비앙코",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "발비 소프라니 갈라 로사 (Balbi Soprani Gala Rosa)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 16100,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://wine21.speedgabia.com/WINE_MST/TITLE/0154000/W0154579.png"
+    ],
+    "rating_husband": 2.7,
+    "rating_wife": 3.0,
+    "comment_husband": "이상한와인이다..",
+    "comment_wife": "탄산 든 델몬트 포도주스 맛ㅋㅋ",
+    "ai_note": {
+      "description": "이탈리아 피에몬테 발비 소프라니의 달콤한 약발포 레드.",
+      "taste": "달콤함",
+      "aroma": "",
+      "variety": "",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "타파스 와인 컬렉션 모스카토 2020 (The Tapas Wine Collection Moscato)",
+    "category": "와인",
+    "purchase_place": "",
+    "price": 12000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://cdn.store-assets.com/s/366717/f/9297210.png"
+    ],
+    "rating_husband": 3.2,
+    "rating_wife": 3.5,
+    "comment_husband": "다스티의 단게좋은거같어",
+    "comment_wife": "덜 단 다스티맛 나는 나름 매력적이었수",
+    "ai_note": {
+      "description": "스페인 발렌시아 모스카토.",
+      "taste": "달콤함",
+      "aroma": "",
+      "variety": "모스카토",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "스페인"
+  },
+  {
+    "name": "카스텔로 델 포지오 모스카토 다스티 (Castello del Poggio Moscato d'Asti)",
+    "category": "와인",
+    "purchase_place": "예니우스",
+    "price": 17000,
+    "visit_date": "",
+    "pairing_foods": [
+      "줄전갱이"
+    ],
+    "image_urls": [
+      "https://castellodelpoggio.com/wp-content/uploads/2023/05/Moscato-DAsti-SG-Bottle-RGB-1920x2270.png"
+    ],
+    "rating_husband": 3.8,
+    "rating_wife": 0.0,
+    "comment_husband": "다스티찾다가 이거있으면 꼭고르기",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "이탈리아 피에몬테 카스텔로 델 포지오의 모스카토 다스티.",
+      "taste": "달콤함",
+      "aroma": "",
+      "variety": "모스카토 비앙코",
+      "pairing": "디저트, 과일"
+    },
+    "wine_type": "이탈리아"
+  },
+  {
+    "name": "도멘 베르데-봉데 크레망 뒤 쥐라 엑스트라 브뤼 (Domaine Berthet-Bondet Crémant du Jura Extra Brut)",
+    "category": "와인",
+    "purchase_place": "흠식당",
+    "price": 99000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://paris90.dk/cdn/shop/files/Berthet-Bondet-CremantduJura.jpg?v=1690818790&width=1946"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 3.5,
+    "comment_husband": "샴페인이였을뿐",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "프랑스 쥐라 도멘 베르데-봉데의 크레망(전통 방식 스파클링).",
+      "taste": "드라이함",
+      "aroma": "",
+      "variety": "샤르도네",
+      "pairing": "해산물, 전채"
+    },
+    "wine_type": "프랑스"
+  },
+  {
+    "name": "오제노유키도케 준마이 다이긴조 슌긴 (尾瀬の雪どけ 純米大吟醸 旬吟 春)",
+    "category": "사케",
+    "purchase_place": "와사이진",
+    "price": 120000,
+    "visit_date": "",
+    "pairing_foods": [
+      "튀김"
+    ],
+    "image_urls": [
+      "https://isobe-sake.com/cdn/shop/files/DSC02102_2f26e06f-1cee-46dd-9be7-37028ff0330a_1800x1800.jpg?v=1708496960"
+    ],
+    "rating_husband": 3.9,
+    "rating_wife": 4.0,
+    "comment_husband": "생주중에서 이술이 있다면 무조건 골라야할듯.",
+    "comment_wife": "은은한 사과향이 나면서 쑥 넘어간다. 음식의 맛과 적당히 조화로움.",
+    "ai_note": {
+      "description": "군마현 류진주조 오제노유키도케의 봄 한정 준마이 다이긴조.",
+      "taste": "",
+      "aroma": "은은한 사과향",
+      "variety": "",
+      "pairing": "튀김, 회"
+    }
+  },
+  {
+    "name": "카메이즈미 준마이 긴조 나마겐슈 CEL-24 (亀泉 純米吟醸 生原酒 CEL-24)",
+    "category": "사케",
+    "purchase_place": "와사이진",
+    "price": 120000,
+    "visit_date": "",
+    "pairing_foods": [
+      "튀김"
+    ],
+    "image_urls": [
+      "https://kanamori.ne.jp/cdn/shop/files/S__8765454_0.png?v=1702176146&width=1946"
+    ],
+    "rating_husband": 3.2,
+    "rating_wife": 3.0,
+    "comment_husband": "앞으로 보구치따라 드라이한걸로 가겠다.",
+    "comment_wife": "디저트 와인 느낌. 식중주보다는 입가심으로 한잔 하면 좋을 맛!",
+    "ai_note": {
+      "description": "고치현 카메이즈미주조의 준마이 긴조 나마겐슈. 고치현 효모 CEL-24로 빚어 달콤하고 화사함.",
+      "taste": "달콤하고 새콤함",
+      "aroma": "파인애플·사과 같은 과일향",
+      "variety": "",
+      "pairing": "디저트, 튀김"
+    }
+  },
+  {
+    "name": "닷사이 23 준마이 다이긴조 (獺祭 純米大吟醸 磨き二割三分)",
+    "category": "사케",
+    "purchase_place": "스시이도",
+    "price": 0,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://www.af-1.jp/bottle/10065.jpg"
+    ],
+    "rating_husband": 3.6,
+    "rating_wife": 4.0,
+    "comment_husband": "비싼느낌의 깔끔함",
+    "comment_wife": "과하지 않은 향과 과하지 않은 단맛이 입안에서 은은하게 맴돌다가 넘어가는 느낌",
+    "ai_note": {
+      "description": "야마구치현 아사히주조. 야마다니시키를 23%까지 깎아 빚은 준마이 다이긴조.",
+      "taste": "깔끔하고 은은한 단맛",
+      "aroma": "화사한 과일향",
+      "variety": "야마다니시키",
+      "pairing": "회, 스시"
+    }
+  },
+  {
+    "name": "에미시키 아카이이토 긴후부키 히이레 (笑四季 赤い糸 吟吹雪 火入れ)",
+    "category": "사케",
+    "purchase_place": "식당네오",
+    "price": 110000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://kura-ya.com/wp/wp-content/uploads/2019/06/IMG_7679-600x1157.jpg"
+    ],
+    "rating_husband": 3.1,
+    "rating_wife": 3.3,
+    "comment_husband": "향은좋은데 맛은별로다, 크리미한맛이 별로다",
+    "comment_wife": "처음에 달달한 향이 나서 좋았는데 조금 너끼함.",
+    "ai_note": {
+      "description": "시가현 에미시키주조. 시가현 쌀 긴후부키로 빚은 히이레(살균) 사케.",
+      "taste": "",
+      "aroma": "달달한 향",
+      "variety": "긴후부키",
+      "pairing": "일식"
+    }
+  },
+  {
+    "name": "다이나 준마이 긴조 유메사사라 (大那 純米吟醸 夢ささら)",
+    "category": "사케",
+    "purchase_place": "식당네오",
+    "price": 100000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://img.sakenomy.jp/thumbnail_medium/wholeImage/K01N009036_20240319105725.jpg"
+    ],
+    "rating_husband": 3.2,
+    "rating_wife": 3.1,
+    "comment_husband": "약간더청량하긴한데, 생주중에 안좋아하는스타일인듯",
+    "comment_wife": "많이 안마셔봐서 잘 모르겠지만.. 이것도 뒷맛이 약간 맹맹함",
+    "ai_note": {
+      "description": "도치기현 기쿠노사토주조 다이나. 도치기현 쌀 유메사사라로 빚은 준마이 긴조.",
+      "taste": "",
+      "aroma": "",
+      "variety": "유메사사라",
+      "pairing": "일식"
+    }
+  },
+  {
+    "name": "나베시마 준마이 긴조 야마다니시키 퍼플 라벨 (鍋島 純米吟醸 山田錦)",
+    "category": "사케",
+    "purchase_place": "아쿠아",
+    "price": 120000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://makeshop-multi-images.akamaized.net/kagataya/shopimages/95/02/2_000000000295.jpg?1772958669"
+    ],
+    "rating_husband": 3.2,
+    "rating_wife": 3.4,
+    "comment_husband": "아슬아슬하다..",
+    "comment_wife": "첫맛이랑 중간에 넘어가는 것 까지는 좋은데 마무리가 매우 .. 아수웡",
+    "ai_note": {
+      "description": "사가현 후쿠치요주조 나베시마의 야마다니시키 준마이 긴조(퍼플 라벨).",
+      "taste": "",
+      "aroma": "",
+      "variety": "야마다니시키",
+      "pairing": "회, 스시"
+    }
+  },
+  {
+    "name": "카쿠레이 준마이 긴조 (鶴齢 純米吟醸)",
+    "category": "사케",
+    "purchase_place": "나루토강남",
+    "price": 75000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://imagedelivery.net/QondspN4HIUvB_R16-ddAQ/5efc12d5ea3c9d6358c504c1/0037acd6f1ae8908dc62.png/fit=scale-down,w=1200"
+    ],
+    "rating_husband": 3.3,
+    "rating_wife": 0.0,
+    "comment_husband": "첫맛은 좋은데 끝이 아슬해다",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "니가타현 아오키주조 카쿠레이의 준마이 긴조.",
+      "taste": "",
+      "aroma": "",
+      "variety": "",
+      "pairing": "야키토리, 일식"
+    }
+  },
+  {
+    "name": "초카이산 준마이 다이긴조 (鳥海山 純米大吟醸)",
+    "category": "사케",
+    "purchase_place": "도마",
+    "price": 120000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://makeshop-multi-images.akamaized.net/tenjushuzou/itemimages/000000000026_wCcmtz0.jpg"
+    ],
+    "rating_husband": 3.5,
+    "rating_wife": 0.0,
+    "comment_husband": "스타터로 좋은 깔끔한 너낌",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "아키타현 텐주주조의 준마이 다이긴조 초카이산.",
+      "taste": "깔끔함",
+      "aroma": "",
+      "variety": "",
+      "pairing": "회, 일식"
+    }
+  },
+  {
+    "name": "온나나카세 준마이 다이긴조 (女泣かせ 純米大吟醸)",
+    "category": "사케",
+    "purchase_place": "도마",
+    "price": 110000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://img06.shop-pro.jp/PA01132/841/product/36547015.jpg?20111117171524"
+    ],
+    "rating_husband": 3.5,
+    "rating_wife": 0.0,
+    "comment_husband": "높은도수의 사케 강한것 같은데 부드럽다",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "시즈오카현 오무라야주조 와카타케의 준마이 다이긴조 온나나카세.",
+      "taste": "",
+      "aroma": "",
+      "variety": "",
+      "pairing": "회, 일식"
+    }
+  },
+  {
+    "name": "키노에네 하나야카 타쿠미노카오리 준마이 긴조 (甲子 純米吟醸 はなやか 匠の香)",
+    "category": "사케",
+    "purchase_place": "도마",
+    "price": 85000,
+    "visit_date": "",
+    "pairing_foods": [],
+    "image_urls": [
+      "https://img.sakenomy.jp/thumbnail_medium/wholeImage/K01N012001_20240319100103.jpg"
+    ],
+    "rating_husband": 3.4,
+    "rating_wife": 0.0,
+    "comment_husband": "미탄산의 마무리하기 좋은술",
+    "comment_wife": "",
+    "ai_note": {
+      "description": "지바현 이이누마혼케 키노에네의 준마이 긴조.",
+      "taste": "",
+      "aroma": "화사한 향",
+      "variety": "",
+      "pairing": "일식"
+    }
+  }
+]
