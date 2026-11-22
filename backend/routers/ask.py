@@ -41,6 +41,15 @@ CALL_NAMES = {"younghun91": "호랭이", "joyi96": "보구치"}
 HUSBAND_NAME, WIFE_NAME = "호랭이", "보구치"
 
 
+def utc_now() -> datetime:
+    """로그 시각은 항상 UTC 로 저장 (Render 는 UTC, 이 PC 는 한국 시간이라 섞이지 않게). 화면에서 한국 시간으로 바꿔 보여줌."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+def utc_iso(dt: datetime) -> str:
+    return dt.isoformat(timespec="seconds") + "Z"
+
+
 def _app_version() -> str:
     if os.getenv("RENDER_GIT_COMMIT"):
         return os.getenv("RENDER_GIT_COMMIT")[:7]
@@ -345,7 +354,7 @@ async def ask(body: AskIn, current_user: User = Depends(get_current_user)):
     history = [{"question": p.question, "answer": p.answer} for p in reversed(previous[:HISTORY_TURNS])]
     if previous:  # 앞 질문에 '다음 질문까지 걸린 시간' 기록 (바로 다시 물었는지 분석용)
         prev = previous[0]
-        prev.next_question_after_ms = int((datetime.now() - prev.created_at).total_seconds() * 1000)
+        prev.next_question_after_ms = int((utc_now() - prev.created_at).total_seconds() * 1000)
         await prev.save()
 
     system_prompt = await build_system_prompt(call_name, body.page or "", now.strftime("%Y-%m-%d"))
@@ -361,7 +370,7 @@ async def ask(body: AskIn, current_user: User = Depends(get_current_user)):
         previous_log_id=previous[0].id if previous else None, page=body.page or "", question=question,
         app_version=APP_VERSION, prompt_version=PROMPT_VERSION, model=MODEL, generation_config=GENERATION_CONFIG,
         system_prompt=system_prompt, history_sent=history, today=now.strftime("%Y-%m-%d"),
-        created_at=datetime.now(),
+        created_at=utc_now(),
     )
 
     answer, total_tokens = "", 0
@@ -446,7 +455,30 @@ async def ask(body: AskIn, current_user: User = Depends(get_current_user)):
             if menu and tc.get("result_count") is not None:
                 looked.append(f"{menu} {tc['result_count']}건")
     return {"answer": answer, "conversation_id": conversation_id, "log_id": str(log.id),
-            "sources": log.sources, "looked": looked, "call_name": call_name}
+            "sources": log.sources, "looked": looked, "call_name": call_name, "tokens": total_tokens}
+
+
+@router.get("/usage")
+async def usage(current_user: User = Depends(get_current_user)):
+    """내가 쓴 토큰: 오늘 / 이번 달 / 전체 (한국 시간 기준 날짜, 아이디별)."""
+    now_kst = datetime.now(KST)
+    day_start = now_kst.replace(hour=0, minute=0, second=0, microsecond=0)
+    month_start = day_start.replace(day=1)
+
+    async def total(since=None):
+        match = {"user_id": current_user.id}
+        if since is not None:
+            match["created_at"] = {"$gte": since.astimezone(timezone.utc).replace(tzinfo=None)}
+        rows = await AskLog.get_pymongo_collection().aggregate([
+            {"$match": match}, {"$group": {"_id": None, "tokens": {"$sum": "$total_tokens"}, "questions": {"$sum": 1}}},
+        ]).to_list(None)
+        return rows[0] if rows else {"tokens": 0, "questions": 0}
+
+    today, month, all_time = await asyncio.gather(total(day_start), total(month_start), total())
+    out = {k: {"tokens": v["tokens"], "questions": v["questions"]}
+           for k, v in (("today", today), ("month", month), ("total", all_time))}
+    out["call_name"] = call_name_of(current_user)
+    return out
 
 
 @router.get("/history")
@@ -454,7 +486,7 @@ async def history(limit: int = 100, current_user: User = Depends(get_current_use
     """내 질문 기록 (아이디별)."""
     logs = await AskLog.find(AskLog.user_id == current_user.id).sort("-created_at").limit(min(limit, 300)).to_list()
     return [{"id": str(l.id), "conversation_id": l.conversation_id, "question": l.question, "answer": l.answer,
-             "page": l.page, "sources": l.sources, "created_at": l.created_at.isoformat(timespec="seconds")}
+             "page": l.page, "sources": l.sources, "tokens": l.total_tokens, "created_at": utc_iso(l.created_at)}
             for l in logs]
 
 
@@ -469,6 +501,6 @@ async def source_click(log_id: PydanticObjectId, body: ClickIn, current_user: Us
     log = await AskLog.get(log_id)
     if not log or log.user_id != current_user.id:
         raise HTTPException(status_code=404, detail="Not found")
-    log.source_clicks.append({"label": body.label, "path": body.path, "at": datetime.now().isoformat(timespec="seconds")})
+    log.source_clicks.append({"label": body.label, "path": body.path, "at": utc_iso(utc_now())})
     await log.save()
     return {"ok": True}

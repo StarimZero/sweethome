@@ -16,6 +16,8 @@ const MENU_LABEL = { '/buypedia': 'Buypedia', '/review': '맛집 리뷰', '/liqu
 
 const firstSegment = (path) => `/${(path || '').split('/')[1] || ''}`
 
+const fmtNum = (n) => Number(n || 0).toLocaleString()
+
 const fmtTime = (iso) => {
   const d = new Date(iso)
   return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
@@ -36,6 +38,8 @@ function AskWidget() {
   const [history, setHistory] = useState([])
   const [historyLoading, setHistoryLoading] = useState(false)
   const [expanded, setExpanded] = useState(null)
+  const [usage, setUsage] = useState(null) // 내가 쓴 토큰 {today, month, total}
+  const [usageTick, setUsageTick] = useState(0)
   const bodyRef = useRef(null)
 
   const menu = firstSegment(location.pathname)
@@ -44,6 +48,14 @@ function AskWidget() {
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight
   }, [messages, sending])
+
+  // 내 토큰 사용량: 창을 열 때와 답을 받을 때마다 새로
+  useEffect(() => {
+    if (!open) return
+    let alive = true
+    apiClient.get('/ask/usage').then(res => { if (alive) setUsage(res.data) }).catch(console.error)
+    return () => { alive = false }
+  }, [open, usageTick])
 
   useEffect(() => {
     if (!open || tab !== 'history') return
@@ -68,7 +80,9 @@ function AskWidget() {
       setConversationId(res.data.conversation_id)
       setMessages(m => [...m, {
         role: 'bot', text: res.data.answer, sources: res.data.sources, looked: res.data.looked, logId: res.data.log_id,
+        tokens: res.data.tokens,
       }])
+      setUsageTick(t => t + 1)
     } catch (err) {
       console.error(err)
       setMessages(m => [...m, { role: 'bot', text: '질문을 보내지 못했어요. 잠시 뒤에 다시 해 주세요.' }])
@@ -91,7 +105,7 @@ function AskWidget() {
     const turns = history.filter(h => h.conversation_id === convId).reverse()
     setMessages(turns.flatMap(h => [
       { role: 'user', text: h.question },
-      { role: 'bot', text: h.answer, sources: h.sources, logId: h.id },
+      { role: 'bot', text: h.answer, sources: h.sources, logId: h.id, tokens: h.tokens },
     ]))
     setConversationId(convId)
     setTab('chat')
@@ -126,9 +140,14 @@ function AskWidget() {
                 {messages.map((m, i) => (
                   <div key={i} className={`msg ${m.role}`}>
                     <div className="bubble">{m.text}</div>
-                    {m.role === 'bot' && (m.looked?.length > 0 || m.sources?.length > 0) && (
+                    {m.role === 'bot' && (m.looked?.length > 0 || m.sources?.length > 0 || m.tokens > 0) && (
                       <div className="src">
-                        {m.looked?.length > 0 && <div className="looked">본 기록: {m.looked.join(', ')}</div>}
+                        {(m.looked?.length > 0 || m.tokens > 0) && (
+                          <div className="looked">
+                            {m.looked?.length > 0 && `본 기록: ${m.looked.join(', ')}`}
+                            {m.tokens > 0 && <span className="tokens">{m.looked?.length > 0 ? ' · ' : ''}토큰 {fmtNum(m.tokens)}</span>}
+                          </div>
+                        )}
                         {m.sources?.map(s => (
                           <button key={s.id} className="chip" onClick={() => openSource(m, s)}>{s.label} ›</button>
                         ))}
@@ -138,6 +157,12 @@ function AskWidget() {
                 ))}
                 {sending && <div className="msg bot"><div className="bubble typing">찾아보는 중…</div></div>}
               </div>
+              {usage && (
+                <div className="ask-usage" title={`지금까지 질문 ${fmtNum(usage.total.questions)}번, 토큰 ${fmtNum(usage.total.tokens)}`}>
+                  {usage.call_name}님 사용량: 오늘 {fmtNum(usage.today.tokens)}토큰 ({usage.today.questions}번)
+                  {' · '}이번 달 {fmtNum(usage.month.tokens)}토큰
+                </div>
+              )}
               <form className="ask-input" onSubmit={e => { e.preventDefault(); send() }}>
                 <input value={input} onChange={e => setInput(e.target.value)} placeholder="궁금한 걸 물어보세요" disabled={sending} />
                 <button type="submit" disabled={sending || !input.trim()}>보내기</button>
@@ -152,6 +177,7 @@ function AskWidget() {
                     <button className="q" onClick={() => setExpanded(expanded === h.id ? null : h.id)}>
                       <span className="time">{fmtTime(h.created_at)}</span>
                       <span className="text">{h.question}</span>
+                      {h.tokens > 0 && <span className="tok">{fmtNum(h.tokens)}</span>}
                     </button>
                     {expanded === h.id && (
                       <div className="a">
