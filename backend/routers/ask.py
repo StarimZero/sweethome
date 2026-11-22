@@ -29,7 +29,7 @@ from routers.buypedia import _group_by_product, apply_price_scores, rank_sort_ke
 
 router = APIRouter(prefix="/api/ask", tags=["Ask"])
 
-PROMPT_VERSION = "ask-v2"  # v2: 이름 호명 강화, 순위 공동 표시, find 에 _id 항상 포함
+PROMPT_VERSION = "ask-v3"  # v3: 문화생활·뜨개록·요리·여행·버킷리스트 연결 / v2: 이름 호명 강화, 순위 공동 표시, find 에 _id 항상 포함
 MODEL = os.getenv("ASK_MODEL", "gemini-3.5-flash-lite")
 GENERATION_CONFIG = {"temperature": 0.1, "maxOutputTokens": 1024}
 MAX_STEPS = 5           # 모델 호출 최대 횟수 (도구 호출 반복 포함)
@@ -81,9 +81,12 @@ async def _code_table(group: str) -> str:
 
 
 async def build_system_prompt(call_name: str, page: str, today: str) -> str:
-    food, sul, wine, bp_cat, bp_buy = await asyncio.gather(
+    (food, sul, wine, bp_cat, bp_buy, culture, knit_cat, knit_status, knit_purpose, knit_wear, knit_tech,
+     bucket_cat) = await asyncio.gather(
         _code_table("FOOD"), _code_table("SUL"), _code_table("WINE_C"),
-        _code_table("BUYPEDIA_CAT"), _code_table("BUYPEDIA_BUY"))
+        _code_table("BUYPEDIA_CAT"), _code_table("BUYPEDIA_BUY"), _code_table("CULTURE"),
+        _code_table("KNITTING_CATEGORY"), _code_table("KNITTING_STATUS"), _code_table("KNITTING_PURPOSE"),
+        _code_table("KNITTING_WEAR_FREQ"), _code_table("KNITTING_TECHNIQUE"), _code_table("BKT_CAT"))
     return f"""너는 부부가 함께 쓰는 생활 기록 사이트 '호랭이연고'의 조회 도우미야.
 지금 질문한 사람은 {call_name}님이야. 답할 때 "{call_name}님"이라고 불러.
 이 집의 남편은 {HUSBAND_NAME}님, 아내는 {WIFE_NAME}님이야.
@@ -96,13 +99,15 @@ async def build_system_prompt(call_name: str, page: str, today: str) -> str:
 2. 답에 쓰는 숫자는 조회 결과에 있는 값만 써. 계산이 필요하면 집계(aggregate)로 서버에서 계산해.
 3. 도구를 부를 때 reason(왜 이렇게 조회하는지), assumptions(애매한 말을 어떻게 정했는지), interpretation(대상·기간·셀 것·정렬)을 꼭 채워.
    예: '많이 산' → 주문 횟수로 셈, '요즘' → 최근 3개월.
-4. 연결된 메뉴는 Buypedia(구매 기록), 맛집 리뷰, 주류 세 가지야. 다른 메뉴(여행, 소곤소곤, 캘린더 등)나 없는 데이터를 물으면 unsupported_request 를 부르고, 아직 볼 수 없다고 답해.
+4. 연결된 메뉴는 Buypedia(구매 기록), 맛집 리뷰, 주류, 문화생활, 뜨개록, 요리, 여행, 버킷리스트야. 다른 메뉴(일기, 캘린더, 가계도 등)나 없는 데이터를 물으면 unsupported_request 를 부르고, 아직 볼 수 없다고 답해.
 5. 결과가 없으면 없다고 솔직히 말해.
 6. 답은 자연스러운 한국어 존댓말(~해요)로 2~5문장. 목록이 필요하면 상위 몇 개만. 줄표(—)나 번역투는 쓰지 마.
 7. Buypedia 에서 '1위', '제일 괜찮은', '뭘 사야' 같은 순위 질문은 buypedia_ranking 을 써. 이 사이트의 종합 점수 공식이 들어 있어.
    순위 결과에 '공동순위'가 같으면 우열이 없는 거야. 그럴 땐 한 제품을 1위라고 하지 말고 아직 차이가 없다고 말해 (보통 별점이 없어서 그래).
 
 [컬렉션 설명]
+주의: 칸 이름이 메뉴마다 달라. 예를 들어 {WIFE_NAME}님 한줄평은 reviews 는 wifecomment, knitting_records 는 wife_comment,
+liquor_reviews·culture_reviews·buypedia_records 는 comment_wife 야. 반드시 그 컬렉션 설명에 적힌 칸 이름 그대로 써.
 1) buypedia_records: 산 제품 기록. 1건 = 한 번 산 것 (쿠팡 주문 대부분)
    - category: 카테고리 코드 ({bp_cat})
    - item_type: 품목 (예: 생수, 만두, 대파). 서로 바꿔 살 수 있는 것끼리 같은 품목
@@ -122,11 +127,35 @@ async def build_system_prompt(call_name: str, page: str, today: str) -> str:
    - purchase_place: 구매처 / price: 가격(원) / visit_date: 구매·시음일 'YYYY-MM-DD'
    - pairing_foods: 함께 먹은 음식 목록 / rating_husband, rating_wife: 별점 / rating: 둘의 평균
    - comment_husband, comment_wife: 한줄평 / ai_note: AI 소믈리에 분석 (description, taste, aroma, variety, pairing)
+4) culture_reviews: 문화생활(영화·공연·전시) 리뷰. 1건 = 작품 1개
+   - title: 제목 / category: 종류 코드 ({culture}) / visit_date: 관람일 'YYYY-MM-DD'(빈 값이면 날짜 모름)
+   - location: 장소 / rating_husband, rating_wife: 별점(0이면 안 매김) / rating: 둘의 평균
+   - comment_husband, comment_wife: 한줄평
+5) knitting_records: 뜨개록. 1건 = 뜨개 작품 1개 (주로 {WIFE_NAME}님이 뜸)
+   - name: 작품 이름 / category: 종류 코드 ({knit_cat}) / status: 진행 상태 코드 ({knit_status})
+   - start_date, end_date: 시작일·완성일 'YYYY-MM-DD' / difficulty: 난이도 0~5 / size: 사이즈
+   - pattern: 도안 {{name, designer, source}} / my_needles: 쓴 바늘 목록 / yarns: 쓴 실 [{{name, amount, unit}}]
+   - techniques: 기법 코드 목록 ({knit_tech}) / tags: 태그 / frog_count: 풀고 다시 뜬 횟수
+   - purpose: 용도 코드 ({knit_purpose}) / wear_freq: 착용 빈도 코드 ({knit_wear})
+   - pattern_cost, yarn_cost: 비용 {{amount, currency}} / work_logs: 작업 일지 [{{date, memo}}]
+   - husband_rating, wife_rating: 별점(null이면 안 매김) / husband_comment, wife_comment: 한줄평 / redo_note: 다시 만든다면
+6) recipes: 요리 레시피. 1건 = 요리 1개
+   - name: 요리 이름 / cooking_type: 종류 (한식, 중식, 양식 같은 한글 이름 그대로)
+   - chef: 만든 사람 ('husband' = {HUSBAND_NAME}님, 'wife' = {WIFE_NAME}님) / description: 재료와 만드는 법 (긴 글)
+7) travels: 여행. 1건 = 여행 1번
+   - title: 여행 제목 / destination: 목적지 / start_date, end_date: 'YYYY-MM-DD' / days: 일수
+   - status: upcoming/completed/cancelled 인데 잘 안 고쳐져 있어. 다녀왔는지는 end_date 와 오늘 날짜로 판단해.
+   - description: 설명 / itinerary: 일정 [{{day, date, places: [{{time, name, address}}]}}] (긴 데이터. 일정이 필요할 때만 가져와)
+8) bucketlist: 버킷리스트. 1건 = 하고 싶은 일 1개
+   - title: 할 일 / description: 설명 / category: 분류 코드 ({bucket_cat}, 빈 값 많음) / target_date: 목표일
+   - progress: 진행률 0~100 / status: not_started/active/completed (빈 값이면 아직 시작 안 한 것) / completed_at: 이룬 날
+   - comments: 댓글 [{{content, created_at}}]
 
 [조회 도구 사용법]
 - query_records: collection, operation(find/count/aggregate)과 JSON 문자열(filter_json, pipeline_json, projection_json, sort_json)을 넘겨.
   허용 연산자는 조회·집계용($match, $group, $sort, $sum, $avg, $regex 등)뿐이고, 결과는 최대 50건이야.
   문자열 부분 검색은 {{"brand": {{"$regex": "비비고", "$options": "i"}}}} 처럼.
+  레시피 description, 여행 itinerary 처럼 긴 칸은 꼭 필요할 때만 가져오고, 목록 질문엔 projection_json 으로 필요한 칸만 골라.
 - buypedia_ranking: 품목(item_type)이나 카테고리 이름으로 이 사이트의 순위를 그대로 받아.
 - unsupported_request: 볼 수 없는 데이터를 물었을 때.
 """
@@ -151,7 +180,7 @@ _REASON_PROPS = {
 TOOLS = [{"functionDeclarations": [
     {
         "name": "query_records",
-        "description": "Buypedia·맛집 리뷰·주류 기록을 MongoDB 조회문으로 읽는다 (읽기 전용, 최대 50건).",
+        "description": "Buypedia·맛집 리뷰·주류·문화생활·뜨개록·요리·여행·버킷리스트 기록을 MongoDB 조회문으로 읽는다 (읽기 전용, 최대 50건).",
         "parameters": {"type": "OBJECT", "properties": {
             "collection": {"type": "STRING", "enum": list(ask_tools.ALLOWED_COLLECTIONS)},
             "operation": {"type": "STRING", "enum": ["find", "count", "aggregate"]},
@@ -230,7 +259,14 @@ async def execute_tool(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
             if not ok:
                 entry["response"] = {"error": "조회가 거부됐어요: " + "; ".join(errors)}
                 return entry
-            result = await ask_tools.run_query(await _db(), normalized)
+            db = await _db()
+            result = await ask_tools.run_query(db, normalized)
+            # 없는 칸으로 조회했는지 항상 확인 (0건이 되거나, $ne 조건이면 엉뚱하게 전부 나옴)
+            missing = await ask_tools.missing_fields(db, normalized)
+            if missing:
+                entry["missing_fields"] = missing
+                result["hint"] = (f"이 컬렉션에는 {', '.join(missing)} 칸이 없어서 이 결과는 틀렸어요. 시스템 안내의 "
+                                  f"컬렉션 설명에서 이 메뉴의 칸 이름을 다시 확인하고 고쳐서 다시 조회하세요.")
         elif name == "buypedia_ranking":
             entry["validation"] = {"ok": True, "errors": []}
             result = await _run_ranking(args)
@@ -246,6 +282,7 @@ async def execute_tool(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         entry["result_rows"] = result["rows"]
         entry["response"] = {"rows": result["rows"], "result_count": result["result_count"],
                              "result_truncated": result["result_truncated"],
+                             **({"hint": result["hint"]} if result.get("hint") else {}),
                              "이름_안내": f"husband = {HUSBAND_NAME}님, wife = {WIFE_NAME}님 (답변엔 이 이름으로)"}
     except Exception as e:  # 실행 오류도 그대로 남김
         entry["error"] = f"{type(e).__name__}: {e}"
@@ -273,9 +310,17 @@ def _gemini(contents: List[dict], system_prompt: str) -> Dict[str, Any]:
     body = {"systemInstruction": {"parts": [{"text": system_prompt}]}, "contents": contents,
             "tools": TOOLS, "generationConfig": GENERATION_CONFIG}
     started = time.perf_counter()
-    res = requests.post(url, params={"key": key}, json=body, timeout=60)
+    retries = []  # 503(모델 과부하)·500 은 잠깐 쉬고 두 번까지 다시 시도. 몇 번 다시 했는지 로그에 남김
+    for attempt in range(3):
+        res = requests.post(url, params={"key": key}, json=body, timeout=60)
+        if res.status_code not in (500, 503) or attempt == 2:
+            break
+        retries.append(res.status_code)
+        time.sleep(1.5 * (attempt + 1))
     duration = int((time.perf_counter() - started) * 1000)
     data = res.json() if res.headers.get("content-type", "").startswith("application/json") else {"raw": res.text[:2000]}
+    if retries:
+        data["_retried_after"] = retries
     if res.status_code == 429:
         raise QuotaExceeded(json.dumps(data, ensure_ascii=False)[:1000])
     if res.status_code == 402:

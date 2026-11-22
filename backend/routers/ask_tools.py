@@ -7,11 +7,16 @@ from typing import Any, Dict, List, Tuple
 
 from bson import ObjectId
 
-# 1차로 연결한 메뉴. users(비밀번호 해시) 등은 절대 넣지 않는다.
+# 챗봇에 연결한 메뉴. users(비밀번호 해시) 등은 절대 넣지 않는다. 일기·캘린더·가계도는 아직 연결 안 함
 ALLOWED_COLLECTIONS = {
     "buypedia_records": {"label_fields": ("brand", "product_name"), "path": "/buypedia/{id}", "menu": "Buypedia"},
     "reviews": {"label_fields": ("restaurant_name",), "path": "/review/{id}", "menu": "맛집 리뷰"},
     "liquor_reviews": {"label_fields": ("name",), "path": "/liquor/{id}", "menu": "주류"},
+    "culture_reviews": {"label_fields": ("title",), "path": "/culture/{id}", "menu": "문화생활"},
+    "knitting_records": {"label_fields": ("name",), "path": "/knitting/{id}", "menu": "뜨개록"},
+    "recipes": {"label_fields": ("name",), "path": "/cooking/{id}", "menu": "요리"},
+    "travels": {"label_fields": ("title",), "path": "/travel/{id}", "menu": "여행"},
+    "bucketlist": {"label_fields": ("title",), "path": "/bucket/{id}", "menu": "버킷리스트"},
 }
 
 MAX_ROWS = 50
@@ -127,6 +132,37 @@ def _data_gaps(rows: List[dict]) -> Dict[str, int]:
             if value in (None, "", []):
                 gaps[key] = gaps.get(key, 0) + 1
     return {k: v for k, v in gaps.items() if v}
+
+
+def _filter_fields(node: Any, out: set):
+    """조건에 쓴 칸 이름 (점 경로의 첫 칸). $and/$or 안쪽까지."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key.startswith("$"):
+                _filter_fields(value, out)
+            else:
+                out.add(key.split(".")[0])
+    elif isinstance(node, list):
+        for item in node:
+            _filter_fields(item, out)
+
+
+async def missing_fields(db, normalized: Dict[str, Any]) -> List[str]:
+    """조건에 쓴 칸 중 이 컬렉션 어느 기록에도 없는 칸. 메뉴마다 칸 이름이 달라서
+    (예: comment_wife / wife_comment / wifecomment) LLM 이 헷갈리면 결과가 0건이 되는데, 그걸 잡아낸다."""
+    fields: set = set()
+    if normalized.get("operation") == "aggregate":
+        for stage in normalized.get("pipeline") or []:
+            if isinstance(stage, dict) and "$match" in stage:
+                _filter_fields(stage["$match"], fields)
+    else:
+        _filter_fields(normalized.get("filter") or {}, fields)
+    col = db[normalized["collection"]]
+    missing = []
+    for f in sorted(fields - {"_id"}):
+        if not await col.find_one({f: {"$exists": True}}, {"_id": 1}, max_time_ms=MAX_TIME_MS):
+            missing.append(f)
+    return missing
 
 
 async def run_query(db, normalized: Dict[str, Any]) -> Dict[str, Any]:

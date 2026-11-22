@@ -83,7 +83,7 @@ npm run preview  # 프로덕션 빌드 미리보기
   - `dashboard.py` - 홈 화면 요약 데이터 (`/api/couple`)
   - `ai.py` - 독립 AI 분석 엔드포인트. **현재 `app.py`에 등록되어 있지 않음(미사용)**
   - `buypedia.py` - 구매 기록 CRUD + `/ranking`(제품·브랜드 순위 집계), `/product`(제품별 기록), `/pending`(별점 둘 다 없는 평가 대기). 순위 기준은 `rank_sort_key` 한 곳에 모음
-  - `ask.py` - 조회용 챗봇. Gemini REST + 도구 호출(LLM이 MongoDB 조회문 작성 → `ask_tools.py`가 허용 컬렉션·읽기 전용·50건 제한 검사 후 실행). 질문마다 `ask_logs`에 해석·가정·이유·조회문·검사·결과 값·원본 응답·프롬프트 전체·버전까지 남김 (나중에 Claude와 분석·개선용). 프롬프트를 바꾸면 `PROMPT_VERSION`을 올릴 것. 답변 호명: younghun91=호랭이(남편), joyi96=보구치(아내). 1차 연결 메뉴: Buypedia·맛집 리뷰·주류
+  - `ask.py` - 조회용 챗봇. Gemini REST + 도구 호출(LLM이 MongoDB 조회문 작성 → `ask_tools.py`가 허용 컬렉션·읽기 전용·50건 제한 검사 후 실행). 질문마다 `ask_logs`에 해석·가정·이유·조회문·검사·결과 값·원본 응답·프롬프트 전체·버전까지 남김 (나중에 Claude와 분석·개선용). 프롬프트를 바꾸면 `PROMPT_VERSION`을 올릴 것. 답변 호명: younghun91=호랭이(남편), joyi96=보구치(아내). 연결 메뉴: Buypedia·맛집 리뷰·주류·문화생활·뜨개록·요리·여행·버킷리스트 (일기·캘린더·가계도는 미연결). 메뉴마다 한줄평 칸 이름이 달라서(`wifecomment`/`wife_comment`/`comment_wife`) 서버가 조건에 쓴 칸이 실제로 있는지 확인해 LLM에 알려줌
   - `system/common_code.py` - 공통코드 관리
 - `auth/security.py` - 비밀번호 해싱 및 JWT 토큰 유틸리티
 - `seeds/` - 초기 데이터 스크립트 (뜨개록·Buypedia 공통코드, 주류·Buypedia 기록 직접 등록 `add_liquor.py`/`add_buypedia.py`, 사용자 초기화 mongosh 스크립트)
