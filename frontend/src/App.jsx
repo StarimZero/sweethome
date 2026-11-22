@@ -60,6 +60,8 @@ import BuypediaInsertPage from './components/buypedia/BuypediaInsertPage'
 import BuypediaProductPage from './components/buypedia/BuypediaProductPage'
 import BuypediaDetailPage from './components/buypedia/BuypediaDetailPage'
 import BuypediaPendingPage from './components/buypedia/BuypediaPendingPage'
+// 조회용 챗봇 (모든 화면 오른쪽 아래)
+import AskWidget from './components/ask/AskWidget'
 //로그인관련
 import Login from './components/Login';
 
@@ -156,6 +158,7 @@ function App() {
 
         </Routes>
       </div>
+      <AskWidget />
     </AuthProvider>
     </ConfirmProvider>
     </ToastProvider>
