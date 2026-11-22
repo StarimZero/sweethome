@@ -1,0 +1,817 @@
+// Buypedia — 구매 제품 순위표. #105A88 토큰 기반 (design.md)
+
+.bp-root {
+  // --- 공통 버튼/폼 (주류 등록 폼과 같은 규칙) ---
+  .btn-group { display: flex; gap: 8px; }
+
+  .btn {
+    padding: 10px 18px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    background: var(--c-surface);
+    color: var(--c-text-soft);
+    transition: all 0.15s;
+
+    &:hover:not(:disabled) { border-color: var(--c-primary); color: var(--c-primary); }
+    &.primary {
+      background: var(--grad-primary);
+      color: #fff;
+      border: none;
+      box-shadow: var(--sh-primary);
+      &:hover:not(:disabled) { color: #fff; transform: translateY(-1px); }
+    }
+    &.danger { background: var(--c-danger); color: #fff; border: none; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+
+  .bp-btn-add {
+    background: var(--grad-primary);
+    color: #fff;
+    padding: 11px 22px;
+    border: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-weight: 700;
+    font-family: inherit;
+    white-space: nowrap;
+    box-shadow: var(--sh-primary);
+    transition: transform 0.18s, box-shadow 0.2s;
+    &:hover { transform: translateY(-2px); box-shadow: var(--sh-lg); }
+  }
+
+  .bp-back {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--c-primary);
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 16px;
+    &:hover { text-decoration: underline; }
+  }
+
+  .bp-loading {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--c-primary-soft);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: bp-spin 0.8s linear infinite;
+    }
+  }
+
+  .bp-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 12px;
+  }
+
+  .bp-none {
+    padding: 28px;
+    text-align: center;
+    color: var(--c-text-muted);
+    background: var(--c-surface-alt);
+    border-radius: var(--r-md);
+  }
+
+  .brand { color: var(--c-primary); font-weight: 700; }
+
+  // 카테고리 칩
+  .bp-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+
+    &.wrap { flex-wrap: wrap; overflow: visible; margin-bottom: 0; }
+  }
+
+  .bp-chip {
+    flex-shrink: 0;
+    padding: 7px 15px;
+    border-radius: 999px;
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
+    color: var(--c-text-soft);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    .cnt { font-size: 12px; opacity: 0.7; margin-left: 2px; }
+    &:hover { border-color: var(--c-primary); color: var(--c-primary); }
+    &.on { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+    &.add { border-style: dashed; color: var(--c-primary); }
+  }
+
+  // 재구매 배지
+  .bp-rebuy {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+
+    &.yes { background: var(--c-primary-soft); color: var(--c-primary); }
+    &.soso { background: #F1F3F5; color: #5C6670; }
+    &.no { background: #FFF0F0; color: #D64545; }
+    &.none { background: transparent; color: var(--c-text-muted); }
+  }
+}
+
+@keyframes bp-spin { to { transform: rotate(360deg); } }
+
+// === 메인(순위표) ===
+.buypedia-page {
+  .bp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+
+    h1 { margin: 0; color: var(--c-text); }
+    .bp-sub { margin: 4px 0 0; font-size: 14px; color: var(--c-text-soft); }
+  }
+
+  .bp-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+    margin-bottom: 16px;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface-alt);
+    transition: border-color 0.18s, box-shadow 0.18s;
+
+    &:focus-within {
+      border-color: var(--c-primary);
+      background: var(--c-surface);
+      box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+    }
+    input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 12px 0;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--c-text);
+      outline: none;
+      min-width: 0;
+      &::placeholder { color: var(--c-text-muted); }
+    }
+    .clear {
+      border: none;
+      background: none;
+      color: var(--c-text-muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+
+  .bp-empty {
+    text-align: center;
+    padding: 50px 20px;
+    .emoji { font-size: 48px; }
+    h3 { border: none; padding: 0; margin: 12px 0 6px; color: var(--c-text); }
+    p { font-size: 14px; color: var(--c-text-soft); margin: 0 0 20px; }
+  }
+
+  // 명예의 전당
+  .bp-champions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .bp-champion {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 14px;
+    box-shadow: var(--sh-sm);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--sh-md);
+      .thumb img { transform: scale(1.06); }
+    }
+    .thumb {
+      width: 64px; height: 64px;
+      flex-shrink: 0;
+      border-radius: var(--r-md);
+      background: var(--c-primary-soft);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    }
+    .body { min-width: 0; }
+    .cat { font-size: 12px; color: var(--c-secondary); font-weight: 600; &:hover { text-decoration: underline; } }
+    .name { font-size: 15px; font-weight: 700; color: var(--c-text); margin: 3px 0; word-break: keep-all; }
+    .meta { font-size: 13px; color: var(--c-text-soft); }
+  }
+
+  .bp-table-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    .bp-section-title { margin: 0; flex: 1 1 auto; }
+  }
+
+  .bp-toggle {
+    display: flex;
+    background: var(--c-surface-alt);
+    border-radius: 999px;
+    padding: 3px;
+    button {
+      border: none;
+      background: none;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--c-text-soft);
+      cursor: pointer;
+      &.on { background: var(--c-surface); color: var(--c-primary); box-shadow: var(--sh-sm); }
+    }
+  }
+
+  .bp-blacklist {
+    margin-top: 16px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .bp-black-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border: none;
+    background: var(--c-surface-alt);
+    color: var(--c-text-soft);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+}
+
+// 순위 행 (메인/검색 결과 공통)
+.bp-rank-list { display: flex; flex-direction: column; }
+
+.bp-rank-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 56px 56px 60px 88px 120px;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--c-border);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: var(--c-surface-alt); }
+  &.black { opacity: 0.7; }
+  &.brand-row { grid-template-columns: 44px minmax(0, 1fr) 80px; }
+
+  .col-rank { font-size: 20px; font-weight: 700; color: var(--c-text-soft); text-align: center; }
+  .name { font-size: 15px; font-weight: 600; color: var(--c-text); word-break: keep-all; }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-top: 3px;
+    font-size: 12px;
+    color: var(--c-text-muted);
+    .cat { color: var(--c-secondary); font-weight: 600; }
+  }
+  .col-score {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--c-text-soft);
+    small { display: block; font-size: 11px; font-weight: 500; color: var(--c-text-muted); }
+    &.avg { color: var(--c-primary); font-size: 17px; font-weight: 800; }
+  }
+  .col-rebuy { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
+  .col-unit {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-soft);
+    white-space: nowrap;
+    small { display: block; font-size: 11px; font-weight: 500; color: var(--c-text-muted); }
+    &.cheap { color: #2B8A3E; }
+  }
+  .meta .cheap-tag { color: #2B8A3E; font-weight: 700; }
+}
+
+// === 등록/수정 (평가 대기함의 평가 폼도 같은 스타일) ===
+.buypedia-insert-page, .buypedia-pending-page {
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    h1 { margin: 0; color: var(--c-text); }
+  }
+
+  .form-section {
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-sm);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    > .form-group:last-child, .grid-2:last-child .form-group { margin-bottom: 0; }
+  }
+
+  .section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .hint { font-weight: 400; color: var(--c-text-muted); font-size: 12px; margin: -6px 0 14px; }
+  label .hint { margin: 0 0 0 6px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .form-group {
+    margin-bottom: 20px;
+    label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--c-text-soft); }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r-md);
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      background: var(--c-surface-alt);
+      color: var(--c-text);
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      &:focus {
+        outline: none;
+        border-color: var(--c-primary);
+        background: var(--c-surface);
+        box-shadow: 0 0 0 3px rgba(16, 90, 136, 0.14);
+      }
+      &::placeholder { color: var(--c-text-muted); }
+    }
+    textarea { min-height: 80px; resize: vertical; }
+  }
+
+  .bp-newcat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    input { flex: 1; min-width: 160px; }
+    .bp-similar { flex-basis: 100%; }
+  }
+
+  .bp-similar {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #B7791F;
+    button {
+      border: none;
+      background: #FFF6E5;
+      color: #8A5A10;
+      font-weight: 700;
+      font-family: inherit;
+      padding: 2px 8px;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+    }
+  }
+
+  .bp-amount {
+    display: flex;
+    gap: 8px;
+    select { width: 80px; flex-shrink: 0; }
+  }
+  .bp-perunit { margin-top: 6px; font-size: 13px; color: var(--c-secondary); font-weight: 600; }
+
+  .bp-person {
+    background: var(--c-surface-alt);
+    border-radius: var(--r-md);
+    padding: 16px;
+    .who { font-weight: 700; color: var(--c-primary); margin-bottom: 12px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group input, .form-group select, .form-group textarea { background: var(--c-surface); }
+  }
+
+  .bp-seg {
+    display: flex;
+    gap: 6px;
+    button {
+      flex: 1;
+      padding: 9px 0;
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--r-sm);
+      background: var(--c-surface);
+      color: var(--c-text-soft);
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      &.yes.on { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+      &.soso.on { background: #868E96; border-color: #868E96; color: #fff; }
+      &.no.on { background: var(--c-danger); border-color: var(--c-danger); color: #fff; }
+    }
+  }
+
+  .input-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .bp-img-preview { width: 44px; height: 44px; object-fit: cover; border-radius: var(--r-sm); flex-shrink: 0; }
+
+  .btn-add-sub {
+    background: var(--c-surface-alt);
+    border: 1px dashed var(--c-border);
+    width: 100%;
+    padding: 11px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    color: var(--c-text-soft);
+    font-size: 13px;
+    font-family: inherit;
+    &:hover { border-color: var(--c-primary); color: var(--c-primary); }
+  }
+
+  .btn-del {
+    background: var(--c-danger);
+    color: #fff;
+    border: none;
+    padding: 0 12px;
+    height: 40px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+}
+
+// 평가 대기 배너 (메인)
+.buypedia-page .bp-pending-banner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  border: 1px solid #F3D9A4;
+  border-radius: var(--r-md);
+  background: #FFF8EA;
+  color: #8A5A10;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  b { color: #B7791F; }
+  &:hover { transform: translateY(-1px); box-shadow: var(--sh-sm); }
+}
+
+.bp-rank-row .meta .pending-tag { color: #B7791F; font-weight: 600; }
+.bp-rank-row .meta .buy-count { color: var(--c-text-soft); font-weight: 600; }
+.bp-rank-row.pending .col-score.avg { color: var(--c-secondary); }
+.bp-rank-row .col-score .est { font-size: 12px; font-weight: 500; color: var(--c-text-muted); white-space: nowrap; }
+.buypedia-page .bp-score-note { margin: 10px 0 0; font-size: 12px; color: var(--c-text-muted); }
+
+// 품목 묶음 (카테고리 탭)
+.buypedia-page {
+  .bp-item-group {
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    background: var(--c-surface);
+    margin-bottom: 14px;
+    overflow: hidden;
+    .bp-rank-row:last-child { border-bottom: none; }
+  }
+  .bp-item-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--c-surface-alt);
+    border-bottom: 1px solid var(--c-border);
+    .item { font-weight: 800; color: var(--c-primary); }
+    .sub { font-size: 12px; color: var(--c-text-muted); }
+    .price-tag {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      &.first { background: #EBFBEE; color: #2B8A3E; }
+      &.ignore { background: #F3F0FF; color: #6741D9; }
+    }
+  }
+  .bp-staples-section { margin-top: 24px; }
+  .bp-count-sub { font-size: 12px; font-weight: 500; color: var(--c-text-muted); margin-left: 6px; }
+  .bp-staples { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bp-staple {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 8px 12px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    &:hover { border-color: var(--c-primary); box-shadow: var(--sh-sm); }
+    &.black { opacity: 0.6; }
+    .name { font-size: 13px; color: var(--c-text); font-weight: 600; .brand { font-weight: 700; } }
+    .sub { font-size: 12px; color: var(--c-text-muted); }
+  }
+}
+
+// === 평가 대기함 ===
+.buypedia-pending-page {
+  .bp-header { margin-bottom: 18px; h1 { margin: 0; color: var(--c-text); } }
+  .bp-sub { margin: 4px 0 0; font-size: 14px; color: var(--c-text-soft); }
+
+  .bp-pending-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .bp-pending-item {
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    background: var(--c-surface);
+    box-shadow: var(--sh-sm);
+    overflow: hidden;
+    &.open { border-color: var(--c-primary); }
+
+    .summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      &:hover { background: var(--c-surface-alt); }
+    }
+    .thumb {
+      width: 64px; height: 64px;
+      flex-shrink: 0;
+      border-radius: var(--r-md);
+      background: var(--c-primary-soft);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+    .info { flex: 1; min-width: 0; }
+    .cat { font-size: 12px; color: var(--c-secondary); font-weight: 600; }
+    .name { font-size: 15px; font-weight: 600; color: var(--c-text); word-break: keep-all; }
+    .meta { font-size: 12px; color: var(--c-text-muted); margin-top: 2px; }
+    .go { font-size: 13px; font-weight: 700; color: var(--c-primary); white-space: nowrap; }
+
+    .eval {
+      padding: 16px;
+      border-top: 1px solid var(--c-border);
+      background: var(--c-surface-alt);
+      .bp-person { background: var(--c-surface); }
+    }
+    .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  }
+}
+
+// === 제품 상세 ===
+.buypedia-product-page {
+  .bp-product-head {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 20px;
+    margin-bottom: 24px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-sm);
+
+    .thumb {
+      width: 110px; height: 110px;
+      flex-shrink: 0;
+      border-radius: var(--r-md);
+      background: var(--c-primary-soft);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+    .info { flex: 1; min-width: 0; }
+    .cat { font-size: 13px; color: var(--c-secondary); font-weight: 600; }
+    h1 { margin: 4px 0 12px; font-size: 1.5rem; color: var(--c-text); word-break: keep-all; }
+    .scores {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+      small { display: block; font-size: 12px; color: var(--c-text-muted); }
+      b { font-size: 18px; color: var(--c-text); }
+      .avg b { color: var(--c-primary); font-size: 22px; }
+    }
+    .rebuys { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  }
+
+  .bp-black-tag { font-size: 12px; font-weight: 700; color: #D64545; padding: 3px 6px; }
+
+  .bp-siblings { margin-bottom: 24px; }
+  .bp-count-sub { font-size: 12px; font-weight: 500; color: var(--c-text-muted); margin-left: 6px; }
+  .bp-sibling {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto 120px 44px;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--c-border);
+    cursor: pointer;
+    &:hover { background: var(--c-surface-alt); }
+    &.me { background: var(--c-primary-soft); cursor: default; font-weight: 700; }
+    &.black { opacity: 0.6; }
+    .rank { text-align: center; font-weight: 700; color: var(--c-text-soft); }
+    .name { color: var(--c-text); word-break: keep-all; }
+    .sub { font-size: 12px; color: var(--c-text-muted); white-space: nowrap; }
+    .score { text-align: right; font-weight: 800; color: var(--c-primary); }
+    .unit { font-size: 12px; text-align: right; color: var(--c-text-soft); white-space: nowrap; &.cheap { color: #2B8A3E; font-weight: 700; } }
+  }
+
+  .bp-records { display: flex; flex-direction: column; gap: 10px; }
+
+  .bp-record {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 150px 110px;
+    gap: 6px 14px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &:hover { border-color: var(--c-primary); box-shadow: var(--sh-sm); }
+    .date { font-weight: 700; color: var(--c-text); }
+    .where { color: var(--c-text-soft); word-break: keep-all; }
+    .type {
+      margin-left: 6px;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--c-secondary-soft);
+      color: var(--c-secondary);
+      font-weight: 600;
+    }
+    .money { font-weight: 600; color: var(--c-text); }
+    .sub { font-size: 12px; font-weight: 500; color: var(--c-text-muted); }
+    .rate { display: flex; gap: 10px; justify-content: flex-end; font-weight: 600; color: var(--c-text-soft); white-space: nowrap; }
+    .comments {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      color: var(--c-text-soft);
+      border-top: 1px dashed var(--c-border);
+      padding-top: 8px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+  }
+}
+
+// === 기록 상세 ===
+.buypedia-detail-page {
+  .bp-detail-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    .bp-back { margin: 0; }
+  }
+
+  .bp-detail-title {
+    margin: 18px 0 20px;
+    .cat { font-size: 13px; color: var(--c-secondary); font-weight: 600; }
+    h1 { margin: 4px 0 0; color: var(--c-text); word-break: keep-all; }
+  }
+
+  .bp-gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    img { height: 220px; border-radius: var(--r-md); object-fit: cover; box-shadow: var(--sh-sm); }
+  }
+
+  .bp-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+    > div {
+      background: var(--c-surface-alt);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      font-weight: 600;
+      color: var(--c-text);
+      word-break: keep-all;
+    }
+    small { display: block; font-size: 12px; font-weight: 500; color: var(--c-text-muted); margin-bottom: 4px; }
+    .sub { display: block; font-size: 12px; color: var(--c-secondary); margin-top: 2px; }
+  }
+
+  .bp-evals { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .bp-eval {
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 16px 18px;
+    background: var(--c-surface);
+    box-shadow: var(--sh-sm);
+    border-top: 4px solid var(--c-primary);
+    &.w { border-top-color: var(--c-secondary); }
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      color: var(--c-text);
+      margin-bottom: 8px;
+    }
+    .star { color: var(--c-primary); }
+    p { margin: 10px 0 0; font-size: 14px; color: var(--c-text-soft); white-space: pre-wrap; }
+  }
+}
+
+// === 모바일 ===
+@media (max-width: 640px) {
+  .buypedia-page .bp-header { flex-direction: column; .bp-btn-add { width: 100%; } }
+
+  .bp-rank-row {
+    grid-template-columns: 34px minmax(0, 1fr) 52px;
+    grid-template-areas:
+      "rank name avg"
+      "rank rebuy avg";
+    padding: 12px 4px;
+
+    .col-rank { grid-area: rank; font-size: 18px; }
+    .col-name { grid-area: name; }
+    .col-score.h, .col-score.w, .col-unit { display: none; }
+    .col-score.avg { grid-area: avg; }
+    .col-rebuy { grid-area: rebuy; justify-content: flex-start; }
+    &.brand-row { grid-template-areas: "rank name avg"; }
+  }
+
+  .buypedia-insert-page {
+    .form-header { flex-direction: column; align-items: stretch; .btn-group { justify-content: flex-end; } }
+    .grid-2 { grid-template-columns: 1fr; }
+    .form-section { padding: 18px 16px; }
+  }
+
+  .buypedia-product-page {
+    .bp-product-head {
+      flex-direction: column;
+      .thumb { width: 100%; height: 180px; }
+      .bp-btn-add { width: 100%; }
+    }
+    .bp-record {
+      grid-template-columns: 1fr auto;
+      .where { grid-column: 1 / -1; }
+    }
+  }
+
+  .buypedia-detail-page {
+    .bp-facts { grid-template-columns: 1fr 1fr; }
+    .bp-evals { grid-template-columns: 1fr; }
+  }
+}

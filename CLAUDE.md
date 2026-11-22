@@ -4,7 +4,7 @@
 
 ## 프로젝트 개요
 
-Holango는 부부 라이프로그 웹 애플리케이션입니다. React 프론트엔드와 FastAPI 백엔드로 구성되어 있으며, MongoDB를 Beanie ODM으로 사용합니다. 요리 레시피, 리뷰, 여행, 주류 리뷰, 버킷리스트, 일기, 캘린더, 가계도, 문화생활, 뜨개록 등 11개 영역의 기록을 관리하고 Google Gemini 기반 AI 소믈리에 기능을 제공합니다.
+Holango는 부부 라이프로그 웹 애플리케이션입니다. React 프론트엔드와 FastAPI 백엔드로 구성되어 있으며, MongoDB를 Beanie ODM으로 사용합니다. 요리 레시피, 리뷰, 여행, 주류 리뷰, 버킷리스트, 일기, 캘린더, 가계도, 문화생활, 뜨개록, Buypedia 등 12개 영역의 기록을 관리하고 Google Gemini 기반 AI 소믈리에 기능을 제공합니다.
 
 ## 참고 문서 (로컬 전용, .gitignore 등록)
 
@@ -61,6 +61,7 @@ npm run preview  # 프로덕션 빌드 미리보기
 | 가계도 | `/family` | `/api/family` | `FamilyMember` | `family_members` |
 | 문화생활 | `/culture` | `/api/culture` | `CultureReview` | `culture_reviews` |
 | 뜨개록 | `/knitting` | `/api/knitting` | `KnittingRecord` | `knitting_records` |
+| Buypedia(구매 제품 순위표) | `/buypedia` | `/api/buypedia` | `BuypediaRecord` | `buypedia_records` |
 | 공통코드 | `/system/code` | `/api/code` | `CommonCode` | `common_codes` |
 | 사용자관리 | `/system/users` | `/api/users` | `User` | `users` |
 
@@ -80,9 +81,11 @@ npm run preview  # 프로덕션 빌드 미리보기
   - `auth.py` - JWT 기반 인증 (회원가입/로그인)
   - `dashboard.py` - 홈 화면 요약 데이터 (`/api/couple`)
   - `ai.py` - 독립 AI 분석 엔드포인트. **현재 `app.py`에 등록되어 있지 않음(미사용)**
+  - `buypedia.py` - 구매 기록 CRUD + `/ranking`(제품·브랜드 순위 집계), `/product`(제품별 기록), `/pending`(별점 둘 다 없는 평가 대기). 순위 기준은 `rank_sort_key` 한 곳에 모음
   - `system/common_code.py` - 공통코드 관리
 - `auth/security.py` - 비밀번호 해싱 및 JWT 토큰 유틸리티
-- `seeds/` - 초기 데이터 스크립트 (뜨개록 공통코드, 사용자 초기화 mongosh 스크립트)
+- `seeds/` - 초기 데이터 스크립트 (뜨개록·Buypedia 공통코드, 주류·Buypedia 기록 직접 등록 `add_liquor.py`/`add_buypedia.py`, 사용자 초기화 mongosh 스크립트)
+  - `coupang_fetch.py` - 쿠팡 전용 Chrome(디버그 포트 9225, 프로필 `~/.coupang-chrome`, 사용자가 직접 로그인)에 Playwright로 붙어 주문목록의 `__NEXT_DATA__`를 읽고, 아직 안 넣은 상품만 뽑음. 분류 후 `add_buypedia.py`로 별점 없이 넣으면 평가 대기. Playwright는 `requirements-tools.txt`(배포 불필요)
 - `static/` - 배포 시 프론트엔드 빌드 결과물이 복사되는 위치 (있을 때만 SPA 서빙)
 
 ### 프론트엔드 구조 (`frontend/src/`)
@@ -93,6 +96,7 @@ npm run preview  # 프로덕션 빌드 미리보기
 - `hooks/` - 커스텀 훅 (`useBucketCodes.js` 등)
 - `components/` - 기능별 폴더 구성
   - 각 기능 폴더(cooking, review, travel, liquor, bucket, diary, calendar, family, culture, knitting)는 Page, InsertPage, DetailPage 컴포넌트 보유
+  - `buypedia/`는 순위표(Page) + 등록/수정(InsertPage) + 제품 상세(ProductPage) + 기록 상세(DetailPage) + 평가 대기함(PendingPage). 같은 카테고리+브랜드+제품명(공백 무시) 기록을 한 제품으로 묶고, 순위는 같은 **품목**(`item_type`, 예: 생수·만두·대파) 안에서만 매김. 제품이 하나뿐인 품목은 '늘 사는 것'으로 따로 표시. 품목 규칙은 `seeds/buypedia_item_types.py`
   - `common/` - 전역 UI 토대: `Toast.jsx`(알림), `ConfirmDialog.jsx`(확인 모달). **alert/confirm 대신 이것들을 사용**
   - `ProtectedRoute.jsx` - 인증된 라우트용 가드
   - `system/` - 시스템 관리 (`SystemLayout` 하위에 공통코드, 사용자관리)
@@ -118,7 +122,7 @@ npm run preview  # 프로덕션 빌드 미리보기
 
 Beanie ODM을 사용하는 MongoDB. 모든 모델은 Beanie 초기화를 위해 `models/__init__.py`의 `__all_models__` 리스트에 등록해야 합니다.
 
-컬렉션: `recipes`, `reviews`, `travels`, `places`, `liquor_reviews`, `users`, `common_codes`, `bucketlist`, `diaries`, `calendar_events`, `family_members`, `culture_reviews`, `knitting_records`
+컬렉션: `recipes`, `reviews`, `travels`, `places`, `liquor_reviews`, `users`, `common_codes`, `bucketlist`, `diaries`, `calendar_events`, `family_members`, `culture_reviews`, `knitting_records`, `buypedia_records`
 
 ## 배포
 

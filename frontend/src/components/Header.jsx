@@ -46,6 +46,7 @@ const Header = () => {
             <NavLink to="/liquor" className="nav-item" onClick={closeMenu}>🍷 Liquor</NavLink>
             <NavLink to="/travel" className="nav-item" onClick={closeMenu}>✈️ Travel</NavLink>
             <NavLink to="/review" className="nav-item" onClick={closeMenu}>📝 Review</NavLink>
+            <NavLink to="/buypedia" className="nav-item" onClick={closeMenu}>📚 Buypedia</NavLink>
             <NavLink to="/bucket" className="nav-item" onClick={closeMenu}>🎯 Bucket</NavLink>
             <NavLink to="/diary" className="nav-item" onClick={closeMenu}>💬 소곤소곤</NavLink>
             <NavLink to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</NavLink>
@@ -59,7 +60,7 @@ const Header = () => {
             )}
 
             <div className="user-info">
-              <span className="welcome-msg">Hi, <b>{user.nickname || user.username}</b>님</span>
+              <span className="welcome-msg"><b>{user.nickname || user.username}</b>님</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
             </div>
           </>

@@ -1,0 +1,2 @@
+# 서버 배포에는 필요 없는 로컬 도구용 패키지 (seeds/coupang_fetch.py)
+playwright

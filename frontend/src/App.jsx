@@ -54,6 +54,12 @@ import CultureDetailPage from './components/culture/CultureDetailPage'
 import KnittingPage from './components/knitting/KnittingPage'
 import KnittingInsertPage from './components/knitting/KnittingInsertPage'
 import KnittingDetailPage from './components/knitting/KnittingDetailPage'
+// Buypedia (구매 제품 순위표)
+import BuypediaPage from './components/buypedia/BuypediaPage'
+import BuypediaInsertPage from './components/buypedia/BuypediaInsertPage'
+import BuypediaProductPage from './components/buypedia/BuypediaProductPage'
+import BuypediaDetailPage from './components/buypedia/BuypediaDetailPage'
+import BuypediaPendingPage from './components/buypedia/BuypediaPendingPage'
 //로그인관련
 import Login from './components/Login';
 
@@ -126,6 +132,14 @@ function App() {
             <Route path="/knitting/new" element={<KnittingInsertPage />} />
             <Route path="/knitting/:id" element={<KnittingDetailPage />} />
             <Route path="/knitting/:id/edit" element={<KnittingInsertPage />} />
+
+            {/* Buypedia (구매 제품 순위표) */}
+            <Route path="/buypedia" element={<BuypediaPage />} />
+            <Route path="/buypedia/new" element={<BuypediaInsertPage />} />
+            <Route path="/buypedia/product" element={<BuypediaProductPage />} />
+            <Route path="/buypedia/pending" element={<BuypediaPendingPage />} />
+            <Route path="/buypedia/:id" element={<BuypediaDetailPage />} />
+            <Route path="/buypedia/:id/edit" element={<BuypediaInsertPage />} />
 
             {/* 시스템 (System) */}
             <Route path="/system" element={<SystemLayout />}>
