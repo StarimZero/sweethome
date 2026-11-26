@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api';
 import { useNavigate } from 'react-router-dom';
+import HomeStats from './home/HomeStats';
 
 // --- [반응형 CSS] ---
 const responsiveStyles = `
@@ -271,6 +272,8 @@ function Home() {
                </div>
           )}
         </div>
+        {/* 2. 기록 대시보드 (로그인했을 때만) */}
+        <HomeStats />
       </div>
     </>
   );

@@ -1,0 +1,103 @@
+// 홈 대시보드 — #105A88 토큰 기반 (design.md)
+
+.home-stats {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+  font-family: inherit;
+  color: var(--c-text);
+
+  .hs-loading { text-align: center; color: var(--c-text-muted); padding: 24px 0; }
+
+  .hs-summary {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .hs-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-sm);
+    padding: 18px 20px;
+    min-width: 0;
+
+    .label { font-size: 13px; font-weight: 600; color: var(--c-text-soft); }
+    strong {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--c-primary);
+      small { font-size: 14px; font-weight: 600; color: var(--c-text-soft); margin-left: 4px; }
+    }
+    .sub { font-size: 12px; color: var(--c-text-muted); line-height: 1.5; word-break: keep-all; }
+    &.big { background: var(--grad-primary); border: none; box-shadow: var(--sh-primary);
+      .label, .sub, strong, strong small { color: #fff; }
+      .sub { opacity: 0.85; }
+    }
+  }
+
+  .hs-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--c-surface-alt);
+    overflow: hidden;
+    span { display: block; height: 100%; border-radius: 999px; background: var(--grad-primary); }
+    &.warn span { background: var(--c-warning); }
+    &.danger span { background: var(--c-danger); }
+  }
+
+  .hs-menus {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+
+  .hs-menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 12px 14px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface);
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    &:hover { transform: translateY(-3px); box-shadow: var(--sh-md); border-color: var(--c-primary); }
+    .name { font-size: 13px; color: var(--c-text-soft); font-weight: 600; }
+    .count { font-size: 20px; font-weight: 800; color: var(--c-text); }
+    .new {
+      position: absolute;
+      bottom: 14px; // 숫자 줄 오른쪽 (메뉴 이름을 가리지 않게)
+      right: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-primary);
+      background: var(--c-primary-soft);
+      border-radius: 999px;
+      padding: 1px 7px;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .home-stats .hs-menus { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .home-stats {
+    padding: 20px 14px 90px; // 아래쪽 챗봇 버튼과 안 겹치게
+    .hs-summary { grid-template-columns: 1fr; gap: 10px; }
+    .hs-card strong { font-size: 24px; }
+    .hs-menus { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .hs-menu { padding: 10px 11px; .count { font-size: 18px; } }
+  }
+}
