@@ -14,12 +14,13 @@ const EXAMPLES = {
   '/cooking': ['보구치님이 만든 요리 뭐 있어?', '한식 레시피 뭐 있어?', '닭으로 만든 요리 있어?'],
   '/travel': ['지금까지 다녀온 여행 알려줘', '시즈오카 여행 둘째 날 어디 갔어?', '다음 여행은 언제야?'],
   '/bucket': ['버킷리스트에 뭐 있어?', '이룬 버킷리스트 있어?', '아직 시작 안 한 거 뭐야?'],
+  '/buzzword': ['작년에 유행한 말 뭐였지?', '요즘 쓰는 유행어 뭐 있어?', '호랭이가 시작한 유행어는?'],
 }
 const DEFAULT_EXAMPLES = ['올해 쿠팡에서 제일 많이 산 거 뭐야?', '둘 다 4점 넘게 준 맛집 어디야?', '우리가 제일 좋아한 와인은?']
 
 const MENU_LABEL = {
   '/buypedia': 'Buypedia', '/review': '맛집 리뷰', '/liquor': '주류', '/culture': '문화생활',
-  '/knitting': '뜨개록', '/cooking': '요리', '/travel': '여행', '/bucket': '버킷리스트',
+  '/knitting': '뜨개록', '/cooking': '요리', '/travel': '여행', '/bucket': '버킷리스트', '/buzzword': '유행어',
 }
 
 const firstSegment = (path) => `/${(path || '').split('/')[1] || ''}`
@@ -139,7 +140,7 @@ function AskWidget() {
               <div className="ask-body" ref={bodyRef}>
                 {messages.length === 0 && (
                   <div className="ask-intro">
-                    <p>Buypedia, 맛집 리뷰, 주류, 문화생활, 뜨개록, 요리, 여행, 버킷리스트 기록에서 찾아 드려요.{MENU_LABEL[menu] && ` 지금은 ${MENU_LABEL[menu]} 화면이라 이쪽부터 볼게요.`}</p>
+                    <p>Buypedia, 맛집 리뷰, 주류, 문화생활, 뜨개록, 요리, 여행, 버킷리스트, 유행어 기록에서 찾아 드려요.{MENU_LABEL[menu] && ` 지금은 ${MENU_LABEL[menu]} 화면이라 이쪽부터 볼게요.`}</p>
                     <div className="examples">
                       {examples.map(q => <button key={q} onClick={() => send(q)}>{q}</button>)}
                     </div>
@@ -199,7 +200,7 @@ function AskWidget() {
           )}
         </div>
       )}
-      <button className="ask-fab" onClick={() => setOpen(o => !o)} aria-label={open ? '물어보기 닫기' : '물어보기 열기'}>
+      <button className={`ask-fab ${open ? 'open' : ''}`} onClick={() => setOpen(o => !o)} aria-label={open ? '물어보기 닫기' : '물어보기 열기'}>
         {open ? '✕' : '💬'}
       </button>
     </>

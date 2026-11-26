@@ -196,6 +196,8 @@
 
 @media (max-width: 640px) {
   .ask-fab { right: 16px; bottom: 16px; }
+  // 모바일은 질문 창이 화면 전체라 열린 동안엔 동그란 버튼을 숨김 (보내기 버튼과 겹침). 닫기는 창 위쪽 ✕
+  .ask-fab.open { display: none; }
   .ask-panel {
     inset: 0;
     width: auto;

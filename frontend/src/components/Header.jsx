@@ -52,6 +52,7 @@ const Header = () => {
             <NavLink to="/calendar" className="nav-item" onClick={closeMenu}>📅 Calendar</NavLink>
             <NavLink to="/culture" className="nav-item" onClick={closeMenu}>🎨 Culture</NavLink>
             <NavLink to="/knitting" className="nav-item" onClick={closeMenu}>🧶 뜨개록</NavLink>
+            <NavLink to="/buzzword" className="nav-item" onClick={closeMenu}>🗣️ 유행어</NavLink>
             <NavLink to="/family" className="nav-item" onClick={closeMenu}>👨‍👩‍👧‍👦 가계도</NavLink>
 
             {/* 시스템 메뉴는 admin만 표시 */}

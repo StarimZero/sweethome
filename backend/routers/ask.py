@@ -29,7 +29,7 @@ from routers.buypedia import _group_by_product, apply_price_scores, rank_sort_ke
 
 router = APIRouter(prefix="/api/ask", tags=["Ask"])
 
-PROMPT_VERSION = "ask-v3"  # v3: 문화생활·뜨개록·요리·여행·버킷리스트 연결 / v2: 이름 호명 강화, 순위 공동 표시, find 에 _id 항상 포함
+PROMPT_VERSION = "ask-v4"  # v4: 우리집 유행어 연결 / v3: 문화생활·뜨개록·요리·여행·버킷리스트 연결 / v2: 이름 호명 강화, 순위 공동 표시, find 에 _id 항상 포함
 MODEL = os.getenv("ASK_MODEL", "gemini-3.5-flash-lite")
 GENERATION_CONFIG = {"temperature": 0.1, "maxOutputTokens": 1024}
 MAX_STEPS = 5           # 모델 호출 최대 횟수 (도구 호출 반복 포함)
@@ -99,7 +99,7 @@ async def build_system_prompt(call_name: str, page: str, today: str) -> str:
 2. 답에 쓰는 숫자는 조회 결과에 있는 값만 써. 계산이 필요하면 집계(aggregate)로 서버에서 계산해.
 3. 도구를 부를 때 reason(왜 이렇게 조회하는지), assumptions(애매한 말을 어떻게 정했는지), interpretation(대상·기간·셀 것·정렬)을 꼭 채워.
    예: '많이 산' → 주문 횟수로 셈, '요즘' → 최근 3개월.
-4. 연결된 메뉴는 Buypedia(구매 기록), 맛집 리뷰, 주류, 문화생활, 뜨개록, 요리, 여행, 버킷리스트야. 다른 메뉴(일기, 캘린더, 가계도 등)나 없는 데이터를 물으면 unsupported_request 를 부르고, 아직 볼 수 없다고 답해.
+4. 연결된 메뉴는 Buypedia(구매 기록), 맛집 리뷰, 주류, 문화생활, 뜨개록, 요리, 여행, 버킷리스트, 유행어야. 다른 메뉴(일기, 캘린더, 가계도 등)나 없는 데이터를 물으면 unsupported_request 를 부르고, 아직 볼 수 없다고 답해.
 5. 결과가 없으면 없다고 솔직히 말해.
 6. 답은 자연스러운 한국어 존댓말(~해요)로 2~5문장. 목록이 필요하면 상위 몇 개만. 줄표(—)나 번역투는 쓰지 마.
 7. Buypedia 에서 '1위', '제일 괜찮은', '뭘 사야' 같은 순위 질문은 buypedia_ranking 을 써. 이 사이트의 종합 점수 공식이 들어 있어.
@@ -150,6 +150,12 @@ liquor_reviews·culture_reviews·buypedia_records 는 comment_wife 야. 반드�
    - title: 할 일 / description: 설명 / category: 분류 코드 ({bucket_cat}, 빈 값 많음) / target_date: 목표일
    - progress: 진행률 0~100 / status: not_started/active/completed (빈 값이면 아직 시작 안 한 것) / completed_at: 이룬 날
    - comments: 댓글 [{{content, created_at}}]
+9) buzzwords: 우리집 유행어 (두 분이 집에서 쓰다가 생기고 사라지는 말). 1건 = 유행어 1개
+   - phrase: 유행어 / meaning: 뜻·쓰는 상황 / origin_story: 생긴 사연 / example: 예문
+   - started_at: 생긴 때 'YYYY-MM' / started_by: 시작한 사람 husband({HUSBAND_NAME}님)/wife({WIFE_NAME}님)/both
+   - status: ACTIVE(요즘 씀)/SOMETIMES(가끔 씀)/RETIRED(이제 안 씀) / retired_at: 안 쓰게 된 때 'YYYY-MM'
+   - comment_husband, comment_wife: 한마디 / audios: 녹음 목록 [{{label, duration_sec}}] (소리는 상세 화면에서 들으라고 안내해)
+   - '그때 유행어 뭐였지?' 같은 질문은 started_at 기간으로 찾아.
 
 [조회 도구 사용법]
 - query_records: collection, operation(find/count/aggregate)과 JSON 문자열(filter_json, pipeline_json, projection_json, sort_json)을 넘겨.
@@ -180,7 +186,7 @@ _REASON_PROPS = {
 TOOLS = [{"functionDeclarations": [
     {
         "name": "query_records",
-        "description": "Buypedia·맛집 리뷰·주류·문화생활·뜨개록·요리·여행·버킷리스트 기록을 MongoDB 조회문으로 읽는다 (읽기 전용, 최대 50건).",
+        "description": "Buypedia·맛집 리뷰·주류·문화생활·뜨개록·요리·여행·버킷리스트·유행어 기록을 MongoDB 조회문으로 읽는다 (읽기 전용, 최대 50건).",
         "parameters": {"type": "OBJECT", "properties": {
             "collection": {"type": "STRING", "enum": list(ask_tools.ALLOWED_COLLECTIONS)},
             "operation": {"type": "STRING", "enum": ["find", "count", "aggregate"]},

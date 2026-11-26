@@ -13,5 +13,6 @@ from .culture import CultureReview
 from .knitting import KnittingRecord
 from .buypedia import BuypediaRecord, BuypediaIgnore
 from .ask import AskLog
+from .buzzword import Buzzword, BuzzwordAudio
 
-__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent, FamilyMember, CultureReview, KnittingRecord, BuypediaRecord, BuypediaIgnore, AskLog]
+__all_models__ = [Recipe, Review, CommonCode, Travel, Place, LiquorReview, User, BucketList, Diary, CalendarEvent, FamilyMember, CultureReview, KnittingRecord, BuypediaRecord, BuypediaIgnore, AskLog, Buzzword, BuzzwordAudio]

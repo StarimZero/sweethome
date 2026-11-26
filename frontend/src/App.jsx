@@ -61,6 +61,10 @@ import BuypediaProductPage from './components/buypedia/BuypediaProductPage'
 import BuypediaDetailPage from './components/buypedia/BuypediaDetailPage'
 import BuypediaPendingPage from './components/buypedia/BuypediaPendingPage'
 // 조회용 챗봇 (모든 화면 오른쪽 아래)
+import BuzzwordPage from './components/buzzword/BuzzwordPage'
+import BuzzwordInsertPage from './components/buzzword/BuzzwordInsertPage'
+import BuzzwordDetailPage from './components/buzzword/BuzzwordDetailPage'
+
 import AskWidget from './components/ask/AskWidget'
 //로그인관련
 import Login from './components/Login';
@@ -134,6 +138,10 @@ function App() {
             <Route path="/knitting/new" element={<KnittingInsertPage />} />
             <Route path="/knitting/:id" element={<KnittingDetailPage />} />
             <Route path="/knitting/:id/edit" element={<KnittingInsertPage />} />
+
+            <Route path="/buzzword" element={<BuzzwordPage />} />
+            <Route path="/buzzword/new" element={<BuzzwordInsertPage />} />
+            <Route path="/buzzword/:id" element={<BuzzwordDetailPage />} />
 
             {/* Buypedia (구매 제품 순위표) */}
             <Route path="/buypedia" element={<BuypediaPage />} />

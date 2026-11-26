@@ -17,6 +17,8 @@ ALLOWED_COLLECTIONS = {
     "recipes": {"label_fields": ("name",), "path": "/cooking/{id}", "menu": "요리"},
     "travels": {"label_fields": ("title",), "path": "/travel/{id}", "menu": "여행"},
     "bucketlist": {"label_fields": ("title",), "path": "/bucket/{id}", "menu": "버킷리스트"},
+    "buzzwords": {"label_fields": ("phrase",), "path": "/buzzword/{id}", "menu": "유행어"},
+    # buzzword_audios(녹음 파일 자체)는 일부러 안 넣음: 바이너리라 조회 결과로 보낼 이유가 없음
 }
 
 MAX_ROWS = 50
